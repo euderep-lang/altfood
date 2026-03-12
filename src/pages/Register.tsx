@@ -50,6 +50,20 @@ export default function Register() {
 
     setLoading(true);
 
+    // Rate limit check
+    try {
+      const { data: rlData } = await supabase.functions.invoke('check-rate-limit', {
+        body: { action: 'signup' },
+      });
+      if (rlData && !rlData.allowed) {
+        toast({ title: 'Muitas tentativas', description: rlData.message || 'Tente novamente mais tarde.', variant: 'destructive' });
+        setLoading(false);
+        return;
+      }
+    } catch {
+      // If rate limit check fails, proceed anyway
+    }
+
     const cleanName = sanitize(form.name);
     const cleanEmail = form.email.trim().toLowerCase();
     const cleanDoc = sanitize(form.documentNumber);
