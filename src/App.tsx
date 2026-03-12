@@ -26,6 +26,7 @@ const Stats = lazy(() => import("./pages/Stats"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const SubscriptionSuccess = lazy(() => import("./pages/SubscriptionSuccess"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
+const Admin = lazy(() => import("./pages/Admin"));
 
 const queryClient = new QueryClient();
 
