@@ -68,6 +68,8 @@ const App = () => (
                 <Route path="/dashboard/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
                 <Route path="/compartilhar" element={<ProtectedRoute><ShareKit /></ProtectedRoute>} />
                 <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+                <Route path="/admin/suporte" element={<ProtectedRoute><AdminSupport /></ProtectedRoute>} />
+                <Route path="/novidades" element={<Changelog />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

@@ -127,6 +127,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           Sair
         </button>
       </nav>
+      <SupportWidget />
+      <NpsSurvey />
     </div>
   );
 }
