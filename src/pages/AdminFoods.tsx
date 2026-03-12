@@ -91,6 +91,7 @@ export default function AdminFoods() {
   };
 
 
+  const filtered = useMemo(() => {
     let list = foods;
     if (search) {
       const q = search.toLowerCase();
