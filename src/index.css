@@ -95,11 +95,18 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    font-size: 14px;
   }
 
   html {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Ensure minimum font size across the app */
+  p, span, li, td, th, label, a {
+    font-size: max(inherit, 0.75rem);
   }
 }
 
