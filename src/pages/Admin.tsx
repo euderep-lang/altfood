@@ -59,7 +59,16 @@ export default function Admin() {
       const { data } = await supabase.from('page_views').select('viewed_at').gte('viewed_at', sixtyDaysAgo);
       return data || [];
     },
+    enabled: isAdmin,
   });
+
+  // Auth guard (after all hooks)
+  if (authLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+  }
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   // Metrics
   const now = new Date();
