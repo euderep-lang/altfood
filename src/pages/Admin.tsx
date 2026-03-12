@@ -61,16 +61,6 @@ export default function Admin() {
     },
     enabled: isAdmin,
   });
-
-  // Auth guard (after all hooks)
-  if (authLoading) {
-    return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
-  }
-  if (!isAdmin) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  // Metrics
   const now = new Date();
   const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
