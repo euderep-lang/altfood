@@ -253,7 +253,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_get_page_views_since: {
+        Args: { since_date: string }
+        Returns: {
+          viewed_at: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
