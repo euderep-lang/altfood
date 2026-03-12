@@ -11,7 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Upload, X, Check, AlertTriangle, Trash2, ExternalLink, MessageCircle, Lock, Crown } from 'lucide-react';
+import { Loader2, Upload, X, Check, AlertTriangle, Trash2, ExternalLink, MessageCircle, Lock, Crown, Mail } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 import { generateSlug, daysRemaining, formatDate } from '@/lib/helpers';
 import { useAuth } from '@/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,6 +37,7 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [form, setForm] = useState<Record<string, string>>({});
+  const [emailPrefs, setEmailPrefs] = useState({ email_weekly_summary: true, email_tips: true });
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [slugValue, setSlugValue] = useState('');
@@ -48,6 +50,10 @@ export default function Profile() {
   useEffect(() => {
     if (doctor) {
       setSlugValue(doctor.slug);
+      setEmailPrefs({
+        email_weekly_summary: (doctor as any).email_weekly_summary ?? true,
+        email_tips: (doctor as any).email_tips ?? true,
+      });
     }
   }, [doctor]);
 
@@ -137,6 +143,8 @@ export default function Profile() {
       whatsapp_link: getField('whatsapp_link') || null,
       instagram_link: getField('instagram_link') || null,
       welcome_message: getField('welcome_message') || null,
+      email_weekly_summary: emailPrefs.email_weekly_summary,
+      email_tips: emailPrefs.email_tips,
     };
 
     if (slugValue && slugValue !== doctor.slug && slugAvailable !== false) {
@@ -396,6 +404,36 @@ export default function Profile() {
           <a href={patientUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
             <ExternalLink className="w-3 h-3" /> Abrir página do paciente
           </a>
+        </CardContent>
+      </Card>
+
+      {/* Email Preferences */}
+      <Card className="rounded-2xl shadow-sm">
+        <CardContent className="p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <Mail className="w-4 h-4 text-primary" />
+            <Label className="text-sm font-semibold">Notificações por e-mail</Label>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-foreground">Receber resumo semanal</p>
+              <p className="text-xs text-muted-foreground">Estatísticas de acesso toda segunda-feira</p>
+            </div>
+            <Switch
+              checked={emailPrefs.email_weekly_summary}
+              onCheckedChange={(v) => { setEmailPrefs(p => ({ ...p, email_weekly_summary: v })); setSaved(false); }}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-foreground">Receber dicas e novidades</p>
+              <p className="text-xs text-muted-foreground">Dicas para melhorar sua página e novidades do Altfood</p>
+            </div>
+            <Switch
+              checked={emailPrefs.email_tips}
+              onCheckedChange={(v) => { setEmailPrefs(p => ({ ...p, email_tips: v })); setSaved(false); }}
+            />
+          </div>
         </CardContent>
       </Card>
 
