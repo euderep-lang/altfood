@@ -304,70 +304,78 @@ export default function Profile() {
             <Label className="text-xs">CRM / CRN</Label>
             <Input value={getField('document_number')} onChange={e => update('document_number', e.target.value)} className="rounded-xl h-11" />
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Bio curta</Label>
-            <Textarea
-              value={getField('bio')}
-              onChange={e => { if (e.target.value.length <= 200) update('bio', e.target.value); }}
-              placeholder="Ex: Nutricionista especializada em reeducação alimentar..."
-              className="rounded-xl resize-none h-20"
-              maxLength={200}
-            />
-            <p className="text-[10px] text-muted-foreground text-right">{bioLength}/200</p>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Mensagem de boas-vindas</Label>
-            <Textarea
-              value={getField('welcome_message')}
-              onChange={e => update('welcome_message', e.target.value)}
-              placeholder="Ex: Olá! Aqui você encontra substituições alimentares seguras."
-              className="rounded-xl resize-none h-16"
-            />
-          </div>
+          <ProLock>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Bio curta</Label>
+              <Textarea
+                value={getField('bio')}
+                onChange={e => { if (e.target.value.length <= 200) update('bio', e.target.value); }}
+                placeholder="Ex: Nutricionista especializada em reeducação alimentar..."
+                className="rounded-xl resize-none h-20"
+                maxLength={200}
+              />
+              <p className="text-[10px] text-muted-foreground text-right">{bioLength}/200</p>
+            </div>
+          </ProLock>
+          <ProLock>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Mensagem de boas-vindas</Label>
+              <Textarea
+                value={getField('welcome_message')}
+                onChange={e => update('welcome_message', e.target.value)}
+                placeholder="Ex: Olá! Aqui você encontra substituições alimentares seguras."
+                className="rounded-xl resize-none h-16"
+              />
+            </div>
+          </ProLock>
         </CardContent>
       </Card>
 
       {/* Social links */}
-      <Card className="rounded-2xl shadow-sm">
-        <CardContent className="p-5 space-y-3">
-          <Label className="text-sm font-semibold">Links sociais</Label>
-          <div className="space-y-1.5">
-            <Label className="text-xs">WhatsApp (opcional)</Label>
-            <Input value={getField('whatsapp_link')} onChange={e => update('whatsapp_link', e.target.value)} placeholder="https://wa.me/5511999999999" className="rounded-xl h-11" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Instagram (opcional)</Label>
-            <Input value={getField('instagram_link')} onChange={e => update('instagram_link', e.target.value)} placeholder="https://instagram.com/seuusuario" className="rounded-xl h-11" />
-          </div>
-        </CardContent>
-      </Card>
+      <ProLock>
+        <Card className="rounded-2xl shadow-sm">
+          <CardContent className="p-5 space-y-3">
+            <Label className="text-sm font-semibold">Links sociais</Label>
+            <div className="space-y-1.5">
+              <Label className="text-xs">WhatsApp (opcional)</Label>
+              <Input value={getField('whatsapp_link')} onChange={e => update('whatsapp_link', e.target.value)} placeholder="https://wa.me/5511999999999" className="rounded-xl h-11" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Instagram (opcional)</Label>
+              <Input value={getField('instagram_link')} onChange={e => update('instagram_link', e.target.value)} placeholder="https://instagram.com/seuusuario" className="rounded-xl h-11" />
+            </div>
+          </CardContent>
+        </Card>
+      </ProLock>
 
       {/* Color */}
-      <Card className="rounded-2xl shadow-sm">
-        <CardContent className="p-5 space-y-3">
-          <Label className="text-sm font-semibold">Cor principal</Label>
-          <div className="flex gap-2 flex-wrap">
-            {COLOR_PRESETS.map(c => (
-              <button
-                key={c}
-                onClick={() => update('primary_color', c)}
-                className="w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center"
-                style={{
-                  backgroundColor: c,
-                  borderColor: primaryColor === c ? '#000' : 'transparent',
-                  transform: primaryColor === c ? 'scale(1.1)' : 'scale(1)',
-                }}
-              >
-                {primaryColor === c && <Check className="w-4 h-4 text-white" />}
-              </button>
-            ))}
-            <label className="w-10 h-10 rounded-xl border-2 border-dashed border-border cursor-pointer overflow-hidden flex items-center justify-center text-xs text-muted-foreground hover:border-primary/50 transition-colors">
-              <input type="color" value={primaryColor} onChange={e => update('primary_color', e.target.value)} className="sr-only" />
-              🎨
-            </label>
-          </div>
-        </CardContent>
-      </Card>
+      <ProLock>
+        <Card className="rounded-2xl shadow-sm">
+          <CardContent className="p-5 space-y-3">
+            <Label className="text-sm font-semibold">Cor principal</Label>
+            <div className="flex gap-2 flex-wrap">
+              {COLOR_PRESETS.map(c => (
+                <button
+                  key={c}
+                  onClick={() => update('primary_color', c)}
+                  className="w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center"
+                  style={{
+                    backgroundColor: c,
+                    borderColor: primaryColor === c ? '#000' : 'transparent',
+                    transform: primaryColor === c ? 'scale(1.1)' : 'scale(1)',
+                  }}
+                >
+                  {primaryColor === c && <Check className="w-4 h-4 text-white" />}
+                </button>
+              ))}
+              <label className="w-10 h-10 rounded-xl border-2 border-dashed border-border cursor-pointer overflow-hidden flex items-center justify-center text-xs text-muted-foreground hover:border-primary/50 transition-colors">
+                <input type="color" value={primaryColor} onChange={e => update('primary_color', e.target.value)} className="sr-only" />
+                🎨
+              </label>
+            </div>
+          </CardContent>
+        </Card>
+      </ProLock>
 
       {/* Slug */}
       <Card className="rounded-2xl shadow-sm">
