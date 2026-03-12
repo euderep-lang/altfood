@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Leaf, ArrowRight, Check, Sparkles, Star } from 'lucide-react';
+import { Leaf, ArrowRight, Check, Sparkles, Star, UserPlus, Share2, Search, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -24,10 +25,22 @@ const scaleIn = {
 };
 
 export default function Landing() {
+  const [scrolled, setScrolled] = useState(false);
+  const [billingAnnual, setBillingAnnual] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const proMonthly = 29;
+  const proAnnual = Math.round(proMonthly * 12 * 0.8 / 12); // 20% off
+
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Nav */}
-      <nav className="glass-nav sticky top-0 z-50">
+      <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-card shadow-md border-b border-border' : 'glass-nav'}`}>
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-md group-hover:glow-shadow transition-shadow duration-300">
@@ -35,9 +48,14 @@ export default function Landing() {
             </div>
             <span className="font-bold text-lg text-foreground tracking-tight">Altfood</span>
           </Link>
+          <div className="hidden md:flex items-center gap-6 text-sm">
+            <a href="#como-funciona" className="text-muted-foreground hover:text-foreground transition-colors">Como funciona</a>
+            <a href="#planos" className="text-muted-foreground hover:text-foreground transition-colors">Planos</a>
+            <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
+          </div>
           <div className="flex items-center gap-1.5">
             <Link to="/login">
-              <Button variant="ghost-nav" size="sm">Entrar</Button>
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">Entrar</Button>
             </Link>
             <Link to="/register">
               <Button size="sm" className="gradient-hero shadow-md">Começar grátis</Button>
@@ -48,15 +66,10 @@ export default function Landing() {
 
       {/* Hero */}
       <section className="relative py-20 md:py-32 px-4 hero-pattern overflow-hidden">
-        {/* Glow */}
         <div className="absolute inset-0 gradient-glow pointer-events-none" />
         <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full opacity-20 blur-3xl gradient-hero pointer-events-none" />
 
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          className="relative max-w-3xl mx-auto text-center space-y-8"
-        >
+        <motion.div initial="hidden" animate="visible" className="relative max-w-3xl mx-auto text-center space-y-8">
           <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full premium-border bg-accent/60 backdrop-blur-sm">
             <Sparkles className="w-3.5 h-3.5 text-primary" />
             <span className="text-xs font-semibold tracking-wide text-primary uppercase">14 dias grátis • Sem cartão</span>
@@ -81,7 +94,7 @@ export default function Landing() {
             </Link>
           </motion.div>
 
-          <motion.div variants={fadeUp} custom={4} className="flex items-center justify-center gap-6 pt-4">
+          <motion.div variants={fadeUp} custom={4} className="flex items-center justify-center gap-6 pt-4 flex-wrap">
             {['Sem cartão de crédito', 'Cancele quando quiser', 'Setup em 2 min'].map((t, i) => (
               <span key={i} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Check className="w-3 h-3 text-primary" /> {t}
@@ -110,8 +123,8 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* How it works */}
-      <section className="py-20 md:py-28 px-4">
+      {/* Como Funciona */}
+      <section id="como-funciona" className="py-20 md:py-28 px-4">
         <div className="max-w-4xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-14 space-y-3">
             <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary">Como funciona</motion.span>
@@ -122,14 +135,16 @@ export default function Landing() {
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid md:grid-cols-3 gap-5">
             {[
-              { step: '01', title: 'Cadastre-se', desc: 'Crie sua conta em minutos e personalize com sua marca, logo e cores.', emoji: '✨' },
-              { step: '02', title: 'Compartilhe', desc: 'Envie seu link exclusivo para pacientes via WhatsApp ou QR Code.', emoji: '🔗' },
-              { step: '03', title: 'Substitua', desc: 'Pacientes encontram equivalentes nutricionais instantaneamente.', emoji: '🥗' },
+              { step: '01', title: 'Crie sua página grátis', desc: 'Cadastre-se em minutos. Personalize com sua marca, logo e cores. Sua página já fica online.', icon: UserPlus },
+              { step: '02', title: 'Compartilhe o link', desc: 'Envie seu link exclusivo via WhatsApp, Instagram ou QR Code para seus pacientes.', icon: Share2 },
+              { step: '03', title: 'Paciente busca na hora', desc: 'Pacientes encontram equivalentes nutricionais instantaneamente, sem criar conta.', icon: Search },
             ].map((s, i) => (
               <motion.div key={i} variants={scaleIn} custom={i}>
                 <Card className="rounded-3xl glass-card hover:glow-shadow transition-all duration-500 group h-full">
                   <CardContent className="p-6 md:p-8 text-center space-y-4">
-                    <div className="text-4xl group-hover:animate-float">{s.emoji}</div>
+                    <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center bg-primary/10 group-hover:bg-primary/15 transition-colors">
+                      <s.icon className="w-7 h-7 text-primary" />
+                    </div>
                     <span className="text-gradient text-xs font-bold tracking-widest uppercase">{s.step}</span>
                     <h3 className="text-lg font-bold text-foreground">{s.title}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
@@ -177,42 +192,169 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="py-20 md:py-28 px-4 gradient-dark relative overflow-hidden">
-        {/* Decorative glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full opacity-20 blur-3xl gradient-hero pointer-events-none" />
-
-        <div className="relative max-w-md mx-auto">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-10 space-y-3">
-            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/60">Investimento</motion.span>
-            <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-primary-foreground">
-              Um plano, tudo incluso
+      {/* Testimonials */}
+      <section className="py-20 md:py-28 px-4">
+        <div className="max-w-4xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-14 space-y-3">
+            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary">Depoimentos</motion.span>
+            <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-foreground">
+              Quem usa, recomenda
             </motion.h2>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid md:grid-cols-3 gap-5">
+            {[
+              {
+                name: 'Dra. Camila Santos',
+                specialty: 'Nutricionista',
+                initials: 'CS',
+                color: '#0F766E',
+                quote: 'O Altfood me poupa pelo menos 1h por dia respondendo dúvidas de pacientes sobre substituições. Agora eles consultam direto pelo celular!',
+              },
+              {
+                name: 'Dr. Ricardo Mendes',
+                specialty: 'Endocrinologista',
+                initials: 'RM',
+                color: '#2563EB',
+                quote: 'Meus pacientes adoram. É prático, confiável e com a minha marca. Recomendo para todos os colegas da área.',
+              },
+              {
+                name: 'Dra. Fernanda Lima',
+                specialty: 'Clínica Geral',
+                initials: 'FL',
+                color: '#7C3AED',
+                quote: 'Uso com pacientes que precisam de reeducação alimentar. A base da TACO dá credibilidade e o layout é lindo no celular.',
+              },
+            ].map((t, i) => (
+              <motion.div key={i} variants={scaleIn} custom={i}>
+                <Card className="rounded-2xl glass-card h-full">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ backgroundColor: t.color }}>
+                        {t.initials}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                        <p className="text-xs text-muted-foreground">{t.specialty}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-0.5">
+                      {[1, 2, 3, 4, 5].map(s => (
+                        <Star key={s} className="w-3.5 h-3.5 text-warning fill-warning" />
+                      ))}
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed italic">"{t.quote}"</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="planos" className="py-20 md:py-28 px-4 gradient-dark relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full opacity-20 blur-3xl gradient-hero pointer-events-none" />
+
+        <div className="relative max-w-3xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-10 space-y-3">
+            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/60">Investimento</motion.span>
+            <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-primary-foreground">
+              Escolha seu plano
+            </motion.h2>
+            {/* Billing toggle */}
+            <motion.div variants={fadeUp} custom={2} className="flex items-center justify-center gap-3 pt-4">
+              <span className={`text-sm font-medium ${!billingAnnual ? 'text-primary-foreground' : 'text-primary-foreground/40'}`}>Mensal</span>
+              <button
+                onClick={() => setBillingAnnual(!billingAnnual)}
+                className={`relative w-12 h-6 rounded-full transition-colors ${billingAnnual ? 'bg-primary' : 'bg-primary-foreground/20'}`}
+              >
+                <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform ${billingAnnual ? 'translate-x-6' : 'translate-x-0.5'}`} />
+              </button>
+              <span className={`text-sm font-medium ${billingAnnual ? 'text-primary-foreground' : 'text-primary-foreground/40'}`}>
+                Anual <span className="text-xs text-primary font-bold">-20%</span>
+              </span>
+            </motion.div>
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-2 gap-5">
+            {/* Free plan */}
             <motion.div variants={scaleIn} custom={0}>
-              <Card className="rounded-3xl bg-primary-foreground/[0.06] backdrop-blur-xl border border-primary-foreground/10 shimmer overflow-visible">
-                <CardContent className="p-8 text-center space-y-6">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/20 text-secondary text-xs font-semibold">
-                    <Sparkles className="w-3 h-3" /> Mais popular
+              <Card className="rounded-3xl bg-primary-foreground/[0.04] backdrop-blur-xl border border-primary-foreground/10 h-full">
+                <CardContent className="p-7 space-y-5">
+                  <div>
+                    <h3 className="text-lg font-bold text-primary-foreground">Grátis</h3>
+                    <p className="text-xs text-primary-foreground/50 mt-1">Para começar sem compromisso</p>
                   </div>
                   <div>
-                    <span className="text-5xl md:text-6xl font-display font-bold text-primary-foreground">R$ 97</span>
-                    <span className="text-base text-primary-foreground/50 font-medium">/mês</span>
+                    <span className="text-4xl font-display font-bold text-primary-foreground">R$ 0</span>
+                    <span className="text-sm text-primary-foreground/40 font-medium">/mês</span>
                   </div>
-                  <p className="text-sm text-primary-foreground/50">Comece com 14 dias grátis. Cancele quando quiser.</p>
-
-                  <ul className="text-sm text-left space-y-3 py-2">
+                  <ul className="text-sm space-y-2.5 py-2">
                     {[
-                      'Página personalizada com sua marca',
-                      'Link exclusivo para pacientes',
+                      'Página de paciente básica',
+                      'Substituições ilimitadas',
                       'Base TACO completa',
-                      'Analytics de acessos e buscas',
-                      'QR Code para compartilhar',
-                      'Suporte prioritário por e-mail',
+                      'Link personalizado',
                     ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-primary-foreground/80">
+                      <li key={i} className="flex items-center gap-2.5 text-primary-foreground/70">
+                        <Check className="w-4 h-4 text-primary shrink-0" /> {item}
+                      </li>
+                    ))}
+                    {[
+                      'Analytics e estatísticas',
+                      'Logo e bio personalizados',
+                      'Relatório CSV',
+                      'Resumo semanal por e-mail',
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center gap-2.5 text-primary-foreground/30 line-through">
+                        <X className="w-4 h-4 text-primary-foreground/20 shrink-0" /> {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to="/register" className="block">
+                    <Button variant="outline" className="w-full rounded-xl h-11 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10">
+                      Criar conta grátis
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Pro plan */}
+            <motion.div variants={scaleIn} custom={1}>
+              <Card className="rounded-3xl bg-primary-foreground/[0.06] backdrop-blur-xl border border-primary-foreground/10 shimmer overflow-visible relative">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold shadow-lg">
+                    <Sparkles className="w-3 h-3" /> Mais popular
+                  </span>
+                </div>
+                <CardContent className="p-7 space-y-5 pt-8">
+                  <div>
+                    <h3 className="text-lg font-bold text-primary-foreground">Pro</h3>
+                    <p className="text-xs text-primary-foreground/50 mt-1">Para profissionais que levam a sério</p>
+                  </div>
+                  <div>
+                    <span className="text-4xl font-display font-bold text-primary-foreground">
+                      R$ {billingAnnual ? proAnnual : proMonthly}
+                    </span>
+                    <span className="text-sm text-primary-foreground/40 font-medium">/mês</span>
+                    {billingAnnual && (
+                      <p className="text-xs text-primary/80 mt-1">R$ {proAnnual * 12}/ano (economia de R$ {proMonthly * 12 - proAnnual * 12})</p>
+                    )}
+                  </div>
+                  <ul className="text-sm space-y-2.5 py-2">
+                    {[
+                      'Tudo do plano Grátis',
+                      'Analytics em tempo real',
+                      'Logo e bio personalizados',
+                      'Cores e marca própria',
+                      'Relatório CSV exportável',
+                      'Resumo semanal por e-mail',
+                      'Links WhatsApp e Instagram',
+                      'Suporte prioritário',
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center gap-2.5 text-primary-foreground/80">
                         <div className="w-5 h-5 rounded-full bg-secondary/20 flex items-center justify-center shrink-0">
                           <Check className="w-3 h-3 text-secondary" />
                         </div>
@@ -220,13 +362,13 @@ export default function Landing() {
                       </li>
                     ))}
                   </ul>
-
                   <Link to="/register" className="block">
                     <Button variant="premium" size="xl" className="w-full group">
                       Começar Trial Grátis
                       <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
+                  <p className="text-[10px] text-primary-foreground/30 text-center">14 dias grátis • Cancele quando quiser</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -235,7 +377,7 @@ export default function Landing() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 md:py-28 px-4">
+      <section id="faq" className="py-20 md:py-28 px-4">
         <div className="max-w-2xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-12 space-y-3">
             <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary">FAQ</motion.span>
@@ -247,11 +389,12 @@ export default function Landing() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }}>
             <Accordion type="single" collapsible className="space-y-3">
               {[
-                { q: 'O paciente precisa criar conta?', a: 'Não! Seus pacientes acessam diretamente pelo link, sem necessidade de cadastro ou login. Zero fricção.' },
-                { q: 'Qual base de dados é utilizada?', a: 'Utilizamos a Tabela TACO (Tabela Brasileira de Composição de Alimentos), 4ª edição, desenvolvida pela NEPA/UNICAMP — a referência nacional em dados nutricionais.' },
-                { q: 'Posso cancelar a qualquer momento?', a: 'Sim, você pode cancelar sua assinatura a qualquer momento, sem multas ou taxas adicionais. Simples assim.' },
-                { q: 'Como funciona o trial?', a: 'Você tem 14 dias para testar todas as funcionalidades gratuitamente, sem precisar informar cartão de crédito. Ao final, pode assinar para continuar.' },
-                { q: 'Posso personalizar com minha marca?', a: 'Sim! Você pode adicionar seu logo, escolher suas cores e ter um link exclusivo com seu nome profissional.' },
+                { q: 'É gratuito?', a: 'Sim! O plano Grátis permite criar sua página de paciente e usar substituições ilimitadas. Para recursos avançados como analytics, personalização completa e relatórios, temos o plano Pro por R$29/mês.' },
+                { q: 'Precisa instalar alguma coisa?', a: 'Não! O Altfood funciona 100% no navegador, sem necessidade de instalar nenhum app. Seus pacientes acessam pelo link, e você gerencia tudo pelo dashboard online. Opcionalmente, pacientes podem adicionar à tela inicial como um app.' },
+                { q: 'Como compartilho com pacientes?', a: 'Você recebe um link exclusivo (ex: altfood.app/p/dra-maria). Basta enviar via WhatsApp, colocar na bio do Instagram, ou gerar um QR Code. Seus pacientes acessam sem precisar criar conta.' },
+                { q: 'Os dados são da TACO?', a: 'Sim! Utilizamos a Tabela TACO (Tabela Brasileira de Composição de Alimentos), 4ª edição, desenvolvida pela NEPA/UNICAMP — a referência nacional em dados nutricionais com 48 alimentos catalogados.' },
+                { q: 'Posso cancelar a qualquer momento?', a: 'Sim, sem multas ou burocracia. Você pode cancelar pelo dashboard e continua tendo acesso até o final do período pago. Após o cancelamento, sua conta volta ao plano Grátis automaticamente.' },
+                { q: 'Funciona no celular?', a: 'Sim! O Altfood foi projetado mobile-first. A página de paciente funciona perfeitamente em qualquer celular, com interface otimizada, favoritos salvos localmente e até modo offline.' },
               ].map((faq, i) => (
                 <motion.div key={i} variants={fadeUp} custom={i}>
                   <AccordionItem value={`faq-${i}`} className="glass-card rounded-2xl px-5 border-0">
@@ -267,12 +410,7 @@ export default function Landing() {
 
       {/* CTA */}
       <section className="py-16 md:py-20 px-4">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="max-w-2xl mx-auto text-center"
-        >
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="max-w-2xl mx-auto text-center">
           <motion.div variants={scaleIn} custom={0}>
             <Card className="rounded-3xl glass-card premium-border overflow-hidden relative">
               <div className="absolute inset-0 gradient-glow pointer-events-none" />
@@ -298,18 +436,22 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="border-t border-border/50 bg-card/30 backdrop-blur-sm px-4 py-10">
-        <div className="max-w-5xl mx-auto text-center space-y-4">
-          <div className="flex items-center justify-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg gradient-hero flex items-center justify-center">
-              <Leaf className="w-4 h-4 text-primary-foreground" />
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg gradient-hero flex items-center justify-center">
+                <Leaf className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="font-bold text-foreground tracking-tight">Altfood</span>
             </div>
-            <span className="font-bold text-foreground tracking-tight">Altfood</span>
+            <div className="flex items-center gap-6 text-sm">
+              <a href="#planos" className="text-muted-foreground hover:text-foreground transition-colors">Planos</a>
+              <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
+              <Link to="/dashboard/support" className="text-muted-foreground hover:text-foreground transition-colors">Contato</Link>
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-            Ferramenta de substituição alimentar para médicos e nutricionistas. Baseada na Tabela TACO.
-          </p>
-          <div className="h-px w-16 bg-border mx-auto" />
-          <p className="text-[10px] text-muted-foreground/60">© {new Date().getFullYear()} Altfood. Todos os direitos reservados.</p>
+          <div className="h-px bg-border/50 my-6" />
+          <p className="text-[10px] text-muted-foreground/60 text-center">© 2025 Altfood. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
