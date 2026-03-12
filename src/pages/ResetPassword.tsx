@@ -13,6 +13,7 @@ export default function ResetPassword() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -23,23 +24,26 @@ export default function ResetPassword() {
     }
   }, [navigate]);
 
+  const validate = () => {
+    const errs: Record<string, string> = {};
+    if (!password) errs.password = 'Campo obrigatório';
+    else if (password.length < 8) errs.password = 'Senha deve ter pelo menos 8 caracteres';
+    if (!confirm) errs.confirm = 'Campo obrigatório';
+    else if (password !== confirm) errs.confirm = 'As senhas não coincidem';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirm) {
-      toast({ title: 'As senhas não coincidem', variant: 'destructive' });
-      return;
-    }
-    if (password.length < 6) {
-      toast({ title: 'A senha deve ter pelo menos 6 caracteres', variant: 'destructive' });
-      return;
-    }
+    if (!validate()) return;
     setLoading(true);
     const { error } = await supabase.auth.updateUser({ password });
     setLoading(false);
     if (error) {
       toast({ title: 'Erro', description: error.message, variant: 'destructive' });
     } else {
-      toast({ title: 'Senha atualizada com sucesso!' });
+      toast({ title: '✅ Senha atualizada com sucesso!' });
       navigate('/dashboard');
     }
   };
@@ -62,14 +66,28 @@ export default function ResetPassword() {
         <Card className="rounded-2xl shadow-lg border-border/50">
           <CardContent className="p-6">
             <p className="text-center text-sm text-muted-foreground mb-5">Defina sua nova senha</p>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium">Nova senha</Label>
-                <Input type="password" placeholder="Mínimo 6 caracteres" value={password} onChange={e => setPassword(e.target.value)} className="rounded-xl h-11" />
+                <Input
+                  type="password"
+                  placeholder="Mínimo 8 caracteres"
+                  value={password}
+                  onChange={e => { setPassword(e.target.value); setErrors(prev => ({ ...prev, password: '' })); }}
+                  className={`rounded-xl h-11 ${errors.password ? 'border-destructive' : ''}`}
+                />
+                {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium">Confirmar nova senha</Label>
-                <Input type="password" placeholder="Repita a senha" value={confirm} onChange={e => setConfirm(e.target.value)} className="rounded-xl h-11" />
+                <Input
+                  type="password"
+                  placeholder="Repita a senha"
+                  value={confirm}
+                  onChange={e => { setConfirm(e.target.value); setErrors(prev => ({ ...prev, confirm: '' })); }}
+                  className={`rounded-xl h-11 ${errors.confirm ? 'border-destructive' : ''}`}
+                />
+                {errors.confirm && <p className="text-xs text-destructive">{errors.confirm}</p>}
               </div>
               <Button type="submit" className="w-full rounded-xl h-11 bg-primary hover:bg-primary/90" disabled={loading}>
                 {loading && <Loader2 className="animate-spin mr-2 h-4 w-4" />}
