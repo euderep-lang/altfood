@@ -169,6 +169,19 @@ export default function Profile() {
     }
 
     const { error } = await supabase.from('doctors').update(updateData).eq('id', doctor.id);
+
+    // Save sections
+    if (!error) {
+      // Delete existing sections and re-insert
+      await supabase.from('doctor_sections').delete().eq('doctor_id', doctor.id);
+      const validSections = sections.filter(s => s.title.trim() && s.content.trim());
+      if (validSections.length > 0) {
+        await supabase.from('doctor_sections').insert(
+          validSections.map((s, i) => ({ doctor_id: doctor.id, title: s.title.trim(), content: s.content.trim(), sort_order: i }))
+        );
+      }
+    }
+
     setSaving(false);
 
     if (error) {
