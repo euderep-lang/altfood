@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import Stats from "./pages/Stats";
 import Pricing from "./pages/Pricing";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
+import Onboarding from "./pages/Onboarding";
 
 const queryClient = new QueryClient();
 
