@@ -15,7 +15,7 @@ import { Loader2, Upload, X, Check, AlertTriangle, Trash2, ExternalLink, Message
 import { generateSlug, daysRemaining, formatDate } from '@/lib/helpers';
 import { useAuth } from '@/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const COLOR_PRESETS = [
   '#0F766E', '#0D9488', '#059669', '#16A34A',
