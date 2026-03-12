@@ -195,6 +195,42 @@ export type Database = {
           },
         ]
       }
+      hidden_foods: {
+        Row: {
+          created_at: string
+          doctor_id: string
+          food_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          doctor_id: string
+          food_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          doctor_id?: string
+          food_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hidden_foods_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hidden_foods_food_id_fkey"
+            columns: ["food_id"]
+            isOneToOne: false
+            referencedRelation: "foods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       page_views: {
         Row: {
           doctor_id: string
