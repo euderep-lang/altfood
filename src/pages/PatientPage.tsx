@@ -1134,6 +1134,46 @@ export default function PatientPage() {
         </a>
       )}
 
+      {/* Comparison banner */}
+      <AnimatePresence>
+        {compareSelection.length > 0 && compareSelection.length < 2 && (
+          <motion.div
+            initial={{ y: 100 }} animate={{ y: 0 }} exit={{ y: 100 }}
+            className="fixed bottom-20 left-4 right-4 z-50 md:bottom-4"
+          >
+            <Card className="rounded-2xl shadow-xl border-primary/20">
+              <CardContent className="p-3 flex items-center gap-3">
+                <GitCompare className="w-5 h-5 text-primary shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {compareSelection[0].name_short} selecionado
+                  </p>
+                  <p className="text-xs text-muted-foreground">Selecione mais 1 alimento para comparar</p>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setCompareSelection([])} className="shrink-0">
+                  <X className="w-4 h-4" />
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modals */}
+      <FoodDetailModal
+        food={detailFood}
+        open={!!detailFood}
+        onClose={() => setDetailFood(null)}
+        categoryIcon={detailFood ? categories.find(c => c.id === detailFood.category_id)?.icon : undefined}
+        categoryColor={detailFood ? categories.find(c => c.id === detailFood.category_id)?.color : undefined}
+        doctorName={doctor.name}
+      />
+      <FoodComparisonModal
+        foods={compareSelection.length === 2 ? [compareSelection[0], compareSelection[1]] : null}
+        open={showComparison}
+        onClose={() => { setShowComparison(false); setCompareSelection([]); }}
+      />
+
       {/* Footer */}
       <footer className="border-t border-border bg-card px-4 py-4 text-center mb-16 md:mb-0">
         <p className="text-xs text-muted-foreground">{doctor.name} • {doctor.document_type} {doctor.document_number}</p>
