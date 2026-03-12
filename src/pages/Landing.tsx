@@ -184,24 +184,24 @@ export default function Landing() {
 
         <div className="relative max-w-md mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-10 space-y-3">
-            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-emerald-400">Investimento</motion.span>
-            <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-white">
+            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/60">Investimento</motion.span>
+            <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-primary-foreground">
               Um plano, tudo incluso
             </motion.h2>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <motion.div variants={scaleIn} custom={0}>
-              <Card className="rounded-3xl bg-white/[0.06] backdrop-blur-xl border border-white/10 shimmer overflow-visible">
+              <Card className="rounded-3xl bg-primary-foreground/[0.06] backdrop-blur-xl border border-primary-foreground/10 shimmer overflow-visible">
                 <CardContent className="p-8 text-center space-y-6">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/20 text-secondary text-xs font-semibold">
                     <Sparkles className="w-3 h-3" /> Mais popular
                   </div>
                   <div>
-                    <span className="text-5xl md:text-6xl font-display font-bold text-white">R$ 97</span>
-                    <span className="text-base text-white/50 font-medium">/mês</span>
+                    <span className="text-5xl md:text-6xl font-display font-bold text-primary-foreground">R$ 97</span>
+                    <span className="text-base text-primary-foreground/50 font-medium">/mês</span>
                   </div>
-                  <p className="text-sm text-white/50">Comece com 14 dias grátis. Cancele quando quiser.</p>
+                  <p className="text-sm text-primary-foreground/50">Comece com 14 dias grátis. Cancele quando quiser.</p>
 
                   <ul className="text-sm text-left space-y-3 py-2">
                     {[
@@ -212,9 +212,9 @@ export default function Landing() {
                       'QR Code para compartilhar',
                       'Suporte prioritário por e-mail',
                     ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-white/80">
-                        <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
-                          <Check className="w-3 h-3 text-emerald-400" />
+                      <li key={i} className="flex items-center gap-3 text-primary-foreground/80">
+                        <div className="w-5 h-5 rounded-full bg-secondary/20 flex items-center justify-center shrink-0">
+                          <Check className="w-3 h-3 text-secondary" />
                         </div>
                         {item}
                       </li>
