@@ -545,6 +545,13 @@ export default function PatientPage() {
               </p>
             </div>
             <div className="flex gap-1.5 shrink-0">
+              <button
+                onClick={toggleLang}
+                className="w-9 h-9 rounded-xl flex items-center justify-center text-sm bg-muted hover:bg-muted/80 transition-colors"
+                title={lang === 'pt' ? 'Switch to English' : 'Mudar para Português'}
+              >
+                {lang === 'pt' ? '🇺🇸' : '🇧🇷'}
+              </button>
               {(doctor as any).whatsapp_link && (
                 <a href={(doctor as any).whatsapp_link} target="_blank" rel="noopener noreferrer"
                   className="w-9 h-9 rounded-xl flex items-center justify-center text-sm" style={{ backgroundColor: '#25D36620', color: '#25D366' }}>
@@ -568,11 +575,25 @@ export default function PatientPage() {
           <div className="mt-3 flex items-center justify-center">
             <span className="text-xs font-semibold tracking-wider uppercase px-3 py-1 rounded-full"
               style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
-              Tabela de Substituição Alimentar
+              {t(lang, 'substitutionTable')}
             </span>
           </div>
         </div>
       </header>
+
+      {/* Custom sections */}
+      {doctorSections.length > 0 && (
+        <div className="max-w-lg mx-auto px-4 pt-4 space-y-3">
+          {doctorSections.map((section: any) => (
+            <Card key={section.id} className="rounded-2xl shadow-sm">
+              <CardContent className="p-4">
+                <p className="text-sm font-semibold text-foreground">{section.title}</p>
+                <p className="text-xs text-muted-foreground mt-1 whitespace-pre-line">{section.content}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
       <main
         ref={mainRef}
