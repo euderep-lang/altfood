@@ -57,9 +57,18 @@ export default function Profile() {
   useEffect(() => {
     if (doctor) {
       setSlugValue(doctor.slug);
+      setThemeLayout((doctor as any).theme_layout || 'minimal');
       setEmailPrefs({
         email_weekly_summary: (doctor as any).email_weekly_summary ?? true,
         email_tips: (doctor as any).email_tips ?? true,
+      });
+      // Load sections
+      supabase.from('doctor_sections').select('*').eq('doctor_id', doctor.id).order('sort_order').then(({ data }) => {
+        if (data && data.length > 0) setSections(data.map(s => ({ id: s.id, title: s.title, content: s.content, sort_order: s.sort_order })));
+      });
+      // Check domain interest
+      supabase.from('domain_interests').select('id').eq('doctor_id', doctor.id).then(({ data }) => {
+        if (data && data.length > 0) setDomainInterestSaved(true);
       });
     }
   }, [doctor]);
