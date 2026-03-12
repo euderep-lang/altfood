@@ -13,6 +13,7 @@ import { calculateSubstitutions, getSimilarityLabel, type SubstitutionResult } f
 import FoodDetailModal from '@/components/FoodDetailModal';
 import FoodComparisonModal from '@/components/FoodComparisonModal';
 import PatientFeedback from '@/components/PatientFeedback';
+import { t, getSavedLang, saveLang, type Lang } from '@/lib/i18n';
 import type { Database } from '@/integrations/supabase/types';
 
 type Food = Database['public']['Tables']['foods']['Row'];
@@ -62,10 +63,10 @@ function isFavorited(foodId: string, originalFoodName: string): boolean {
   return getFavorites().some(f => f.foodId === foodId && f.originalFoodName === originalFoodName);
 }
 
-function getSimilarityPill(score: number): { label: string; bg: string; text: string } {
-  if (score > 0.7) return { label: 'Muito similar', bg: '#22c55e20', text: '#16a34a' };
-  if (score > 0.4) return { label: 'Similar', bg: '#eab30820', text: '#ca8a04' };
-  return { label: 'Diferente', bg: '#f9731620', text: '#ea580c' };
+function getSimilarityPill(score: number, lang: Lang): { label: string; bg: string; text: string } {
+  if (score > 0.7) return { label: t(lang, 'verySimilar'), bg: '#22c55e20', text: '#16a34a' };
+  if (score > 0.4) return { label: t(lang, 'similar'), bg: '#eab30820', text: '#ca8a04' };
+  return { label: t(lang, 'different'), bg: '#f9731620', text: '#ea580c' };
 }
 
 function getSimilarityBorderColor(score: number): string {
@@ -178,6 +179,7 @@ export default function PatientPage() {
   const [searchCount, setSearchCount] = useState(0);
   const [dismissedCards, setDismissedCards] = useState<Set<string>>(new Set());
   const [swipeHintShown, setSwipeHintShown] = useState(() => !!localStorage.getItem(SWIPE_HINT_KEY));
+  const [lang, setLang] = useState<Lang>(getSavedLang);
   const mainRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
 
@@ -216,7 +218,25 @@ export default function PatientPage() {
     enabled: !!doctor,
   });
 
+  const { data: doctorSections = [] } = useQuery({
+    queryKey: ['doctor-sections', doctor?.id],
+    queryFn: async () => {
+      if (!doctor) return [];
+      const { data } = await supabase.from('doctor_sections').select('*').eq('doctor_id', doctor.id).order('sort_order');
+      return data || [];
+    },
+    enabled: !!doctor,
+  });
+
   const foods = useMemo(() => allFoods.filter(f => !hiddenFoodIds.includes(f.id)), [allFoods, hiddenFoodIds]);
+
+  const toggleLang = () => {
+    const newLang = lang === 'pt' ? 'en' : 'pt';
+    setLang(newLang);
+    saveLang(newLang);
+  };
+
+  const themeLayout = (doctor as any)?.theme_layout || 'minimal';
 
   // Track page view
   useEffect(() => {
@@ -525,6 +545,13 @@ export default function PatientPage() {
               </p>
             </div>
             <div className="flex gap-1.5 shrink-0">
+              <button
+                onClick={toggleLang}
+                className="w-9 h-9 rounded-xl flex items-center justify-center text-sm bg-muted hover:bg-muted/80 transition-colors"
+                title={lang === 'pt' ? 'Switch to English' : 'Mudar para Português'}
+              >
+                {lang === 'pt' ? '🇺🇸' : '🇧🇷'}
+              </button>
               {(doctor as any).whatsapp_link && (
                 <a href={(doctor as any).whatsapp_link} target="_blank" rel="noopener noreferrer"
                   className="w-9 h-9 rounded-xl flex items-center justify-center text-sm" style={{ backgroundColor: '#25D36620', color: '#25D366' }}>
@@ -548,11 +575,25 @@ export default function PatientPage() {
           <div className="mt-3 flex items-center justify-center">
             <span className="text-xs font-semibold tracking-wider uppercase px-3 py-1 rounded-full"
               style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
-              Tabela de Substituição Alimentar
+              {t(lang, 'substitutionTable')}
             </span>
           </div>
         </div>
       </header>
+
+      {/* Custom sections */}
+      {doctorSections.length > 0 && (
+        <div className="max-w-lg mx-auto px-4 pt-4 space-y-3">
+          {doctorSections.map((section: any) => (
+            <Card key={section.id} className="rounded-2xl shadow-sm">
+              <CardContent className="p-4">
+                <p className="text-sm font-semibold text-foreground">{section.title}</p>
+                <p className="text-xs text-muted-foreground mt-1 whitespace-pre-line">{section.content}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
       <main
         ref={mainRef}
@@ -568,7 +609,7 @@ export default function PatientPage() {
               <div className="relative">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
-                  placeholder="Buscar alimento... ex: arroz, frango, leite"
+                  placeholder={t(lang, 'searchPlaceholder')}
                   value={searchQuery}
                   onChange={e => { setSearchQuery(e.target.value); setShowSearch(true); }}
                   onFocus={() => setShowSearch(true)}
@@ -746,7 +787,7 @@ export default function PatientPage() {
                   {/* Weight input */}
                   <Card className="rounded-2xl shadow-sm">
                     <CardContent className="p-4 space-y-4">
-                      <p className="text-sm font-semibold text-foreground">Quantidade</p>
+                      <p className="text-sm font-semibold text-foreground">{t(lang, 'quantity')}</p>
                       <div className="flex items-center justify-center gap-3">
                         <Input
                           type="number"
@@ -781,7 +822,7 @@ export default function PatientPage() {
                   <div className="hidden md:block">
                     <Button onClick={findSubstitutions} className="w-full rounded-2xl h-14 text-base font-bold shadow-lg" style={{ backgroundColor: primaryColor }} disabled={computing}>
                       {computing && <Loader2 className="animate-spin mr-2 h-5 w-5" />}
-                      Encontrar Substituições
+                      {t(lang, 'findSubstitutions')}
                     </Button>
                   </div>
 
@@ -816,7 +857,7 @@ export default function PatientPage() {
                             color: !categoryFilter ? '#fff' : primaryColor,
                           }}
                         >
-                          Todas categorias
+                          {t(lang, 'allCategories')}
                         </button>
                         {categories.filter(c => results.some(r => r.food.category_id === c.id)).map(cat => (
                           <button
@@ -834,29 +875,29 @@ export default function PatientPage() {
                       </div>
 
                       <p className="text-sm font-medium text-muted-foreground">
-                        {filteredResults.length} substituições encontradas
-                        <span className="text-[10px] ml-2 text-muted-foreground/60">← deslize para favoritar</span>
+                        {filteredResults.length} {t(lang, 'substitutionsFound')}
+                        <span className="text-[10px] ml-2 text-muted-foreground/60">{t(lang, 'swipeHint')}</span>
                       </p>
 
                       {filteredResults.length === 0 && (
                         <Card className="rounded-2xl shadow-sm">
                           <CardContent className="p-8 text-center">
-                            <p className="text-sm text-muted-foreground">Nenhuma substituição nesta categoria.</p>
+                            <p className="text-sm text-muted-foreground">{t(lang, 'noSubsCategory')}</p>
                           </CardContent>
                         </Card>
                       )}
 
-                      {filteredResults.filter(r => !dismissedCards.has(r.food.id)).slice(0, 6).map((result, idx) => {
-                        const sim = getSimilarityPill(result.similarityScore);
+                      {filteredResults.filter(r => !dismissedCards.has(r.food.id)).slice(0, themeLayout === 'list' ? 12 : 6).map((result, idx) => {
+                        const sim = getSimilarityPill(result.similarityScore, lang);
                         const borderColor = getSimilarityBorderColor(result.similarityScore);
                         const isExpanded = expandedCards.has(result.food.id);
                         const isFav = isFavorited(result.food.id, selectedFood.name_short);
 
                         const macros = [
-                          { label: 'Calorias', value: result.calories, orig: origCal, unit: 'kcal' },
-                          { label: 'Proteína', value: result.protein, orig: origProt, unit: 'g' },
-                          { label: 'Carboidrato', value: result.carbohydrates, orig: origCarb, unit: 'g' },
-                          { label: 'Gordura', value: result.fat, orig: origFat, unit: 'g' },
+                          { label: t(lang, 'calories'), value: result.calories, orig: origCal, unit: 'kcal' },
+                          { label: t(lang, 'protein'), value: result.protein, orig: origProt, unit: 'g' },
+                          { label: t(lang, 'carbs'), value: result.carbohydrates, orig: origCarb, unit: 'g' },
+                          { label: t(lang, 'fat'), value: result.fat, orig: origFat, unit: 'g' },
                         ];
 
                         return (
@@ -866,7 +907,78 @@ export default function PatientPage() {
                               onSwipeLeft={() => setDismissedCards(prev => new Set(prev).add(result.food.id))}
                               showHint={idx === 0 && !swipeHintShown}
                             >
-                              <Card className="rounded-2xl shadow-sm overflow-hidden" style={{ borderLeft: `4px solid ${borderColor}` }}>
+                              {/* LIST THEME */}
+                              {themeLayout === 'list' ? (
+                                <Card className="rounded-xl shadow-sm overflow-hidden" style={{ borderLeft: `3px solid ${borderColor}` }}>
+                                  <CardContent className="p-2.5 flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0" style={{ backgroundColor: result.category?.color ? `${result.category.color}18` : '#f1f5f9' }}>
+                                      {result.category?.icon || '🍽️'}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm font-semibold text-foreground truncate">{result.food.name_short}</p>
+                                      <p className="text-[10px] text-muted-foreground">{result.food.preparation}</p>
+                                    </div>
+                                    <div className="text-right shrink-0">
+                                      <span className="text-2xl font-extrabold" style={{ color: primaryColor }}>{result.equivalentWeight}</span>
+                                      <span className="text-xs text-muted-foreground ml-0.5">g</span>
+                                    </div>
+                                    <button onClick={() => toggleFavorite(result)} className="p-1 shrink-0">
+                                      <Heart className={`w-3.5 h-3.5 ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+                                    </button>
+                                  </CardContent>
+                                </Card>
+                              ) : themeLayout === 'card' ? (
+                                /* CARD THEME - bigger cards */
+                                <Card className="rounded-2xl shadow-md overflow-hidden" style={{ borderLeft: `4px solid ${borderColor}` }}>
+                                  <CardContent className="p-0">
+                                    {/* Photo placeholder */}
+                                    <div className="h-24 flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${result.category?.color || primaryColor}15, ${result.category?.color || primaryColor}08)` }}>
+                                      <span className="text-5xl">{result.category?.icon || '🍽️'}</span>
+                                    </div>
+                                    <div className="p-4">
+                                      <div className="flex items-start justify-between mb-2">
+                                        <div>
+                                          <p className="font-bold text-foreground text-base">{result.food.name_short}</p>
+                                          <p className="text-xs text-muted-foreground">{result.food.preparation}</p>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                          <button onClick={() => toggleFavorite(result)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
+                                            <Heart className={`w-4 h-4 ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+                                          </button>
+                                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0" style={{ backgroundColor: sim.bg, color: sim.text }}>
+                                            {sim.label}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div className="text-center my-3">
+                                        <span className="text-5xl font-extrabold tracking-tight" style={{ color: primaryColor }}>
+                                          {result.equivalentWeight}
+                                        </span>
+                                        <span className="text-lg font-semibold text-muted-foreground ml-1">g</span>
+                                        <p className="text-xs text-muted-foreground mt-0.5">{t(lang, 'equivalent')} {weight}g {t(lang, 'of')} {selectedFood.name_short}</p>
+                                      </div>
+                                      <div className="flex gap-1.5 flex-wrap justify-center">
+                                        {macros.map(m => {
+                                          const badge = compareBadge(m.value, m.orig);
+                                          return (
+                                            <span key={m.label} className="text-[11px] px-2.5 py-1.5 rounded-full font-semibold flex items-center gap-1 bg-muted">
+                                              <span style={{ color: badge.color, fontWeight: 800 }}>{badge.icon}</span>
+                                              {m.label}
+                                            </span>
+                                          );
+                                        })}
+                                      </div>
+                                      <div className="flex items-center justify-center gap-2 mt-3">
+                                        <button onClick={() => setDetailFood(result.food)} className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 py-1 px-2 rounded-lg hover:bg-primary/5 transition-colors min-h-[36px]">
+                                          <Info className="w-3.5 h-3.5" /> {t(lang, 'details')}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              ) : (
+                                /* MINIMAL THEME (default) */
+                                <Card className="rounded-2xl shadow-sm overflow-hidden" style={{ borderLeft: `4px solid ${borderColor}` }}>
                                 <CardContent className="p-4">
                                   {/* Header */}
                                   <div className="flex items-start gap-3">
@@ -893,7 +1005,7 @@ export default function PatientPage() {
                                       {result.equivalentWeight}
                                     </span>
                                     <span className="text-lg font-semibold text-muted-foreground ml-1">g</span>
-                                    <p className="text-xs text-muted-foreground mt-0.5">equivalente a {weight}g de {selectedFood.name_short}</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">{t(lang, 'equivalent')} {weight}g {t(lang, 'of')} {selectedFood.name_short}</p>
                                   </div>
 
                                   {/* Comparison badges */}
@@ -915,7 +1027,7 @@ export default function PatientPage() {
                                       onClick={() => setDetailFood(result.food)}
                                       className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 py-1 px-2 rounded-lg hover:bg-primary/5 transition-colors min-h-[36px]"
                                     >
-                                      <Info className="w-3.5 h-3.5" /> Detalhes
+                                      <Info className="w-3.5 h-3.5" /> {t(lang, 'details')}
                                     </button>
                                     <span className="text-muted-foreground/30">|</span>
                                     <button
@@ -936,14 +1048,14 @@ export default function PatientPage() {
                                           : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                       }`}
                                     >
-                                      <GitCompare className="w-3.5 h-3.5" /> Comparar
+                                      <GitCompare className="w-3.5 h-3.5" /> {t(lang, 'compare')}
                                     </button>
                                     <span className="text-muted-foreground/30">|</span>
                                     <button
                                       onClick={() => toggleCard(result.food.id)}
                                       className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground py-1 px-2 rounded-lg hover:bg-muted transition-colors min-h-[36px]"
                                     >
-                                      {isExpanded ? 'Ocultar' : 'Nutrientes'}
+                                      {isExpanded ? t(lang, 'hide') : t(lang, 'nutrients')}
                                       {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                                     </button>
                                   </div>
@@ -955,9 +1067,9 @@ export default function PatientPage() {
                                           <table className="w-full text-xs">
                                             <thead>
                                               <tr className="text-muted-foreground">
-                                                <th className="text-left pb-1.5 font-medium">Nutriente</th>
-                                                <th className="text-right pb-1.5 font-medium">Original ({weight}g)</th>
-                                                <th className="text-right pb-1.5 font-medium">Substituto ({result.equivalentWeight}g)</th>
+                                                <th className="text-left pb-1.5 font-medium">{t(lang, 'nutrient')}</th>
+                                                <th className="text-right pb-1.5 font-medium">{t(lang, 'original')} ({weight}g)</th>
+                                                <th className="text-right pb-1.5 font-medium">{t(lang, 'substitute')} ({result.equivalentWeight}g)</th>
                                               </tr>
                                             </thead>
                                             <tbody>
@@ -969,19 +1081,20 @@ export default function PatientPage() {
                                                 </tr>
                                               ))}
                                               <tr className="border-t border-border/30">
-                                                <td className="py-1.5 text-foreground font-medium">Fibra</td>
+                                                <td className="py-1.5 text-foreground font-medium">{t(lang, 'fiber')}</td>
                                                 <td className="py-1.5 text-right text-muted-foreground">{Math.round(Number(selectedFood.fiber) * weight / 100 * 10) / 10} g</td>
                                                 <td className="py-1.5 text-right text-foreground font-semibold">{Math.round(Number(result.food.fiber) * result.equivalentWeight / 100 * 10) / 10} g</td>
                                               </tr>
                                             </tbody>
                                           </table>
-                                          <p className="text-[10px] text-muted-foreground mt-2">Fonte: TACO 4ª Ed. - NEPA/UNICAMP</p>
+                                          <p className="text-[10px] text-muted-foreground mt-2">{t(lang, 'source')}: TACO 4ª Ed. - NEPA/UNICAMP</p>
                                         </div>
                                       </motion.div>
                                     )}
                                   </AnimatePresence>
                                 </CardContent>
                               </Card>
+                              )}
                             </SwipeableCard>
                           </motion.div>
                         );
@@ -1009,10 +1122,10 @@ export default function PatientPage() {
         {activeTab === 'favorites' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-foreground">⭐ Favoritos</h2>
+              <h2 className="text-lg font-bold text-foreground">⭐ {t(lang, 'favorites')}</h2>
               {favorites.length > 0 && (
                 <button onClick={clearFavorites} className="text-xs text-destructive flex items-center gap-1 hover:underline">
-                  <Trash2 className="w-3 h-3" /> Limpar tudo
+                  <Trash2 className="w-3 h-3" /> {t(lang, 'clearAll')}
                 </button>
               )}
             </div>
@@ -1020,8 +1133,8 @@ export default function PatientPage() {
               <Card className="rounded-2xl">
                 <CardContent className="p-8 text-center">
                   <Heart className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-                  <p className="text-sm font-medium text-foreground">Nenhum favorito salvo</p>
-                  <p className="text-xs text-muted-foreground mt-1">Deslize para a direita nos resultados ou toque no ❤️ para salvar</p>
+                  <p className="text-sm font-medium text-foreground">{t(lang, 'noFavorites')}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t(lang, 'noFavoritesHint')}</p>
                 </CardContent>
               </Card>
             ) : (
@@ -1056,13 +1169,13 @@ export default function PatientPage() {
         {/* === HISTORY TAB === */}
         {activeTab === 'history' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-foreground">📋 Histórico</h2>
+            <h2 className="text-lg font-bold text-foreground">📋 {t(lang, 'history')}</h2>
             {recentFoods.length === 0 ? (
               <Card className="rounded-2xl">
                 <CardContent className="p-8 text-center">
                   <History className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-                  <p className="text-sm font-medium text-foreground">Nenhuma busca recente</p>
-                  <p className="text-xs text-muted-foreground mt-1">Suas últimas 5 buscas aparecerão aqui</p>
+                  <p className="text-sm font-medium text-foreground">{t(lang, 'noHistory')}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t(lang, 'noHistoryHint')}</p>
                 </CardContent>
               </Card>
             ) : (
@@ -1095,7 +1208,7 @@ export default function PatientPage() {
             >
               <Button onClick={findSubstitutions} className="w-full rounded-2xl h-14 text-base font-bold shadow-xl" style={{ backgroundColor: primaryColor }} disabled={computing}>
                 {computing && <Loader2 className="animate-spin mr-2 h-5 w-5" />}
-                Encontrar Substituições
+                {t(lang, 'findSubstitutions')}
               </Button>
             </motion.div>
           )}
@@ -1105,9 +1218,9 @@ export default function PatientPage() {
         <nav className="bg-card/95 backdrop-blur-lg border-t border-border safe-area-bottom">
           <div className="max-w-lg mx-auto flex">
             {([
-              { id: 'search' as Tab, icon: '🔍', label: 'Buscar' },
-              { id: 'favorites' as Tab, icon: '⭐', label: 'Favoritos' },
-              { id: 'history' as Tab, icon: '📋', label: 'Histórico' },
+              { id: 'search' as Tab, icon: '🔍', label: t(lang, 'search') },
+              { id: 'favorites' as Tab, icon: '⭐', label: t(lang, 'favorites') },
+              { id: 'history' as Tab, icon: '📋', label: t(lang, 'history') },
             ] as const).map(tab => (
               <button
                 key={tab.id}
