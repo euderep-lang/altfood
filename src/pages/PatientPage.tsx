@@ -857,7 +857,7 @@ export default function PatientPage() {
                             color: !categoryFilter ? '#fff' : primaryColor,
                           }}
                         >
-                          Todas categorias
+                          {t(lang, 'allCategories')}
                         </button>
                         {categories.filter(c => results.some(r => r.food.category_id === c.id)).map(cat => (
                           <button
