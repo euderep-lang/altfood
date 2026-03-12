@@ -161,6 +161,7 @@ export default function Profile() {
       welcome_message: getField('welcome_message') || null,
       email_weekly_summary: emailPrefs.email_weekly_summary,
       email_tips: emailPrefs.email_tips,
+      theme_layout: themeLayout,
     };
 
     if (slugValue && slugValue !== doctor.slug && slugAvailable !== false) {
