@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
 import { Navigate, Link } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -15,12 +16,107 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { motion } from 'framer-motion';
 import {
   Users, Crown, Eye, TrendingUp, TrendingDown, RefreshCw, Download, Search,
-  ChevronLeft, ChevronRight, ArrowUpRight, Loader2, Shield, DollarSign, MessageSquare, UtensilsCrossed, Tags
+  ChevronLeft, ChevronRight, ArrowUpRight, Loader2, Shield, DollarSign, MessageSquare, UtensilsCrossed, Tags,
+  Globe, Wrench, Database, AlertTriangle
 } from 'lucide-react';
 
 const ADMIN_EMAIL = 'carine@dracarinecassol.com.br';
 const PER_PAGE = 20;
 const PRO_PRICE = 49.90;
+
+function MaintenanceToggle() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: isMaintenanceOn = false } = useQuery({
+    queryKey: ['maintenance-mode'],
+    queryFn: async () => {
+      const { data } = await supabase.from('site_settings' as any).select('value').eq('key', 'maintenance_mode').single();
+      return (data as any)?.value === 'true';
+    },
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: async (enabled: boolean) => {
+      const { error } = await supabase.from('site_settings' as any).update({ value: String(enabled), updated_at: new Date().toISOString() } as any).eq('key', 'maintenance_mode');
+      if (error) throw error;
+    },
+    onSuccess: (_, enabled) => {
+      queryClient.invalidateQueries({ queryKey: ['maintenance-mode'] });
+      toast({ title: enabled ? '🔧 Modo manutenção ativado' : '✅ Modo manutenção desativado' });
+    },
+  });
+
+  return (
+    <Card className="rounded-2xl shadow-sm border-border/50">
+      <CardContent className="p-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center">
+            <Wrench className="w-5 h-5 text-amber-600" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-foreground">Modo manutenção</p>
+            <p className="text-xs text-muted-foreground">Exibe aviso em todas as páginas públicas</p>
+          </div>
+        </div>
+        <Switch checked={isMaintenanceOn} onCheckedChange={(v) => toggleMutation.mutate(v)} disabled={toggleMutation.isPending} />
+      </CardContent>
+    </Card>
+  );
+}
+
+function BackupCard() {
+  const { toast } = useToast();
+  const [exporting, setExporting] = useState(false);
+
+  const exportBackup = async () => {
+    setExporting(true);
+    try {
+      const tables = ['doctors', 'foods', 'food_categories', 'doctor_sections', 'hidden_foods', 'page_views', 'substitution_queries', 'support_tickets', 'referrals', 'nps_responses', 'patient_feedback'] as const;
+      const backup: Record<string, any> = { exported_at: new Date().toISOString() };
+
+      for (const table of tables) {
+        const { data } = await supabase.from(table).select('*');
+        backup[table] = data || [];
+      }
+
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `altfood-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({ title: '✅ Backup exportado com sucesso' });
+    } catch (e: any) {
+      toast({ title: 'Erro ao exportar', description: e.message, variant: 'destructive' });
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const today = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+  return (
+    <Card className="rounded-2xl shadow-sm border-border/50">
+      <CardContent className="p-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center">
+            <Database className="w-5 h-5 text-blue-600" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-foreground">Backup do banco</p>
+            <p className="text-xs text-muted-foreground">Último: {today}</p>
+          </div>
+        </div>
+        <Button variant="outline" size="sm" className="rounded-xl gap-2" onClick={exportBackup} disabled={exporting}>
+          {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+          {exporting ? 'Exportando...' : 'Fazer backup'}
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
 
 function pctChange(current: number, previous: number) {
   if (previous === 0) return current > 0 ? 100 : 0;
@@ -234,6 +330,25 @@ export default function Admin() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+        {/* Custom domain banner */}
+        <Card className="rounded-2xl border-primary/30 bg-primary/5 shadow-sm">
+          <CardContent className="p-4 flex items-start gap-3">
+            <Globe className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">Domínio personalizado</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Para conectar seu domínio personalizado (ex: altfood.com.br), acesse as configurações do Lovable em <strong>Settings → Custom Domain</strong> e aponte seu DNS.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Maintenance mode + Backup */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <MaintenanceToggle />
+          <BackupCard />
+        </div>
+
         {/* Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {metrics.map((m, i) => (

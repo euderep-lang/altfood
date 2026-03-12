@@ -192,6 +192,15 @@ export default function PatientPage() {
     },
   });
 
+  const { data: isMaintenanceMode = false } = useQuery({
+    queryKey: ['maintenance-mode-public'],
+    queryFn: async () => {
+      const { data } = await supabase.from('site_settings' as any).select('value').eq('key', 'maintenance_mode').single();
+      return (data as any)?.value === 'true';
+    },
+    staleTime: 30000,
+  });
+
   const { data: categories = [] } = useQuery({
     queryKey: ['food-categories'],
     queryFn: async () => {
@@ -434,6 +443,23 @@ export default function PatientPage() {
     setFavorites([]);
     vibrate(10);
   };
+
+  if (isMaintenanceMode) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div className="max-w-sm w-full text-center space-y-6">
+          <div className="w-20 h-20 rounded-2xl bg-amber-100 flex items-center justify-center mx-auto">
+            <span className="text-4xl">🔧</span>
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">Altfood em manutenção</h1>
+            <p className="text-sm text-muted-foreground mt-2">Voltamos em breve!</p>
+          </div>
+          <p className="text-[10px] text-muted-foreground">Powered by <span className="font-semibold text-foreground">Altfood</span></p>
+        </div>
+      </div>
+    );
+  }
 
   if (loadingDoctor) {
     return (
@@ -1371,7 +1397,8 @@ export default function PatientPage() {
       <footer className="border-t border-border bg-card px-4 py-4 text-center mb-16 md:mb-0">
         <p className="text-xs text-muted-foreground">{doctor.name} • {doctor.document_type} {doctor.document_number}</p>
         {doctor.phone && <p className="text-xs text-muted-foreground mt-0.5">📞 {doctor.phone}</p>}
-        <p className="text-[10px] text-muted-foreground mt-2">
+        <p className="text-xs text-muted-foreground mt-2">Feito com 💚 para facilitar a vida dos seus pacientes.</p>
+        <p className="text-[10px] text-muted-foreground mt-1">
           Powered by{' '}
           <Link to="/" className="font-semibold text-foreground hover:text-primary transition-colors">Altfood</Link>
         </p>
