@@ -218,7 +218,25 @@ export default function PatientPage() {
     enabled: !!doctor,
   });
 
+  const { data: doctorSections = [] } = useQuery({
+    queryKey: ['doctor-sections', doctor?.id],
+    queryFn: async () => {
+      if (!doctor) return [];
+      const { data } = await supabase.from('doctor_sections').select('*').eq('doctor_id', doctor.id).order('sort_order');
+      return data || [];
+    },
+    enabled: !!doctor,
+  });
+
   const foods = useMemo(() => allFoods.filter(f => !hiddenFoodIds.includes(f.id)), [allFoods, hiddenFoodIds]);
+
+  const toggleLang = () => {
+    const newLang = lang === 'pt' ? 'en' : 'pt';
+    setLang(newLang);
+    saveLang(newLang);
+  };
+
+  const themeLayout = (doctor as any)?.theme_layout || 'minimal';
 
   // Track page view
   useEffect(() => {
