@@ -26,6 +26,7 @@ const Stats = lazy(() => import("./pages/Stats"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const SubscriptionSuccess = lazy(() => import("./pages/SubscriptionSuccess"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
+const Admin = lazy(() => import("./pages/Admin"));
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ const App = () => (
                 <Route path="/dashboard/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="/dashboard/stats" element={<ProtectedRoute><Stats /></ProtectedRoute>} />
                 <Route path="/dashboard/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
