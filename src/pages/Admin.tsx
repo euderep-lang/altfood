@@ -38,13 +38,7 @@ export default function Admin() {
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  // Auth guard
-  if (authLoading) {
-    return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
-  }
-  if (!user || user.email !== ADMIN_EMAIL) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  const isAdmin = !!user && user.email === ADMIN_EMAIL;
 
   // Fetch all doctors
   const { data: doctors = [], isLoading: doctorsLoading } = useQuery({
@@ -54,6 +48,7 @@ export default function Admin() {
       if (error) throw error;
       return data || [];
     },
+    enabled: isAdmin,
   });
 
   // Fetch all page views (last 60 days for comparison)
