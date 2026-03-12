@@ -79,7 +79,8 @@ export default function Register() {
       toast({ title: 'Erro ao criar perfil', description: docError.message, variant: 'destructive' });
       return;
     }
-    setSuccess(`${window.location.origin}/p/${slug}`);
+    // Redirect to onboarding
+    navigate('/onboarding', { replace: true });
   };
 
   const copyLink = async () => {
