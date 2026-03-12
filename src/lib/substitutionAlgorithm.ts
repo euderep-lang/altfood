@@ -22,6 +22,9 @@ const CATEGORY_ANCHOR: Record<string, 'protein' | 'carbohydrates' | 'fat' | 'cal
   'Gorduras e Oleaginosas': 'fat',
   'Frutas': 'calories',
   'Vegetais e Legumes': 'calories',
+  'Temperos e Condimentos': 'calories',
+  'Bebidas Funcionais': 'calories',
+  'Suplementos Alimentares': 'protein',
 };
 
 function getAnchorNutrient(categoryName: string): 'protein' | 'carbohydrates' | 'fat' | 'calories' {
