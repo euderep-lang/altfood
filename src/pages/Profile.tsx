@@ -1,32 +1,68 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useDoctor } from '@/hooks/useDoctor';
 import { useQueryClient } from '@tanstack/react-query';
 import DashboardLayout from '@/components/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Upload, X, Leaf } from 'lucide-react';
-import { formatPhone, daysRemaining, formatDate } from '@/lib/helpers';
+import { Loader2, Upload, X, Check, AlertTriangle, Trash2, ExternalLink, MessageCircle } from 'lucide-react';
+import { generateSlug, daysRemaining, formatDate } from '@/lib/helpers';
 import { useAuth } from '@/hooks/useAuth';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useMobile } from '@/hooks/use-mobile';
+
+const COLOR_PRESETS = [
+  '#0F766E', '#0D9488', '#059669', '#16A34A',
+  '#15803D', '#166534', '#115E59', '#134E4A',
+];
 
 export default function Profile() {
   const { data: doctor, isLoading } = useDoctor();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
+  const isMobile = useMobile();
 
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [form, setForm] = useState<Record<string, string>>({});
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [slugValue, setSlugValue] = useState('');
+  const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null);
+  const [checkingSlug, setCheckingSlug] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'edit' | 'preview'>('edit');
+
+  useEffect(() => {
+    if (doctor) {
+      setSlugValue(doctor.slug);
+    }
+  }, [doctor]);
+
+  // Debounced slug check
+  useEffect(() => {
+    if (!doctor || slugValue === doctor.slug || !slugValue.trim()) {
+      setSlugAvailable(slugValue === doctor?.slug ? null : null);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      setCheckingSlug(true);
+      const { data } = await supabase.from('doctors').select('id').eq('slug', slugValue).neq('id', doctor.id);
+      setSlugAvailable(!data || data.length === 0);
+      setCheckingSlug(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [slugValue, doctor]);
 
   if (isLoading || !doctor) {
     return (
@@ -39,32 +75,12 @@ export default function Profile() {
   }
 
   const getField = (key: string) => form[key] ?? (doctor as any)[key] ?? '';
-  const update = (key: string, val: string) => setForm(f => ({ ...f, [key]: val }));
+  const update = (key: string, val: string) => { setForm(f => ({ ...f, [key]: val })); setSaved(false); };
 
-  const formatPhoneInput = (v: string) => {
-    const d = v.replace(/\D/g, '').slice(0, 11);
-    if (d.length <= 2) return d;
-    if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-    return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
-  };
-
-  const savePersonal = async () => {
-    setSaving(true);
-    const { error } = await supabase.from('doctors').update({
-      name: getField('name'),
-      phone: getField('phone').replace(/\D/g, ''),
-      document_type: getField('document_type'),
-      document_number: getField('document_number'),
-      specialty: getField('specialty'),
-    }).eq('id', doctor.id);
-    setSaving(false);
-    if (error) {
-      toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: 'Dados atualizados!' });
-      queryClient.invalidateQueries({ queryKey: ['doctor'] });
-    }
-  };
+  const primaryColor = getField('primary_color') || '#0F766E';
+  const initials = (getField('name') || doctor.name).split(' ').filter((w: string) => w.length > 2).map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
+  const patientUrl = `${window.location.origin}/p/${slugValue || doctor.slug}`;
+  const bioLength = (getField('bio') || '').length;
 
   const handleLogoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -75,217 +91,364 @@ export default function Profile() {
     }
     setLogoFile(file);
     setLogoPreview(URL.createObjectURL(file));
+    setSaved(false);
   };
 
-  const removeLogo = async () => {
+  const removeLogo = () => {
     setLogoFile(null);
     setLogoPreview(null);
-    await supabase.from('doctors').update({ logo_url: null }).eq('id', doctor.id);
-    queryClient.invalidateQueries({ queryKey: ['doctor'] });
-    toast({ title: 'Logo removido' });
+    update('logo_url', '');
+    setSaved(false);
   };
 
-  const saveBranding = async () => {
-    setUploadingLogo(true);
-    let logoUrl = doctor.logo_url;
+  const handleSave = async () => {
+    if (slugAvailable === false) {
+      toast({ title: 'Slug indisponível', description: 'Escolha outro slug para continuar.', variant: 'destructive' });
+      return;
+    }
+
+    setSaving(true);
+    let logoUrl = getField('logo_url') === '' ? null : doctor.logo_url;
 
     if (logoFile && user) {
       const ext = logoFile.name.split('.').pop();
       const path = `${user.id}/logo.${ext}`;
       const { error: uploadErr } = await supabase.storage.from('doctor-logos').upload(path, logoFile, { upsert: true });
       if (uploadErr) {
-        toast({ title: 'Erro ao enviar logo', description: uploadErr.message, variant: 'destructive' });
-        setUploadingLogo(false);
+        toast({ title: 'Erro ao enviar foto', description: uploadErr.message, variant: 'destructive' });
+        setSaving(false);
         return;
       }
       const { data: urlData } = supabase.storage.from('doctor-logos').getPublicUrl(path);
       logoUrl = urlData.publicUrl;
     }
 
-    const { error } = await supabase.from('doctors').update({
+    const updateData: Record<string, any> = {
+      name: getField('name') || doctor.name,
+      specialty: getField('specialty') || doctor.specialty,
+      document_number: getField('document_number'),
+      primary_color: primaryColor,
+      secondary_color: getField('secondary_color') || doctor.secondary_color,
       logo_url: logoUrl,
-      primary_color: getField('primary_color'),
-      secondary_color: getField('secondary_color'),
-    }).eq('id', doctor.id);
+      bio: getField('bio') || null,
+      whatsapp_link: getField('whatsapp_link') || null,
+      instagram_link: getField('instagram_link') || null,
+      welcome_message: getField('welcome_message') || null,
+    };
 
-    setUploadingLogo(false);
+    if (slugValue && slugValue !== doctor.slug && slugAvailable !== false) {
+      updateData.slug = slugValue;
+    }
+
+    const { error } = await supabase.from('doctors').update(updateData).eq('id', doctor.id);
+    setSaving(false);
+
     if (error) {
       toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
     } else {
-      toast({ title: 'Identidade visual atualizada!' });
+      setSaved(true);
+      toast({ title: 'Salvo! ✓' });
       queryClient.invalidateQueries({ queryKey: ['doctor'] });
+      setTimeout(() => setSaved(false), 3000);
     }
   };
 
-  const statusBadge = () => {
-    switch (doctor.subscription_status) {
-      case 'trial': return <Badge className="bg-warning/20 text-warning border-warning/30 text-base px-4 py-1">🟡 Trial</Badge>;
-      case 'active': return <Badge className="bg-success/20 text-success border-success/30 text-base px-4 py-1">🟢 Ativa</Badge>;
-      default: return <Badge variant="destructive" className="text-base px-4 py-1">🔴 Inativa</Badge>;
-    }
+  const handleDelete = async () => {
+    if (deleteConfirm !== 'CONFIRMAR') return;
+    setDeleting(true);
+    await supabase.from('doctors').delete().eq('id', doctor.id);
+    await signOut();
+    navigate('/');
   };
 
-  const primaryColor = getField('primary_color') || '#0F766E';
-  const displayPhone = getField('phone') ? formatPhoneInput(getField('phone')) : '';
+  const PreviewPanel = () => (
+    <div className="border border-border rounded-2xl overflow-hidden bg-background">
+      {/* Preview header */}
+      <div className="bg-card border-b border-border p-4">
+        <div className="flex items-center gap-3">
+          {logoPreview || (getField('logo_url') !== '' && doctor.logo_url) ? (
+            <img src={logoPreview || doctor.logo_url || ''} alt="" className="h-12 w-12 rounded-xl object-contain border border-border" />
+          ) : (
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`, color: '#fff' }}>
+              {initials}
+            </div>
+          )}
+          <div>
+            <p className="font-bold text-sm text-foreground">{getField('name') || doctor.name}</p>
+            <p className="text-xs text-muted-foreground">
+              {getField('document_type') || doctor.document_type} {getField('document_number') || doctor.document_number} • {getField('specialty') || doctor.specialty}
+            </p>
+          </div>
+        </div>
+        {getField('welcome_message') && (
+          <p className="text-xs text-muted-foreground mt-3 italic">"{getField('welcome_message')}"</p>
+        )}
+        {getField('bio') && (
+          <p className="text-xs text-muted-foreground mt-2">{getField('bio')}</p>
+        )}
+        <div className="flex gap-2 mt-3">
+          {getField('whatsapp_link') && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-1 rounded-full" style={{ backgroundColor: '#25D36620', color: '#25D366' }}>
+              <MessageCircle className="w-3 h-3" /> WhatsApp
+            </span>
+          )}
+          {getField('instagram_link') && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-1 rounded-full bg-pink-50 text-pink-600">
+              📷 Instagram
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="p-4">
+        <div className="text-center">
+          <span className="text-xs font-semibold tracking-wider uppercase px-3 py-1 rounded-full" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
+            Tabela de Substituição Alimentar
+          </span>
+        </div>
+        <div className="mt-4 rounded-xl border border-border p-3">
+          <div className="h-10 bg-muted rounded-xl flex items-center px-3">
+            <span className="text-xs text-muted-foreground">🔍 Buscar alimento...</span>
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-2 mt-3">
+          {['🥩', '🍚', '🥗'].map((e, i) => (
+            <div key={i} className="rounded-xl p-3 text-center border border-border/50" style={{ background: `${primaryColor}08` }}>
+              <span className="text-lg">{e}</span>
+              <p className="text-[9px] text-muted-foreground mt-1">Categoria</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="border-t border-border p-3 text-center">
+        <p className="text-[10px] text-muted-foreground">Powered by <strong>Altfood</strong></p>
+      </div>
+    </div>
+  );
+
+  const EditorPanel = () => (
+    <div className="space-y-5">
+      {/* Photo */}
+      <Card className="rounded-2xl shadow-sm">
+        <CardContent className="p-5 space-y-3">
+          <Label className="text-sm font-semibold">Foto de perfil</Label>
+          <div className="flex items-center gap-4">
+            <div
+              onClick={() => fileRef.current?.click()}
+              className="w-20 h-20 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-colors shrink-0"
+            >
+              {logoPreview || (getField('logo_url') !== '' && doctor.logo_url) ? (
+                <img src={logoPreview || doctor.logo_url || ''} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-xl font-bold" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`, color: '#fff' }}>
+                  {initials}
+                </div>
+              )}
+            </div>
+            <div className="space-y-1.5">
+              <Button variant="outline" size="sm" className="rounded-lg text-xs" onClick={() => fileRef.current?.click()}>
+                <Upload className="w-3.5 h-3.5 mr-1" /> Enviar foto
+              </Button>
+              {(logoPreview || doctor.logo_url) && (
+                <Button variant="ghost" size="sm" className="rounded-lg text-xs text-destructive" onClick={removeLogo}>
+                  <X className="w-3.5 h-3.5 mr-1" /> Remover
+                </Button>
+              )}
+              <p className="text-[10px] text-muted-foreground">PNG, JPG ou WebP • Máx. 2MB</p>
+            </div>
+          </div>
+          <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleLogoSelect} />
+        </CardContent>
+      </Card>
+
+      {/* Personal info */}
+      <Card className="rounded-2xl shadow-sm">
+        <CardContent className="p-5 space-y-3">
+          <Label className="text-sm font-semibold">Informações</Label>
+          <div className="space-y-1.5">
+            <Label className="text-xs">Nome completo</Label>
+            <Input value={getField('name')} onChange={e => update('name', e.target.value)} className="rounded-xl h-11" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">Especialidade</Label>
+            <Input value={getField('specialty')} onChange={e => update('specialty', e.target.value)} className="rounded-xl h-11" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">CRM / CRN</Label>
+            <Input value={getField('document_number')} onChange={e => update('document_number', e.target.value)} className="rounded-xl h-11" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">Bio curta</Label>
+            <Textarea
+              value={getField('bio')}
+              onChange={e => { if (e.target.value.length <= 200) update('bio', e.target.value); }}
+              placeholder="Ex: Nutricionista especializada em reeducação alimentar..."
+              className="rounded-xl resize-none h-20"
+              maxLength={200}
+            />
+            <p className="text-[10px] text-muted-foreground text-right">{bioLength}/200</p>
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">Mensagem de boas-vindas</Label>
+            <Textarea
+              value={getField('welcome_message')}
+              onChange={e => update('welcome_message', e.target.value)}
+              placeholder="Ex: Olá! Aqui você encontra substituições alimentares seguras."
+              className="rounded-xl resize-none h-16"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Social links */}
+      <Card className="rounded-2xl shadow-sm">
+        <CardContent className="p-5 space-y-3">
+          <Label className="text-sm font-semibold">Links sociais</Label>
+          <div className="space-y-1.5">
+            <Label className="text-xs">WhatsApp (opcional)</Label>
+            <Input value={getField('whatsapp_link')} onChange={e => update('whatsapp_link', e.target.value)} placeholder="https://wa.me/5511999999999" className="rounded-xl h-11" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">Instagram (opcional)</Label>
+            <Input value={getField('instagram_link')} onChange={e => update('instagram_link', e.target.value)} placeholder="https://instagram.com/seuusuario" className="rounded-xl h-11" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Color */}
+      <Card className="rounded-2xl shadow-sm">
+        <CardContent className="p-5 space-y-3">
+          <Label className="text-sm font-semibold">Cor principal</Label>
+          <div className="flex gap-2 flex-wrap">
+            {COLOR_PRESETS.map(c => (
+              <button
+                key={c}
+                onClick={() => update('primary_color', c)}
+                className="w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center"
+                style={{
+                  backgroundColor: c,
+                  borderColor: primaryColor === c ? '#000' : 'transparent',
+                  transform: primaryColor === c ? 'scale(1.1)' : 'scale(1)',
+                }}
+              >
+                {primaryColor === c && <Check className="w-4 h-4 text-white" />}
+              </button>
+            ))}
+            <label className="w-10 h-10 rounded-xl border-2 border-dashed border-border cursor-pointer overflow-hidden flex items-center justify-center text-xs text-muted-foreground hover:border-primary/50 transition-colors">
+              <input type="color" value={primaryColor} onChange={e => update('primary_color', e.target.value)} className="sr-only" />
+              🎨
+            </label>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Slug */}
+      <Card className="rounded-2xl shadow-sm">
+        <CardContent className="p-5 space-y-3">
+          <Label className="text-sm font-semibold">Link do paciente</Label>
+          <div className="flex items-center gap-1 bg-muted rounded-xl px-3 py-2">
+            <span className="text-xs text-muted-foreground shrink-0">{window.location.origin}/p/</span>
+            <input
+              value={slugValue}
+              onChange={e => setSlugValue(generateSlug(e.target.value))}
+              className="bg-transparent text-sm font-medium text-foreground outline-none flex-1 min-w-0"
+            />
+            {checkingSlug && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground shrink-0" />}
+            {!checkingSlug && slugAvailable === true && <Check className="w-4 h-4 text-green-600 shrink-0" />}
+            {!checkingSlug && slugAvailable === false && <X className="w-4 h-4 text-red-500 shrink-0" />}
+          </div>
+          {slugAvailable === false && <p className="text-xs text-destructive">Este slug já está em uso.</p>}
+          <a href={patientUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
+            <ExternalLink className="w-3 h-3" /> Abrir página do paciente
+          </a>
+        </CardContent>
+      </Card>
+
+      {/* Danger zone */}
+      <Card className="rounded-2xl shadow-sm border-destructive/20">
+        <CardContent className="p-5 space-y-3">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-destructive" />
+            <Label className="text-sm font-semibold text-destructive">Zona de perigo</Label>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Ao excluir sua conta, todos os dados serão removidos permanentemente. Esta ação não pode ser desfeita.
+          </p>
+          <div className="space-y-2">
+            <Label className="text-xs">Digite <strong>CONFIRMAR</strong> para excluir</Label>
+            <Input
+              value={deleteConfirm}
+              onChange={e => setDeleteConfirm(e.target.value)}
+              placeholder="CONFIRMAR"
+              className="rounded-xl h-11"
+            />
+          </div>
+          <Button
+            variant="destructive"
+            className="w-full rounded-xl"
+            disabled={deleteConfirm !== 'CONFIRMAR' || deleting}
+            onClick={handleDelete}
+          >
+            {deleting ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <Trash2 className="mr-2 h-4 w-4" />}
+            Excluir minha conta
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 animate-fade-in">
-        <h1 className="text-2xl font-bold text-foreground">Perfil</h1>
+      <div className="space-y-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">Personalizar perfil</h1>
 
-        <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="w-full grid grid-cols-3 rounded-xl">
-            <TabsTrigger value="personal" className="rounded-lg text-xs sm:text-sm">Dados Pessoais</TabsTrigger>
-            <TabsTrigger value="branding" className="rounded-lg text-xs sm:text-sm">Identidade Visual</TabsTrigger>
-            <TabsTrigger value="subscription" className="rounded-lg text-xs sm:text-sm">Assinatura</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="personal">
-            <Card className="rounded-2xl shadow-sm">
-              <CardContent className="p-4 space-y-4 pt-6">
-                <div className="space-y-1.5">
-                  <Label>Nome</Label>
-                  <Input value={getField('name')} onChange={e => update('name', e.target.value)} className="rounded-xl" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>E-mail</Label>
-                  <Input value={doctor.email} disabled className="rounded-xl bg-muted" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Telefone</Label>
-                  <Input value={displayPhone} onChange={e => update('phone', formatPhoneInput(e.target.value))} placeholder="(11) 99999-9999" className="rounded-xl" />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
-                    <Label>Registro</Label>
-                    <Select value={getField('document_type')} onValueChange={v => update('document_type', v)}>
-                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="CRM">CRM</SelectItem>
-                        <SelectItem value="CRN">CRN</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label>Número</Label>
-                    <Input value={getField('document_number')} onChange={e => update('document_number', e.target.value)} className="rounded-xl" />
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Especialidade</Label>
-                  <Input value={getField('specialty')} onChange={e => update('specialty', e.target.value)} className="rounded-xl" />
-                </div>
-                <Button onClick={savePersonal} className="w-full rounded-xl" disabled={saving}>
-                  {saving ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
-                  Salvar alterações
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="branding">
-            <Card className="rounded-2xl shadow-sm">
-              <CardContent className="p-4 space-y-4 pt-6">
-                <div className="space-y-2">
-                  <Label>Logo</Label>
-                  <div
-                    onClick={() => fileRef.current?.click()}
-                    className="border-2 border-dashed border-border rounded-xl p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
-                  >
-                    {logoPreview || doctor.logo_url ? (
-                      <img src={logoPreview || doctor.logo_url || ''} alt="Logo" className="mx-auto h-20 object-contain" />
-                    ) : (
-                      <div className="text-muted-foreground">
-                        <Upload className="mx-auto h-8 w-8 mb-2" />
-                        <p className="text-sm">Clique ou arraste para enviar</p>
-                        <p className="text-xs">PNG, JPG ou WebP • Máx. 2MB</p>
-                      </div>
-                    )}
-                  </div>
-                  <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleLogoSelect} />
-                  {(logoPreview || doctor.logo_url) && (
-                    <Button variant="ghost" size="sm" onClick={removeLogo} className="text-destructive">
-                      <X className="w-4 h-4 mr-1" /> Remover logo
-                    </Button>
-                  )}
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
-                    <Label>Cor primária</Label>
-                    <div className="flex gap-2">
-                      <input type="color" value={primaryColor} onChange={e => update('primary_color', e.target.value)} className="w-10 h-10 rounded-lg border border-border cursor-pointer" />
-                      <Input value={primaryColor} onChange={e => update('primary_color', e.target.value)} className="rounded-xl" />
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label>Cor secundária</Label>
-                    <div className="flex gap-2">
-                      <input type="color" value={getField('secondary_color') || '#059669'} onChange={e => update('secondary_color', e.target.value)} className="w-10 h-10 rounded-lg border border-border cursor-pointer" />
-                      <Input value={getField('secondary_color') || '#059669'} onChange={e => update('secondary_color', e.target.value)} className="rounded-xl" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Live preview */}
-                <div className="space-y-2">
-                  <Label>Prévia</Label>
-                  <div className="border border-border rounded-xl p-4" style={{ borderColor: primaryColor }}>
-                    <div className="flex items-center gap-3">
-                      {logoPreview || doctor.logo_url ? (
-                        <img src={logoPreview || doctor.logo_url || ''} alt="Logo" className="h-10 w-10 object-contain rounded-lg" />
-                      ) : (
-                        <div className="w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold" style={{ backgroundColor: primaryColor, color: '#fff' }}>
-                          {doctor.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-semibold text-sm" style={{ color: primaryColor }}>{doctor.name}</p>
-                        <p className="text-xs text-muted-foreground">{doctor.document_type} {doctor.document_number}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <Button onClick={saveBranding} className="w-full rounded-xl" disabled={uploadingLogo}>
-                  {uploadingLogo ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
-                  Salvar identidade visual
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="subscription">
-            <Card className="rounded-2xl shadow-sm">
-              <CardContent className="p-4 space-y-4 pt-6 text-center">
-                <div>{statusBadge()}</div>
-                {doctor.subscription_status === 'trial' && (
-                  <p className="text-muted-foreground">
-                    Trial expira em: <strong className="text-foreground">{formatDate(doctor.trial_ends_at)}</strong>
-                    <br />({daysRemaining(doctor.trial_ends_at)} dias restantes)
-                  </p>
-                )}
-                {doctor.subscription_end_date && doctor.subscription_status === 'active' && (
-                  <p className="text-muted-foreground">
-                    Próxima cobrança: <strong className="text-foreground">{formatDate(doctor.subscription_end_date)}</strong>
-                  </p>
-                )}
-                {(doctor.subscription_status === 'inactive' || (doctor.subscription_status === 'trial' && daysRemaining(doctor.trial_ends_at) <= 7)) && (
-                  <Card className="rounded-xl border-warning/30 bg-warning/5">
-                    <CardContent className="p-4">
-                      <p className="text-sm text-foreground mb-3">
-                        {doctor.subscription_status === 'inactive'
-                          ? 'Sua assinatura está inativa. Reative para continuar atendendo seus pacientes.'
-                          : 'Seu trial está acabando! Assine para não perder acesso.'}
-                      </p>
-                      <Button className="rounded-xl w-full">Assinar por R$ 97/mês</Button>
-                    </CardContent>
-                  </Card>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        {isMobile ? (
+          <>
+            <Tabs value={mobileTab} onValueChange={v => setMobileTab(v as 'edit' | 'preview')}>
+              <TabsList className="w-full grid grid-cols-2 rounded-xl">
+                <TabsTrigger value="edit" className="rounded-lg text-sm">Editar</TabsTrigger>
+                <TabsTrigger value="preview" className="rounded-lg text-sm">Preview</TabsTrigger>
+              </TabsList>
+              <TabsContent value="edit" className="mt-4">
+                <EditorPanel />
+              </TabsContent>
+              <TabsContent value="preview" className="mt-4">
+                <PreviewPanel />
+              </TabsContent>
+            </Tabs>
+          </>
+        ) : (
+          <div className="grid grid-cols-5 gap-6">
+            <div className="col-span-3">
+              <EditorPanel />
+            </div>
+            <div className="col-span-2 sticky top-6 self-start">
+              <p className="text-xs font-medium text-muted-foreground mb-2">Prévia da página do paciente</p>
+              <PreviewPanel />
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Sticky save button */}
+      <div className="fixed bottom-0 left-0 right-0 md:left-60 bg-card/95 backdrop-blur-sm border-t border-border p-3 z-40">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+          <p className="text-xs text-muted-foreground hidden sm:block">
+            Alterações são salvas ao clicar no botão →
+          </p>
+          <Button onClick={handleSave} className="rounded-xl h-11 px-8 bg-primary hover:bg-primary/90 gap-2" disabled={saving}>
+            {saving ? (
+              <><Loader2 className="animate-spin h-4 w-4" /> Salvando...</>
+            ) : saved ? (
+              <><Check className="h-4 w-4" /> Salvo! ✓</>
+            ) : (
+              'Salvar alterações'
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {/* Bottom spacer for sticky button */}
+      <div className="h-20" />
     </DashboardLayout>
   );
 }
