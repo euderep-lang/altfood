@@ -16,11 +16,13 @@ export type Database = {
     Tables: {
       doctors: {
         Row: {
+          bio: string | null
           created_at: string
           document_number: string | null
           document_type: string
           email: string
           id: string
+          instagram_link: string | null
           logo_url: string | null
           mp_payer_email: string | null
           mp_subscription_id: string | null
@@ -35,13 +37,17 @@ export type Database = {
           trial_ends_at: string
           updated_at: string
           user_id: string
+          welcome_message: string | null
+          whatsapp_link: string | null
         }
         Insert: {
+          bio?: string | null
           created_at?: string
           document_number?: string | null
           document_type?: string
           email: string
           id?: string
+          instagram_link?: string | null
           logo_url?: string | null
           mp_payer_email?: string | null
           mp_subscription_id?: string | null
@@ -56,13 +62,17 @@ export type Database = {
           trial_ends_at?: string
           updated_at?: string
           user_id: string
+          welcome_message?: string | null
+          whatsapp_link?: string | null
         }
         Update: {
+          bio?: string | null
           created_at?: string
           document_number?: string | null
           document_type?: string
           email?: string
           id?: string
+          instagram_link?: string | null
           logo_url?: string | null
           mp_payer_email?: string | null
           mp_subscription_id?: string | null
@@ -77,6 +87,8 @@ export type Database = {
           trial_ends_at?: string
           updated_at?: string
           user_id?: string
+          welcome_message?: string | null
+          whatsapp_link?: string | null
         }
         Relationships: []
       }

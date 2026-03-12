@@ -1,0 +1,5 @@
+ALTER TABLE public.doctors
+  ADD COLUMN IF NOT EXISTS bio text DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS whatsapp_link text DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS instagram_link text DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS welcome_message text DEFAULT NULL;
