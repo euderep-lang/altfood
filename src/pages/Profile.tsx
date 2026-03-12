@@ -102,7 +102,7 @@ export default function Profile() {
   };
 
   const handleSave = async () => {
-    if (slugAvailable === false) {
+    if (slugAvailable !== null && !slugAvailable) {
       toast({ title: 'Slug indisponível', description: 'Escolha outro slug para continuar.', variant: 'destructive' });
       return;
     }
