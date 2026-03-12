@@ -63,10 +63,10 @@ function isFavorited(foodId: string, originalFoodName: string): boolean {
   return getFavorites().some(f => f.foodId === foodId && f.originalFoodName === originalFoodName);
 }
 
-function getSimilarityPill(score: number): { label: string; bg: string; text: string } {
-  if (score > 0.7) return { label: 'Muito similar', bg: '#22c55e20', text: '#16a34a' };
-  if (score > 0.4) return { label: 'Similar', bg: '#eab30820', text: '#ca8a04' };
-  return { label: 'Diferente', bg: '#f9731620', text: '#ea580c' };
+function getSimilarityPill(score: number, lang: Lang): { label: string; bg: string; text: string } {
+  if (score > 0.7) return { label: t(lang, 'verySimilar'), bg: '#22c55e20', text: '#16a34a' };
+  if (score > 0.4) return { label: t(lang, 'similar'), bg: '#eab30820', text: '#ca8a04' };
+  return { label: t(lang, 'different'), bg: '#f9731620', text: '#ea580c' };
 }
 
 function getSimilarityBorderColor(score: number): string {
