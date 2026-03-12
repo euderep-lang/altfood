@@ -640,15 +640,23 @@ export default function PatientPage() {
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }}>
                   <Card className="rounded-2xl shadow-sm overflow-hidden">
                     <CardContent className="p-2 max-h-64 overflow-y-auto">
-                      {(foodsByCategory[expandedCategory] || []).map(food => (
-                        <button key={food.id} onClick={() => selectFood(food)} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted text-left transition-colors min-h-[48px]">
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-foreground">{food.name_short}</p>
-                            <p className="text-xs text-muted-foreground">{food.preparation}</p>
+                      {(foodsByCategory[expandedCategory] || []).map(food => {
+                        const cat = categories.find(c => c.id === food.category_id);
+                        return (
+                          <div key={food.id} className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-muted transition-colors min-h-[48px]">
+                            <button onClick={() => selectFood(food)} className="flex-1 flex items-center gap-3 text-left min-w-0">
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium text-foreground">{food.name_short}</p>
+                                <p className="text-xs text-muted-foreground">{food.preparation}</p>
+                              </div>
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">{food.calories} kcal</span>
+                            </button>
+                            <button onClick={() => setDetailFood(food)} className="p-1.5 rounded-lg hover:bg-primary/10 transition-colors shrink-0" title="Ver detalhes">
+                              <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                            </button>
                           </div>
-                          <span className="text-xs text-muted-foreground whitespace-nowrap">{food.calories} kcal</span>
-                        </button>
-                      ))}
+                        );
+                      })}
                       {(foodsByCategory[expandedCategory] || []).length === 0 && (
                         <p className="text-sm text-muted-foreground text-center py-4">Nenhum alimento nesta categoria.</p>
                       )}
