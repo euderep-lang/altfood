@@ -20,6 +20,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const update = (field: string, value: string) => setForm(f => ({ ...f, [field]: value }));
