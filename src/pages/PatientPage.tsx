@@ -695,11 +695,27 @@ export default function PatientPage() {
         )}
       </AnimatePresence>
 
+      {/* Floating WhatsApp button */}
+      {(doctor as any).whatsapp_link && (
+        <a
+          href={`${(doctor as any).whatsapp_link}${(doctor as any).whatsapp_link.includes('?') ? '&' : '?'}text=${encodeURIComponent(`Olá Dr(a). ${doctor.name.split(' ')[0]}, vim pelo Altfood e tenho uma dúvida.`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-20 md:bottom-6 right-4 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-transform hover:scale-110"
+          style={{ backgroundColor: '#25D366' }}
+        >
+          <MessageCircle className="w-6 h-6 text-white" />
+        </a>
+      )}
+
       {/* Footer */}
       <footer className="border-t border-border bg-card px-4 py-4 text-center">
         <p className="text-xs text-muted-foreground">{doctor.name} • {doctor.document_type} {doctor.document_number}</p>
         {doctor.phone && <p className="text-xs text-muted-foreground mt-0.5">📞 {doctor.phone}</p>}
-        <p className="text-[10px] text-muted-foreground mt-1">Powered by <span className="font-semibold text-foreground">Altfood</span></p>
+        <p className="text-[10px] text-muted-foreground mt-2">
+          Powered by{' '}
+          <Link to="/" className="font-semibold text-foreground hover:text-primary transition-colors">Altfood</Link>
+        </p>
       </footer>
     </div>
   );
