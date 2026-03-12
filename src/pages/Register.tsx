@@ -124,12 +124,14 @@ export default function Register() {
 
     // Create referral record
     if (referrerDoctor && newDoc) {
-      await supabase.from('referrals').insert({
-        referrer_id: referrerDoctor.id,
-        referred_id: newDoc.id,
-        status: 'completed',
-        reward_given_at: new Date().toISOString(),
-      }).catch(() => {});
+      try {
+        await supabase.from('referrals').insert({
+          referrer_id: referrerDoctor.id,
+          referred_id: newDoc.id,
+          status: 'completed',
+          reward_given_at: new Date().toISOString(),
+        } as any);
+      } catch { /* ignore duplicate */ }
 
       // Extend referrer's subscription by 30 days
       const { data: referrer } = await supabase.from('doctors').select('subscription_end_date, subscription_status, trial_ends_at').eq('id', referrerDoctor.id).single();
