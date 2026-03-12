@@ -1146,9 +1146,9 @@ export default function PatientPage() {
         <nav className="bg-card/95 backdrop-blur-lg border-t border-border safe-area-bottom">
           <div className="max-w-lg mx-auto flex">
             {([
-              { id: 'search' as Tab, icon: '🔍', label: 'Buscar' },
-              { id: 'favorites' as Tab, icon: '⭐', label: 'Favoritos' },
-              { id: 'history' as Tab, icon: '📋', label: 'Histórico' },
+              { id: 'search' as Tab, icon: '🔍', label: t(lang, 'search') },
+              { id: 'favorites' as Tab, icon: '⭐', label: t(lang, 'favorites') },
+              { id: 'history' as Tab, icon: '📋', label: t(lang, 'history') },
             ] as const).map(tab => (
               <button
                 key={tab.id}
