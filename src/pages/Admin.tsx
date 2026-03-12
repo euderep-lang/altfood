@@ -56,8 +56,8 @@ export default function Admin() {
     queryKey: ['admin-page-views'],
     queryFn: async () => {
       const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
-      const { data } = await supabase.from('page_views').select('viewed_at').gte('viewed_at', sixtyDaysAgo);
-      return data || [];
+      const { data } = await supabase.rpc('admin_get_page_views_since', { since_date: sixtyDaysAgo });
+      return (data || []) as { viewed_at: string }[];
     },
     enabled: isAdmin,
   });
