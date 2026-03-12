@@ -11,11 +11,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Upload, X, Check, AlertTriangle, Trash2, ExternalLink, MessageCircle } from 'lucide-react';
+import { Loader2, Upload, X, Check, AlertTriangle, Trash2, ExternalLink, MessageCircle, Lock, Crown } from 'lucide-react';
 import { generateSlug, daysRemaining, formatDate } from '@/lib/helpers';
 import { useAuth } from '@/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Link } from 'react-router-dom';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const COLOR_PRESETS = [
   '#0F766E', '#0D9488', '#059669', '#16A34A',
