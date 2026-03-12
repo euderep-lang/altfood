@@ -2,12 +2,13 @@ import { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useDoctor } from '@/hooks/useDoctor';
-import { LayoutDashboard, Link2, User, HelpCircle, LogOut, Leaf, Loader2 } from 'lucide-react';
+import { LayoutDashboard, User, HelpCircle, LogOut, Leaf, Loader2, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { daysRemaining } from '@/lib/helpers';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/dashboard/stats', icon: BarChart3, label: 'Estatísticas' },
   { to: '/dashboard/profile', icon: User, label: 'Perfil' },
   { to: '/dashboard/support', icon: HelpCircle, label: 'Suporte' },
 ];

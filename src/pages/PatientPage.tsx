@@ -89,7 +89,20 @@ export default function PatientPage() {
 
   useEffect(() => {
     if (doctor) {
-      supabase.from('page_views').insert({ doctor_id: doctor.id, ip_hash: 'anonymous' });
+      const referrer = document.referrer || '';
+      let source = 'direct';
+      if (referrer.includes('whatsapp') || referrer.includes('wa.me')) source = 'whatsapp';
+      else if (referrer.includes('instagram') || referrer.includes('ig.me')) source = 'instagram';
+      else if (referrer.includes('facebook') || referrer.includes('fb.me')) source = 'facebook';
+      else if (referrer.includes('google')) source = 'google';
+      else if (referrer && !referrer.includes(window.location.hostname)) source = 'other';
+
+      supabase.from('page_views').insert({
+        doctor_id: doctor.id,
+        ip_hash: 'anonymous',
+        user_agent: navigator.userAgent,
+        referrer: source,
+      });
     }
   }, [doctor]);
 
