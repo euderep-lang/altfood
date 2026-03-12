@@ -860,7 +860,7 @@ export default function PatientPage() {
                             <SwipeableCard
                               onSwipeRight={() => toggleFavorite(result)}
                               onSwipeLeft={() => setDismissedCards(prev => new Set(prev).add(result.food.id))}
-                              showHint={idx === 0 && !swipeHintShown && (() => { localStorage.setItem(SWIPE_HINT_KEY, 'true'); setSwipeHintShown(true); return true; })()}
+                              showHint={idx === 0 && !swipeHintShown}
                             >
                               <Card className="rounded-2xl shadow-sm overflow-hidden" style={{ borderLeft: `4px solid ${borderColor}` }}>
                                 <CardContent className="p-4">
