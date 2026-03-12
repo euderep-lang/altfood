@@ -424,7 +424,140 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      {/* Email Preferences */}
+      {/* Theme selector */}
+      <ProLock>
+        <Card className="rounded-2xl shadow-sm">
+          <CardContent className="p-5 space-y-3">
+            <div className="flex items-center gap-2">
+              <Layout className="w-4 h-4 text-primary" />
+              <Label className="text-sm font-semibold">Layout da página do paciente</Label>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { id: 'minimal', label: 'Minimalista', desc: 'Layout atual, limpo' },
+                { id: 'card', label: 'Cartão', desc: 'Cards maiores com foto' },
+                { id: 'list', label: 'Lista', desc: 'Compacto, mais itens' },
+              ].map(theme => (
+                <button
+                  key={theme.id}
+                  onClick={() => { setThemeLayout(theme.id); setSaved(false); }}
+                  className="rounded-xl border-2 p-3 text-center transition-all"
+                  style={{
+                    borderColor: themeLayout === theme.id ? primaryColor : 'transparent',
+                    backgroundColor: themeLayout === theme.id ? `${primaryColor}08` : undefined,
+                  }}
+                >
+                  <p className="text-xs font-semibold text-foreground">{theme.label}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{theme.desc}</p>
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </ProLock>
+
+      {/* Custom sections */}
+      <Card className="rounded-2xl shadow-sm">
+        <CardContent className="p-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Palette className="w-4 h-4 text-primary" />
+              <Label className="text-sm font-semibold">Seções personalizadas</Label>
+            </div>
+            {sections.length < 3 && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-lg text-xs"
+                onClick={() => { setSections(s => [...s, { title: '', content: '', sort_order: s.length }]); setSaved(false); }}
+              >
+                <Plus className="w-3.5 h-3.5 mr-1" /> Adicionar
+              </Button>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground">Adicione até 3 blocos de texto na página do paciente. Ex: "Dica da semana", "Horários de atendimento".</p>
+          {sections.map((section, i) => (
+            <div key={i} className="space-y-2 border border-border rounded-xl p-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">Seção {i + 1}</Label>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs text-destructive h-7"
+                  onClick={() => {
+                    const newSections = sections.filter((_, idx) => idx !== i);
+                    setSections(newSections);
+                    setSaved(false);
+                  }}
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
+              <Input
+                placeholder="Título (ex: Dica da semana)"
+                value={section.title}
+                onChange={e => {
+                  const newSections = [...sections];
+                  newSections[i] = { ...newSections[i], title: e.target.value };
+                  setSections(newSections);
+                  setSaved(false);
+                }}
+                className="rounded-xl h-10 text-sm"
+              />
+              <Textarea
+                placeholder="Conteúdo..."
+                value={section.content}
+                onChange={e => {
+                  const newSections = [...sections];
+                  newSections[i] = { ...newSections[i], content: e.target.value };
+                  setSections(newSections);
+                  setSaved(false);
+                }}
+                className="rounded-xl resize-none h-16 text-sm"
+              />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Custom domain hint */}
+      <Card className="rounded-2xl shadow-sm">
+        <CardContent className="p-5 space-y-3">
+          <div className="flex items-center gap-2">
+            <Globe className="w-4 h-4 text-muted-foreground" />
+            <Label className="text-sm font-semibold text-muted-foreground">Domínio personalizado (Em breve)</Label>
+          </div>
+          <Input
+            disabled
+            value="ex: nutri.seusite.com.br"
+            className="rounded-xl h-11 opacity-50"
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg text-xs w-full"
+            disabled={domainInterestSaved || savingDomainInterest}
+            onClick={async () => {
+              if (!doctor) return;
+              setSavingDomainInterest(true);
+              await supabase.from('domain_interests').insert({ doctor_id: doctor.id });
+              setDomainInterestSaved(true);
+              setSavingDomainInterest(false);
+              toast({ title: 'Interesse registrado! ✓', description: 'Avisaremos quando estiver disponível.' });
+            }}
+          >
+            {domainInterestSaved ? (
+              <><Check className="w-3.5 h-3.5 mr-1" /> Interesse registrado</>
+            ) : savingDomainInterest ? (
+              <><Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> Salvando...</>
+            ) : (
+              <><Mail className="w-3.5 h-3.5 mr-1" /> Me avise quando disponível</>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
+
       <Card className="rounded-2xl shadow-sm">
         <CardContent className="p-5 space-y-4">
           <div className="flex items-center gap-2">
