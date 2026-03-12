@@ -160,10 +160,46 @@ export default function PatientPage() {
     });
   };
 
+  // SEO meta tags
+  useEffect(() => {
+    if (doctor) {
+      document.title = `Substituições Alimentares - Dr(a). ${doctor.name} | Altfood`;
+      const setMeta = (property: string, content: string) => {
+        let tag = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!tag) { tag = document.createElement('meta'); tag.setAttribute('property', property); document.head.appendChild(tag); }
+        tag.content = content;
+      };
+      setMeta('og:title', `Substituições Alimentares - Dr(a). ${doctor.name}`);
+      setMeta('og:description', (doctor as any).bio || `Encontre substituições alimentares seguras com ${doctor.name}`);
+      setMeta('og:type', 'website');
+      setMeta('og:url', window.location.href);
+    }
+    return () => { document.title = 'Altfood'; };
+  }, [doctor]);
+
   if (loadingDoctor) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="animate-spin h-8 w-8 text-primary" />
+      <div className="min-h-screen bg-background">
+        <header className="bg-card border-b border-border">
+          <div className="max-w-lg mx-auto px-4 py-5 space-y-3">
+            <div className="flex items-center gap-4">
+              <Skeleton className="w-14 h-14 rounded-2xl" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-3/4 rounded-lg" />
+                <Skeleton className="h-3 w-1/2 rounded-lg" />
+              </div>
+            </div>
+            <Skeleton className="h-6 w-48 rounded-full mx-auto" />
+          </div>
+        </header>
+        <main className="max-w-lg mx-auto p-4 space-y-5">
+          <Skeleton className="h-14 w-full rounded-2xl" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[1, 2, 3, 4].map(i => (
+              <Skeleton key={i} className="h-28 rounded-2xl" />
+            ))}
+          </div>
+        </main>
       </div>
     );
   }
@@ -171,12 +207,22 @@ export default function PatientPage() {
   if (doctorError || !doctor) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <Card className="rounded-2xl shadow-md max-w-sm w-full">
-          <CardContent className="p-8 text-center">
-            <p className="text-xl font-bold text-foreground mb-2">Página não encontrada</p>
-            <p className="text-muted-foreground text-sm">O link que você acessou não existe ou foi removido.</p>
-          </CardContent>
-        </Card>
+        <div className="max-w-sm w-full text-center space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto">
+            <Leaf className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">Esta página não existe</h1>
+            <p className="text-sm text-muted-foreground mt-2">O link que você acessou não foi encontrado ou foi removido.</p>
+          </div>
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">Quer criar a sua?</p>
+            <Link to="/signup">
+              <Button className="rounded-xl h-11 px-8 bg-primary hover:bg-primary/90">Criar minha conta grátis</Button>
+            </Link>
+          </div>
+          <p className="text-[10px] text-muted-foreground">Powered by <span className="font-semibold text-foreground">Altfood</span></p>
+        </div>
       </div>
     );
   }
