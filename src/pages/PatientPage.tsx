@@ -163,13 +163,25 @@ export default function PatientPage() {
     },
   });
 
-  const { data: foods = [], refetch: refetchFoods } = useQuery({
+  const { data: allFoods = [], refetch: refetchFoods } = useQuery({
     queryKey: ['foods'],
     queryFn: async () => {
       const { data } = await supabase.from('foods').select('*').eq('is_active', true).order('name_short');
       return (data || []) as Food[];
     },
   });
+
+  const { data: hiddenFoodIds = [] } = useQuery({
+    queryKey: ['hidden-foods-patient', doctor?.id],
+    queryFn: async () => {
+      if (!doctor) return [];
+      const { data } = await supabase.from('hidden_foods').select('food_id').eq('doctor_id', doctor.id);
+      return (data || []).map((r: any) => r.food_id as string);
+    },
+    enabled: !!doctor,
+  });
+
+  const foods = useMemo(() => allFoods.filter(f => !hiddenFoodIds.includes(f.id)), [allFoods, hiddenFoodIds]);
 
   // Track page view
   useEffect(() => {
