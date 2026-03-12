@@ -70,6 +70,11 @@ export default function Dashboard() {
     );
   }
 
+  // Redirect to onboarding if not completed
+  if (!(doctor as any).onboarding_completed) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
   const patientUrl = `${window.location.origin}/p/${doctor.slug}`;
   const initials = doctor.name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
   const isTrial = doctor.subscription_status === 'trial';
