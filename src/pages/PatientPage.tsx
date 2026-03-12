@@ -601,6 +601,39 @@ export default function PatientPage() {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
+        {/* Food of the day */}
+        {doctor.featured_food_id && (() => {
+          const featured = foods.find(f => f.id === doctor.featured_food_id);
+          if (!featured) return null;
+          const featCat = categories.find(c => c.id === featured.category_id);
+          return (
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+              <Card className="rounded-2xl shadow-md overflow-hidden border-2" style={{ borderColor: `${primaryColor}40` }}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-1 mb-2">
+                    <span className="text-base">🌟</span>
+                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: primaryColor }}>
+                      {lang === 'pt' ? 'Destaque do dia' : 'Food of the Day'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => selectFood(featured)}
+                    className="flex items-center gap-3 w-full text-left hover:bg-muted/50 rounded-xl p-2 -m-2 transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ backgroundColor: `${featCat?.color || primaryColor}15` }}>
+                      {featCat?.icon || '🍽️'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-foreground">{featured.name_short}</p>
+                      <p className="text-xs text-muted-foreground">{featured.preparation} • {featured.calories} kcal</p>
+                    </div>
+                  </button>
+                </CardContent>
+              </Card>
+            </motion.div>
+          );
+        })()}
+
         {/* === SEARCH TAB === */}
         {activeTab === 'search' && (
           <>
