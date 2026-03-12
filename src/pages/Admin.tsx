@@ -207,14 +207,24 @@ export default function Admin() {
               <p className="text-xs text-muted-foreground">Altfood — Visão geral</p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Link to="/admin/alimentos">
+              <Button variant="outline" size="sm" className="rounded-xl gap-2">
+                <UtensilsCrossed className="w-4 h-4" /> Alimentos
+              </Button>
+            </Link>
+            <Link to="/admin/categorias">
+              <Button variant="outline" size="sm" className="rounded-xl gap-2">
+                <Tags className="w-4 h-4" /> Categorias
+              </Button>
+            </Link>
             <Link to="/admin/suporte">
               <Button variant="outline" size="sm" className="rounded-xl gap-2">
                 <MessageSquare className="w-4 h-4" /> Suporte
               </Button>
             </Link>
             <Button variant="outline" size="sm" className="rounded-xl gap-2" onClick={refreshAll}>
-              <RefreshCw className="w-4 h-4" /> Atualizar dados
+              <RefreshCw className="w-4 h-4" /> Atualizar
             </Button>
             <Button variant="outline" size="sm" className="rounded-xl gap-2" onClick={exportCSV}>
               <Download className="w-4 h-4" /> CSV
