@@ -126,6 +126,14 @@ export default function Admin() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
+  // Auth guard (after all hooks)
+  if (authLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+  }
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   const refreshAll = () => {
     queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
     queryClient.invalidateQueries({ queryKey: ['admin-page-views'] });
