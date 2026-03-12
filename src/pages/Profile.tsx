@@ -79,6 +79,7 @@ export default function Profile() {
   const getField = (key: string) => form[key] ?? (doctor as any)[key] ?? '';
   const update = (key: string, val: string) => { setForm(f => ({ ...f, [key]: val })); setSaved(false); };
 
+  const isPro = doctor.subscription_status === 'active';
   const primaryColor = getField('primary_color') || '#0F766E';
   const initials = (getField('name') || doctor.name).split(' ').filter((w: string) => w.length > 2).map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
   const patientUrl = `${window.location.origin}/p/${slugValue || doctor.slug}`;
