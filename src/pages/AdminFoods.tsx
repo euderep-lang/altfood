@@ -350,6 +350,15 @@ export default function AdminFoods() {
                           <td className="py-2.5 text-right text-muted-foreground hidden sm:table-cell">{food.fat}g</td>
                           <td className="py-2.5 text-right">
                             <div className="flex gap-1 justify-end">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className={`h-8 w-8 rounded-lg ${featuredFoodId === food.id ? 'text-amber-500' : 'text-muted-foreground'}`}
+                                onClick={() => toggleFeatured(food.id)}
+                                title="Destaque do dia"
+                              >
+                                <Star className={`w-3.5 h-3.5 ${featuredFoodId === food.id ? 'fill-amber-500' : ''}`} />
+                              </Button>
                               <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg" onClick={() => openEdit(food)}>
                                 <Pencil className="w-3.5 h-3.5" />
                               </Button>
