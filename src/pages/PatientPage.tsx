@@ -1097,13 +1097,13 @@ export default function PatientPage() {
         {/* === HISTORY TAB === */}
         {activeTab === 'history' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-foreground">📋 Histórico</h2>
+            <h2 className="text-lg font-bold text-foreground">📋 {t(lang, 'history')}</h2>
             {recentFoods.length === 0 ? (
               <Card className="rounded-2xl">
                 <CardContent className="p-8 text-center">
                   <History className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-                  <p className="text-sm font-medium text-foreground">Nenhuma busca recente</p>
-                  <p className="text-xs text-muted-foreground mt-1">Suas últimas 5 buscas aparecerão aqui</p>
+                  <p className="text-sm font-medium text-foreground">{t(lang, 'noHistory')}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t(lang, 'noHistoryHint')}</p>
                 </CardContent>
               </Card>
             ) : (
