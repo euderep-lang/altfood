@@ -21,6 +21,8 @@ export type Database = {
           document_number: string | null
           document_type: string
           email: string
+          email_tips: boolean
+          email_weekly_summary: boolean
           id: string
           instagram_link: string | null
           logo_url: string | null
@@ -47,6 +49,8 @@ export type Database = {
           document_number?: string | null
           document_type?: string
           email: string
+          email_tips?: boolean
+          email_weekly_summary?: boolean
           id?: string
           instagram_link?: string | null
           logo_url?: string | null
@@ -73,6 +77,8 @@ export type Database = {
           document_number?: string | null
           document_type?: string
           email?: string
+          email_tips?: boolean
+          email_weekly_summary?: boolean
           id?: string
           instagram_link?: string | null
           logo_url?: string | null
