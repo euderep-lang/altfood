@@ -15,7 +15,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { motion } from 'framer-motion';
 import {
   Users, Crown, Eye, TrendingUp, TrendingDown, RefreshCw, Download, Search,
-  ChevronLeft, ChevronRight, ArrowUpRight, Loader2, Shield, DollarSign
+  ChevronLeft, ChevronRight, ArrowUpRight, Loader2, Shield, DollarSign, MessageSquare
 } from 'lucide-react';
 
 const ADMIN_EMAIL = 'carine@dracarinecassol.com.br';
