@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import Support from "./pages/Support";
 import PatientPage from "./pages/PatientPage";
 import NotFound from "./pages/NotFound";
+import Stats from "./pages/Stats";
 import Pricing from "./pages/Pricing";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/p/:slug" element={<PatientPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/dashboard/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/dashboard/stats" element={<ProtectedRoute><Stats /></ProtectedRoute>} />
             <Route path="/dashboard/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>

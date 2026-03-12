@@ -177,18 +177,24 @@ export type Database = {
           doctor_id: string
           id: string
           ip_hash: string | null
+          referrer: string | null
+          user_agent: string | null
           viewed_at: string
         }
         Insert: {
           doctor_id: string
           id?: string
           ip_hash?: string | null
+          referrer?: string | null
+          user_agent?: string | null
           viewed_at?: string
         }
         Update: {
           doctor_id?: string
           id?: string
           ip_hash?: string | null
+          referrer?: string | null
+          user_agent?: string | null
           viewed_at?: string
         }
         Relationships: [
