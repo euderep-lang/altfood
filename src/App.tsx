@@ -28,6 +28,8 @@ const SubscriptionSuccess = lazy(() => import("./pages/SubscriptionSuccess"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminSupport = lazy(() => import("./pages/AdminSupport"));
+const AdminFoods = lazy(() => import("./pages/AdminFoods"));
+const AdminCategories = lazy(() => import("./pages/AdminCategories"));
 const ReferralRedirect = lazy(() => import("./pages/ReferralRedirect"));
 const ShareKit = lazy(() => import("./pages/ShareKit"));
 const Changelog = lazy(() => import("./pages/Changelog"));
