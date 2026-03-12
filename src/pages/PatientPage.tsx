@@ -875,8 +875,8 @@ export default function PatientPage() {
                       </div>
 
                       <p className="text-sm font-medium text-muted-foreground">
-                        {filteredResults.length} substituições encontradas
-                        <span className="text-[10px] ml-2 text-muted-foreground/60">← deslize para favoritar</span>
+                        {filteredResults.length} {t(lang, 'substitutionsFound')}
+                        <span className="text-[10px] ml-2 text-muted-foreground/60">{t(lang, 'swipeHint')}</span>
                       </p>
 
                       {filteredResults.length === 0 && (
