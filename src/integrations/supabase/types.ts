@@ -58,6 +58,7 @@ export type Database = {
           email: string
           email_tips: boolean
           email_weekly_summary: boolean
+          featured_food_id: string | null
           id: string
           instagram_link: string | null
           logo_url: string | null
@@ -89,6 +90,7 @@ export type Database = {
           email: string
           email_tips?: boolean
           email_weekly_summary?: boolean
+          featured_food_id?: string | null
           id?: string
           instagram_link?: string | null
           logo_url?: string | null
@@ -120,6 +122,7 @@ export type Database = {
           email?: string
           email_tips?: boolean
           email_weekly_summary?: boolean
+          featured_food_id?: string | null
           id?: string
           instagram_link?: string | null
           logo_url?: string | null
@@ -144,6 +147,13 @@ export type Database = {
           whatsapp_link?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "doctors_featured_food_id_fkey"
+            columns: ["featured_food_id"]
+            isOneToOne: false
+            referencedRelation: "foods"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "doctors_referred_by_fkey"
             columns: ["referred_by"]
