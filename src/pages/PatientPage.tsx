@@ -7,9 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, Loader2, X, Clock, AlertTriangle, ChevronDown, ChevronUp, Leaf, MessageCircle, Star, History, Heart, WifiOff, Download, Trash2 } from 'lucide-react';
+import { Search, Loader2, X, Clock, AlertTriangle, ChevronDown, ChevronUp, Leaf, MessageCircle, Star, History, Heart, WifiOff, Download, Trash2, GitCompare, Info } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import { calculateSubstitutions, getSimilarityLabel, type SubstitutionResult } from '@/lib/substitutionAlgorithm';
+import FoodDetailModal from '@/components/FoodDetailModal';
+import FoodComparisonModal from '@/components/FoodComparisonModal';
 import type { Database } from '@/integrations/supabase/types';
 
 type Food = Database['public']['Tables']['foods']['Row'];
@@ -138,6 +140,9 @@ export default function PatientPage() {
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [detailFood, setDetailFood] = useState<Food | null>(null);
+  const [compareSelection, setCompareSelection] = useState<Food[]>([]);
+  const [showComparison, setShowComparison] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
 
@@ -158,13 +163,25 @@ export default function PatientPage() {
     },
   });
 
-  const { data: foods = [], refetch: refetchFoods } = useQuery({
+  const { data: allFoods = [], refetch: refetchFoods } = useQuery({
     queryKey: ['foods'],
     queryFn: async () => {
       const { data } = await supabase.from('foods').select('*').eq('is_active', true).order('name_short');
       return (data || []) as Food[];
     },
   });
+
+  const { data: hiddenFoodIds = [] } = useQuery({
+    queryKey: ['hidden-foods-patient', doctor?.id],
+    queryFn: async () => {
+      if (!doctor) return [];
+      const { data } = await supabase.from('hidden_foods').select('food_id').eq('doctor_id', doctor.id);
+      return (data || []).map((r: any) => r.food_id as string);
+    },
+    enabled: !!doctor,
+  });
+
+  const foods = useMemo(() => allFoods.filter(f => !hiddenFoodIds.includes(f.id)), [allFoods, hiddenFoodIds]);
 
   // Track page view
   useEffect(() => {
@@ -623,15 +640,23 @@ export default function PatientPage() {
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }}>
                   <Card className="rounded-2xl shadow-sm overflow-hidden">
                     <CardContent className="p-2 max-h-64 overflow-y-auto">
-                      {(foodsByCategory[expandedCategory] || []).map(food => (
-                        <button key={food.id} onClick={() => selectFood(food)} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted text-left transition-colors min-h-[48px]">
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-foreground">{food.name_short}</p>
-                            <p className="text-xs text-muted-foreground">{food.preparation}</p>
+                      {(foodsByCategory[expandedCategory] || []).map(food => {
+                        const cat = categories.find(c => c.id === food.category_id);
+                        return (
+                          <div key={food.id} className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-muted transition-colors min-h-[48px]">
+                            <button onClick={() => selectFood(food)} className="flex-1 flex items-center gap-3 text-left min-w-0">
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium text-foreground">{food.name_short}</p>
+                                <p className="text-xs text-muted-foreground">{food.preparation}</p>
+                              </div>
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">{food.calories} kcal</span>
+                            </button>
+                            <button onClick={() => setDetailFood(food)} className="p-1.5 rounded-lg hover:bg-primary/10 transition-colors shrink-0" title="Ver detalhes">
+                              <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                            </button>
                           </div>
-                          <span className="text-xs text-muted-foreground whitespace-nowrap">{food.calories} kcal</span>
-                        </button>
-                      ))}
+                        );
+                      })}
                       {(foodsByCategory[expandedCategory] || []).length === 0 && (
                         <p className="text-sm text-muted-foreground text-center py-4">Nenhum alimento nesta categoria.</p>
                       )}
@@ -840,14 +865,44 @@ export default function PatientPage() {
                                     })}
                                   </div>
 
-                                  {/* Ver detalhes */}
-                                  <button
-                                    onClick={() => toggleCard(result.food.id)}
-                                    className="w-full flex items-center justify-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground mt-3 py-1 transition-colors min-h-[36px]"
-                                  >
-                                    {isExpanded ? 'Ocultar detalhes' : 'Ver detalhes'}
-                                    {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                                  </button>
+                                  {/* Actions row */}
+                                  <div className="flex items-center justify-center gap-2 mt-3">
+                                    <button
+                                      onClick={() => setDetailFood(result.food)}
+                                      className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 py-1 px-2 rounded-lg hover:bg-primary/5 transition-colors min-h-[36px]"
+                                    >
+                                      <Info className="w-3.5 h-3.5" /> Detalhes
+                                    </button>
+                                    <span className="text-muted-foreground/30">|</span>
+                                    <button
+                                      onClick={() => {
+                                        const isSelected = compareSelection.some(c => c.id === result.food.id);
+                                        if (isSelected) {
+                                          setCompareSelection(prev => prev.filter(c => c.id !== result.food.id));
+                                        } else if (compareSelection.length < 2) {
+                                          const next = [...compareSelection, result.food];
+                                          setCompareSelection(next);
+                                          if (next.length === 2) setShowComparison(true);
+                                        }
+                                        vibrate(5);
+                                      }}
+                                      className={`flex items-center gap-1 text-xs font-medium py-1 px-2 rounded-lg transition-colors min-h-[36px] ${
+                                        compareSelection.some(c => c.id === result.food.id)
+                                          ? 'text-primary bg-primary/10'
+                                          : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                                      }`}
+                                    >
+                                      <GitCompare className="w-3.5 h-3.5" /> Comparar
+                                    </button>
+                                    <span className="text-muted-foreground/30">|</span>
+                                    <button
+                                      onClick={() => toggleCard(result.food.id)}
+                                      className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground py-1 px-2 rounded-lg hover:bg-muted transition-colors min-h-[36px]"
+                                    >
+                                      {isExpanded ? 'Ocultar' : 'Nutrientes'}
+                                      {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                                    </button>
+                                  </div>
 
                                   <AnimatePresence>
                                     {isExpanded && (
@@ -1078,6 +1133,46 @@ export default function PatientPage() {
           <MessageCircle className="w-6 h-6 text-white" />
         </a>
       )}
+
+      {/* Comparison banner */}
+      <AnimatePresence>
+        {compareSelection.length > 0 && compareSelection.length < 2 && (
+          <motion.div
+            initial={{ y: 100 }} animate={{ y: 0 }} exit={{ y: 100 }}
+            className="fixed bottom-20 left-4 right-4 z-50 md:bottom-4"
+          >
+            <Card className="rounded-2xl shadow-xl border-primary/20">
+              <CardContent className="p-3 flex items-center gap-3">
+                <GitCompare className="w-5 h-5 text-primary shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {compareSelection[0].name_short} selecionado
+                  </p>
+                  <p className="text-xs text-muted-foreground">Selecione mais 1 alimento para comparar</p>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setCompareSelection([])} className="shrink-0">
+                  <X className="w-4 h-4" />
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modals */}
+      <FoodDetailModal
+        food={detailFood}
+        open={!!detailFood}
+        onClose={() => setDetailFood(null)}
+        categoryIcon={detailFood ? categories.find(c => c.id === detailFood.category_id)?.icon : undefined}
+        categoryColor={detailFood ? categories.find(c => c.id === detailFood.category_id)?.color : undefined}
+        doctorName={doctor.name}
+      />
+      <FoodComparisonModal
+        foods={compareSelection.length === 2 ? [compareSelection[0], compareSelection[1]] : null}
+        open={showComparison}
+        onClose={() => { setShowComparison(false); setCompareSelection([]); }}
+      />
 
       {/* Footer */}
       <footer className="border-t border-border bg-card px-4 py-4 text-center mb-16 md:mb-0">
