@@ -27,6 +27,8 @@ const Pricing = lazy(() => import("./pages/Pricing"));
 const SubscriptionSuccess = lazy(() => import("./pages/SubscriptionSuccess"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Admin = lazy(() => import("./pages/Admin"));
+const ReferralRedirect = lazy(() => import("./pages/ReferralRedirect"));
+const ShareKit = lazy(() => import("./pages/ShareKit"));
 
 const queryClient = new QueryClient();
 
@@ -56,11 +58,13 @@ const App = () => (
                 <Route path="/planos" element={<Pricing />} />
                 <Route path="/assinatura/sucesso" element={<SubscriptionSuccess />} />
                 <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+                <Route path="/ref/:code" element={<ReferralRedirect />} />
                 <Route path="/p/:slug" element={<PatientPage />} />
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/dashboard/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="/dashboard/stats" element={<ProtectedRoute><Stats /></ProtectedRoute>} />
                 <Route path="/dashboard/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
+                <Route path="/compartilhar" element={<ProtectedRoute><ShareKit /></ProtectedRoute>} />
                 <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

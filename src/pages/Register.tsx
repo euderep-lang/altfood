@@ -91,19 +91,69 @@ export default function Register() {
       }
     }
 
-    const { error: docError } = await supabase.from('doctors').insert({
+    // Check for referral code
+    const referralCode = localStorage.getItem('altfood_referral_code');
+    let referrerDoctor: any = null;
+    if (referralCode) {
+      const { data: refDoc } = await supabase.from('doctors').select('id').eq('referral_code', referralCode).maybeSingle();
+      referrerDoctor = refDoc;
+    }
+
+    const insertData: any = {
       user_id: authData.user.id,
       name: cleanName,
       email: cleanEmail,
       document_number: cleanDoc || null,
       specialty: form.specialty,
       slug,
-    });
+    };
+
+    // Extended trial for referred doctors
+    if (referrerDoctor) {
+      insertData.referred_by = referrerDoctor.id;
+      insertData.trial_ends_at = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    }
+
+    const { error: docError, data: newDoc } = await supabase.from('doctors').insert(insertData).select('id').single();
 
     setLoading(false);
     if (docError) {
       toast({ title: 'Erro ao criar perfil', description: docError.message, variant: 'destructive' });
       return;
+    }
+
+    // Create referral record
+    if (referrerDoctor && newDoc) {
+      try {
+        await supabase.from('referrals').insert({
+          referrer_id: referrerDoctor.id,
+          referred_id: newDoc.id,
+          status: 'completed',
+          reward_given_at: new Date().toISOString(),
+        } as any);
+      } catch { /* ignore duplicate */ }
+
+      // Extend referrer's subscription by 30 days
+      const { data: referrer } = await supabase.from('doctors').select('subscription_end_date, subscription_status, trial_ends_at').eq('id', referrerDoctor.id).single();
+      if (referrer) {
+        const baseDate = referrer.subscription_status === 'active' && referrer.subscription_end_date
+          ? new Date(referrer.subscription_end_date)
+          : referrer.subscription_status === 'trial'
+          ? new Date(referrer.trial_ends_at)
+          : new Date();
+        const newEnd = new Date(Math.max(baseDate.getTime(), Date.now()) + 30 * 24 * 60 * 60 * 1000);
+
+        if (referrer.subscription_status === 'active') {
+          await supabase.from('doctors').update({ subscription_end_date: newEnd.toISOString() }).eq('id', referrerDoctor.id);
+        } else {
+          await supabase.from('doctors').update({
+            subscription_status: 'active',
+            subscription_end_date: newEnd.toISOString(),
+          }).eq('id', referrerDoctor.id);
+        }
+      }
+
+      localStorage.removeItem('altfood_referral_code');
     }
 
     toast({ title: '✅ Conta criada com sucesso!' });
