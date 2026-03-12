@@ -934,7 +934,7 @@ export default function PatientPage() {
                                       {result.equivalentWeight}
                                     </span>
                                     <span className="text-lg font-semibold text-muted-foreground ml-1">g</span>
-                                    <p className="text-xs text-muted-foreground mt-0.5">equivalente a {weight}g de {selectedFood.name_short}</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">{t(lang, 'equivalent')} {weight}g {t(lang, 'of')} {selectedFood.name_short}</p>
                                   </div>
 
                                   {/* Comparison badges */}
