@@ -79,6 +79,13 @@ export default function Register() {
       toast({ title: 'Erro ao criar perfil', description: docError.message, variant: 'destructive' });
       return;
     }
+
+    // Send welcome email (fire and forget)
+    const patientUrl = `${window.location.origin}/p/${slug}`;
+    supabase.functions.invoke('welcome-email', {
+      body: { doctor_name: form.name.trim(), doctor_email: form.email.trim(), patient_url: patientUrl },
+    }).catch(console.error);
+
     // Redirect to onboarding
     navigate('/onboarding', { replace: true });
   };
