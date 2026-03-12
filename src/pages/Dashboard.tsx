@@ -9,7 +9,7 @@ import { Eye, Search, Leaf, Crown, Copy, Share2, ExternalLink, Palette, Users, L
 import { formatDateTime, formatNumber, daysRemaining } from '@/lib/helpers';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
