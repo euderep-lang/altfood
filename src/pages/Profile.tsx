@@ -11,11 +11,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Upload, X, Check, AlertTriangle, Trash2, ExternalLink, MessageCircle } from 'lucide-react';
+import { Loader2, Upload, X, Check, AlertTriangle, Trash2, ExternalLink, MessageCircle, Lock, Crown } from 'lucide-react';
 import { generateSlug, daysRemaining, formatDate } from '@/lib/helpers';
 import { useAuth } from '@/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Link } from 'react-router-dom';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const COLOR_PRESETS = [
   '#0F766E', '#0D9488', '#059669', '#16A34A',
@@ -77,6 +79,7 @@ export default function Profile() {
   const getField = (key: string) => form[key] ?? (doctor as any)[key] ?? '';
   const update = (key: string, val: string) => { setForm(f => ({ ...f, [key]: val })); setSaved(false); };
 
+  const isPro = doctor.subscription_status === 'active';
   const primaryColor = getField('primary_color') || '#0F766E';
   const initials = (getField('name') || doctor.name).split(' ').filter((w: string) => w.length > 2).map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
   const patientUrl = `${window.location.origin}/p/${slugValue || doctor.slug}`;
@@ -225,40 +228,65 @@ export default function Profile() {
     </div>
   );
 
+  const ProLock = ({ children, label }: { children: React.ReactNode; label?: string }) => {
+    if (isPro) return <>{children}</>;
+    return (
+      <div className="relative">
+        <div className="opacity-40 pointer-events-none select-none">{children}</div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Link to="/planos">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1.5 bg-card border border-border rounded-xl px-3 py-2 shadow-sm cursor-pointer hover:bg-muted transition-colors">
+                  <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+                  <span className="text-xs font-medium text-muted-foreground">Recurso Pro</span>
+                  <Crown className="w-3.5 h-3.5 text-primary" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent><p>Faça upgrade para desbloquear</p></TooltipContent>
+            </Tooltip>
+          </Link>
+        </div>
+      </div>
+    );
+  };
+
   const EditorPanel = () => (
     <div className="space-y-5">
       {/* Photo */}
-      <Card className="rounded-2xl shadow-sm">
-        <CardContent className="p-5 space-y-3">
-          <Label className="text-sm font-semibold">Foto de perfil</Label>
-          <div className="flex items-center gap-4">
-            <div
-              onClick={() => fileRef.current?.click()}
-              className="w-20 h-20 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-colors shrink-0"
-            >
-              {logoPreview || (getField('logo_url') !== '' && doctor.logo_url) ? (
-                <img src={logoPreview || doctor.logo_url || ''} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-xl font-bold" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`, color: '#fff' }}>
-                  {initials}
-                </div>
-              )}
-            </div>
-            <div className="space-y-1.5">
-              <Button variant="outline" size="sm" className="rounded-lg text-xs" onClick={() => fileRef.current?.click()}>
-                <Upload className="w-3.5 h-3.5 mr-1" /> Enviar foto
-              </Button>
-              {(logoPreview || doctor.logo_url) && (
-                <Button variant="ghost" size="sm" className="rounded-lg text-xs text-destructive" onClick={removeLogo}>
-                  <X className="w-3.5 h-3.5 mr-1" /> Remover
+      <ProLock>
+        <Card className="rounded-2xl shadow-sm">
+          <CardContent className="p-5 space-y-3">
+            <Label className="text-sm font-semibold">Foto de perfil</Label>
+            <div className="flex items-center gap-4">
+              <div
+                onClick={() => isPro && fileRef.current?.click()}
+                className="w-20 h-20 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-colors shrink-0"
+              >
+                {logoPreview || (getField('logo_url') !== '' && doctor.logo_url) ? (
+                  <img src={logoPreview || doctor.logo_url || ''} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xl font-bold" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`, color: '#fff' }}>
+                    {initials}
+                  </div>
+                )}
+              </div>
+              <div className="space-y-1.5">
+                <Button variant="outline" size="sm" className="rounded-lg text-xs" onClick={() => fileRef.current?.click()}>
+                  <Upload className="w-3.5 h-3.5 mr-1" /> Enviar foto
                 </Button>
-              )}
-              <p className="text-[10px] text-muted-foreground">PNG, JPG ou WebP • Máx. 2MB</p>
+                {(logoPreview || doctor.logo_url) && (
+                  <Button variant="ghost" size="sm" className="rounded-lg text-xs text-destructive" onClick={removeLogo}>
+                    <X className="w-3.5 h-3.5 mr-1" /> Remover
+                  </Button>
+                )}
+                <p className="text-[10px] text-muted-foreground">PNG, JPG ou WebP • Máx. 2MB</p>
+              </div>
             </div>
-          </div>
-          <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleLogoSelect} />
-        </CardContent>
-      </Card>
+            <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleLogoSelect} />
+          </CardContent>
+        </Card>
+      </ProLock>
 
       {/* Personal info */}
       <Card className="rounded-2xl shadow-sm">
@@ -276,70 +304,78 @@ export default function Profile() {
             <Label className="text-xs">CRM / CRN</Label>
             <Input value={getField('document_number')} onChange={e => update('document_number', e.target.value)} className="rounded-xl h-11" />
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Bio curta</Label>
-            <Textarea
-              value={getField('bio')}
-              onChange={e => { if (e.target.value.length <= 200) update('bio', e.target.value); }}
-              placeholder="Ex: Nutricionista especializada em reeducação alimentar..."
-              className="rounded-xl resize-none h-20"
-              maxLength={200}
-            />
-            <p className="text-[10px] text-muted-foreground text-right">{bioLength}/200</p>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Mensagem de boas-vindas</Label>
-            <Textarea
-              value={getField('welcome_message')}
-              onChange={e => update('welcome_message', e.target.value)}
-              placeholder="Ex: Olá! Aqui você encontra substituições alimentares seguras."
-              className="rounded-xl resize-none h-16"
-            />
-          </div>
+          <ProLock>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Bio curta</Label>
+              <Textarea
+                value={getField('bio')}
+                onChange={e => { if (e.target.value.length <= 200) update('bio', e.target.value); }}
+                placeholder="Ex: Nutricionista especializada em reeducação alimentar..."
+                className="rounded-xl resize-none h-20"
+                maxLength={200}
+              />
+              <p className="text-[10px] text-muted-foreground text-right">{bioLength}/200</p>
+            </div>
+          </ProLock>
+          <ProLock>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Mensagem de boas-vindas</Label>
+              <Textarea
+                value={getField('welcome_message')}
+                onChange={e => update('welcome_message', e.target.value)}
+                placeholder="Ex: Olá! Aqui você encontra substituições alimentares seguras."
+                className="rounded-xl resize-none h-16"
+              />
+            </div>
+          </ProLock>
         </CardContent>
       </Card>
 
       {/* Social links */}
-      <Card className="rounded-2xl shadow-sm">
-        <CardContent className="p-5 space-y-3">
-          <Label className="text-sm font-semibold">Links sociais</Label>
-          <div className="space-y-1.5">
-            <Label className="text-xs">WhatsApp (opcional)</Label>
-            <Input value={getField('whatsapp_link')} onChange={e => update('whatsapp_link', e.target.value)} placeholder="https://wa.me/5511999999999" className="rounded-xl h-11" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Instagram (opcional)</Label>
-            <Input value={getField('instagram_link')} onChange={e => update('instagram_link', e.target.value)} placeholder="https://instagram.com/seuusuario" className="rounded-xl h-11" />
-          </div>
-        </CardContent>
-      </Card>
+      <ProLock>
+        <Card className="rounded-2xl shadow-sm">
+          <CardContent className="p-5 space-y-3">
+            <Label className="text-sm font-semibold">Links sociais</Label>
+            <div className="space-y-1.5">
+              <Label className="text-xs">WhatsApp (opcional)</Label>
+              <Input value={getField('whatsapp_link')} onChange={e => update('whatsapp_link', e.target.value)} placeholder="https://wa.me/5511999999999" className="rounded-xl h-11" />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Instagram (opcional)</Label>
+              <Input value={getField('instagram_link')} onChange={e => update('instagram_link', e.target.value)} placeholder="https://instagram.com/seuusuario" className="rounded-xl h-11" />
+            </div>
+          </CardContent>
+        </Card>
+      </ProLock>
 
       {/* Color */}
-      <Card className="rounded-2xl shadow-sm">
-        <CardContent className="p-5 space-y-3">
-          <Label className="text-sm font-semibold">Cor principal</Label>
-          <div className="flex gap-2 flex-wrap">
-            {COLOR_PRESETS.map(c => (
-              <button
-                key={c}
-                onClick={() => update('primary_color', c)}
-                className="w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center"
-                style={{
-                  backgroundColor: c,
-                  borderColor: primaryColor === c ? '#000' : 'transparent',
-                  transform: primaryColor === c ? 'scale(1.1)' : 'scale(1)',
-                }}
-              >
-                {primaryColor === c && <Check className="w-4 h-4 text-white" />}
-              </button>
-            ))}
-            <label className="w-10 h-10 rounded-xl border-2 border-dashed border-border cursor-pointer overflow-hidden flex items-center justify-center text-xs text-muted-foreground hover:border-primary/50 transition-colors">
-              <input type="color" value={primaryColor} onChange={e => update('primary_color', e.target.value)} className="sr-only" />
-              🎨
-            </label>
-          </div>
-        </CardContent>
-      </Card>
+      <ProLock>
+        <Card className="rounded-2xl shadow-sm">
+          <CardContent className="p-5 space-y-3">
+            <Label className="text-sm font-semibold">Cor principal</Label>
+            <div className="flex gap-2 flex-wrap">
+              {COLOR_PRESETS.map(c => (
+                <button
+                  key={c}
+                  onClick={() => update('primary_color', c)}
+                  className="w-10 h-10 rounded-xl border-2 transition-all flex items-center justify-center"
+                  style={{
+                    backgroundColor: c,
+                    borderColor: primaryColor === c ? '#000' : 'transparent',
+                    transform: primaryColor === c ? 'scale(1.1)' : 'scale(1)',
+                  }}
+                >
+                  {primaryColor === c && <Check className="w-4 h-4 text-white" />}
+                </button>
+              ))}
+              <label className="w-10 h-10 rounded-xl border-2 border-dashed border-border cursor-pointer overflow-hidden flex items-center justify-center text-xs text-muted-foreground hover:border-primary/50 transition-colors">
+                <input type="color" value={primaryColor} onChange={e => update('primary_color', e.target.value)} className="sr-only" />
+                🎨
+              </label>
+            </div>
+          </CardContent>
+        </Card>
+      </ProLock>
 
       {/* Slug */}
       <Card className="rounded-2xl shadow-sm">

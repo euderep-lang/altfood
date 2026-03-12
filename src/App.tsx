@@ -15,6 +15,8 @@ import Profile from "./pages/Profile";
 import Support from "./pages/Support";
 import PatientPage from "./pages/PatientPage";
 import NotFound from "./pages/NotFound";
+import Pricing from "./pages/Pricing";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,8 @@ const App = () => (
             <Route path="/signup" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/planos" element={<Pricing />} />
+            <Route path="/assinatura/sucesso" element={<SubscriptionSuccess />} />
             <Route path="/p/:slug" element={<PatientPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/dashboard/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
