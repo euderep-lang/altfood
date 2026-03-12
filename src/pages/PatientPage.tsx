@@ -140,6 +140,9 @@ export default function PatientPage() {
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [detailFood, setDetailFood] = useState<Food | null>(null);
+  const [compareSelection, setCompareSelection] = useState<Food[]>([]);
+  const [showComparison, setShowComparison] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
 
