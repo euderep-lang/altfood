@@ -176,6 +176,8 @@ export default function PatientPage() {
   const [compareSelection, setCompareSelection] = useState<Food[]>([]);
   const [showComparison, setShowComparison] = useState(false);
   const [searchCount, setSearchCount] = useState(0);
+  const [dismissedCards, setDismissedCards] = useState<Set<string>>(new Set());
+  const [swipeHintShown, setSwipeHintShown] = useState(() => !!localStorage.getItem(SWIPE_HINT_KEY));
   const mainRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
 
