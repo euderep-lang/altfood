@@ -86,26 +86,41 @@ function vibrate(ms = 10) {
   try { navigator.vibrate?.(ms); } catch {}
 }
 
+const SWIPE_HINT_KEY = 'altfood_swipe_hint_shown';
+
 // --- Swipeable Card ---
-function SwipeableCard({ children, onSwipeRight }: { children: React.ReactNode; onSwipeRight: () => void }) {
+function SwipeableCard({ children, onSwipeRight, onSwipeLeft, showHint }: { children: React.ReactNode; onSwipeRight: () => void; onSwipeLeft?: () => void; showHint?: boolean }) {
   const x = useMotionValue(0);
-  const bgOpacity = useTransform(x, [0, 80], [0, 1]);
+  const rightOpacity = useTransform(x, [0, 80], [0, 1]);
+  const leftOpacity = useTransform(x, [-80, 0], [1, 0]);
 
   const handleDragEnd = (_: any, info: PanInfo) => {
     if (info.offset.x > 80) {
       onSwipeRight();
       vibrate(20);
+    } else if (info.offset.x < -80 && onSwipeLeft) {
+      onSwipeLeft();
+      vibrate(10);
     }
   };
 
   return (
     <div className="relative overflow-hidden rounded-2xl">
+      {/* Right swipe hint (favorite) */}
       <motion.div
         className="absolute inset-0 flex items-center pl-5 rounded-2xl"
-        style={{ opacity: bgOpacity, backgroundColor: '#22c55e20' }}
+        style={{ opacity: rightOpacity, backgroundColor: '#22c55e20' }}
       >
         <Heart className="w-6 h-6 text-green-500" />
         <span className="ml-2 text-sm font-semibold text-green-600">Favoritar</span>
+      </motion.div>
+      {/* Left swipe hint (dismiss) */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-end pr-5 rounded-2xl"
+        style={{ opacity: leftOpacity, backgroundColor: '#ef444420' }}
+      >
+        <span className="mr-2 text-sm font-semibold text-red-500">Ocultar</span>
+        <X className="w-6 h-6 text-red-500" />
       </motion.div>
       <motion.div
         drag="x"
@@ -117,6 +132,22 @@ function SwipeableCard({ children, onSwipeRight }: { children: React.ReactNode; 
       >
         {children}
       </motion.div>
+      {/* First-use hint arrows */}
+      {showHint && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{ delay: 3, duration: 0.5 }}
+          className="absolute inset-0 z-20 flex items-center justify-between px-4 pointer-events-none"
+        >
+          <div className="flex items-center gap-1 text-green-500 bg-green-50/80 rounded-full px-2 py-1">
+            <span className="text-xs font-medium">← Favoritar</span>
+          </div>
+          <div className="flex items-center gap-1 text-red-400 bg-red-50/80 rounded-full px-2 py-1">
+            <span className="text-xs font-medium">Ocultar →</span>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
@@ -145,6 +176,8 @@ export default function PatientPage() {
   const [compareSelection, setCompareSelection] = useState<Food[]>([]);
   const [showComparison, setShowComparison] = useState(false);
   const [searchCount, setSearchCount] = useState(0);
+  const [dismissedCards, setDismissedCards] = useState<Set<string>>(new Set());
+  const [swipeHintShown, setSwipeHintShown] = useState(() => !!localStorage.getItem(SWIPE_HINT_KEY));
   const mainRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
 
@@ -336,6 +369,10 @@ export default function PatientPage() {
       setResults(subs);
       setComputing(false);
       setSearchCount(prev => prev + 1);
+      setDismissedCards(new Set());
+      if (!swipeHintShown) {
+        setTimeout(() => { localStorage.setItem(SWIPE_HINT_KEY, 'true'); setSwipeHintShown(true); }, 4000);
+      }
     }, 400);
   };
 
@@ -809,7 +846,7 @@ export default function PatientPage() {
                         </Card>
                       )}
 
-                      {filteredResults.slice(0, 6).map((result, idx) => {
+                      {filteredResults.filter(r => !dismissedCards.has(r.food.id)).slice(0, 6).map((result, idx) => {
                         const sim = getSimilarityPill(result.similarityScore);
                         const borderColor = getSimilarityBorderColor(result.similarityScore);
                         const isExpanded = expandedCards.has(result.food.id);
@@ -824,7 +861,11 @@ export default function PatientPage() {
 
                         return (
                           <motion.div key={result.food.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05, duration: 0.25 }}>
-                            <SwipeableCard onSwipeRight={() => toggleFavorite(result)}>
+                            <SwipeableCard
+                              onSwipeRight={() => toggleFavorite(result)}
+                              onSwipeLeft={() => setDismissedCards(prev => new Set(prev).add(result.food.id))}
+                              showHint={idx === 0 && !swipeHintShown}
+                            >
                               <Card className="rounded-2xl shadow-sm overflow-hidden" style={{ borderLeft: `4px solid ${borderColor}` }}>
                                 <CardContent className="p-4">
                                   {/* Header */}

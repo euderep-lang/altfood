@@ -1,4 +1,4 @@
-const CACHE_NAME = 'altfood-v1';
+const CACHE_NAME = 'altfood-v2';
 const STATIC_ASSETS = [
   '/icon-192.png',
   '/icon-512.png',
@@ -22,6 +22,9 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+
+  // Never cache OAuth redirects
+  if (url.pathname.startsWith('/~oauth')) return;
 
   // Cache patient pages for offline
   if (url.pathname.startsWith('/p/')) {

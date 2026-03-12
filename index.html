@@ -12,6 +12,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Altfood" />
 
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://pbmgjgjvwcisvsembqon.supabase.co" crossorigin />
+    <link rel="dns-prefetch" href="https://pbmgjgjvwcisvsembqon.supabase.co" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <!-- Open Graph -->
     <meta property="og:title" content="Altfood — Substituição Alimentar Inteligente" />
     <meta property="og:description" content="Seus pacientes perguntam. O Altfood responde. Ferramenta baseada na Tabela TACO para médicos e nutricionistas." />
@@ -65,15 +71,82 @@
       }
     }
     </script>
+
+    <!-- Splash screen styles -->
+    <style>
+      #splash-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        transition: opacity 0.4s ease-out;
+      }
+      #splash-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #splash-screen .splash-logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        animation: splash-pulse 1.5s ease-in-out infinite;
+      }
+      #splash-screen .splash-text {
+        margin-top: 16px;
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #0F766E;
+        letter-spacing: -0.5px;
+      }
+      @keyframes splash-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
+    </style>
   </head>
 
   <body>
+    <!-- PWA Splash Screen -->
+    <div id="splash-screen">
+      <div style="text-align: center;">
+        <img src="/icon-192.png" alt="Altfood" class="splash-logo" />
+        <div class="splash-text">Altfood</div>
+      </div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
+      // Remove splash after app loads
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const splash = document.getElementById('splash-screen');
+          if (splash) {
+            splash.classList.add('fade-out');
+            setTimeout(() => splash.remove(), 400);
+          }
+        }, 1200);
+      });
+
+      // Service worker with update detection
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(() => {});
+          navigator.serviceWorker.register('/sw.js').then((registration) => {
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'activated') {
+                    window.dispatchEvent(new CustomEvent('sw-update-available'));
+                  }
+                });
+              }
+            });
+          }).catch(() => {});
         });
       }
     </script>
