@@ -1050,10 +1050,10 @@ export default function PatientPage() {
         {activeTab === 'favorites' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-foreground">⭐ Favoritos</h2>
+              <h2 className="text-lg font-bold text-foreground">⭐ {t(lang, 'favorites')}</h2>
               {favorites.length > 0 && (
                 <button onClick={clearFavorites} className="text-xs text-destructive flex items-center gap-1 hover:underline">
-                  <Trash2 className="w-3 h-3" /> Limpar tudo
+                  <Trash2 className="w-3 h-3" /> {t(lang, 'clearAll')}
                 </button>
               )}
             </div>
@@ -1061,8 +1061,8 @@ export default function PatientPage() {
               <Card className="rounded-2xl">
                 <CardContent className="p-8 text-center">
                   <Heart className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-                  <p className="text-sm font-medium text-foreground">Nenhum favorito salvo</p>
-                  <p className="text-xs text-muted-foreground mt-1">Deslize para a direita nos resultados ou toque no ❤️ para salvar</p>
+                  <p className="text-sm font-medium text-foreground">{t(lang, 'noFavorites')}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t(lang, 'noFavoritesHint')}</p>
                 </CardContent>
               </Card>
             ) : (
