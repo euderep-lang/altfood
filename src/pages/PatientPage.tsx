@@ -787,7 +787,7 @@ export default function PatientPage() {
                   {/* Weight input */}
                   <Card className="rounded-2xl shadow-sm">
                     <CardContent className="p-4 space-y-4">
-                      <p className="text-sm font-semibold text-foreground">Quantidade</p>
+                      <p className="text-sm font-semibold text-foreground">{t(lang, 'quantity')}</p>
                       <div className="flex items-center justify-center gap-3">
                         <Input
                           type="number"
