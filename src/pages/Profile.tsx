@@ -50,6 +50,10 @@ export default function Profile() {
   useEffect(() => {
     if (doctor) {
       setSlugValue(doctor.slug);
+      setEmailPrefs({
+        email_weekly_summary: (doctor as any).email_weekly_summary ?? true,
+        email_tips: (doctor as any).email_tips ?? true,
+      });
     }
   }, [doctor]);
 
