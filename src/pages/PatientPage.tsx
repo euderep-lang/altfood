@@ -13,6 +13,7 @@ import { calculateSubstitutions, getSimilarityLabel, type SubstitutionResult } f
 import FoodDetailModal from '@/components/FoodDetailModal';
 import FoodComparisonModal from '@/components/FoodComparisonModal';
 import PatientFeedback from '@/components/PatientFeedback';
+import { t, getSavedLang, saveLang, type Lang } from '@/lib/i18n';
 import type { Database } from '@/integrations/supabase/types';
 
 type Food = Database['public']['Tables']['foods']['Row'];
