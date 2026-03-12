@@ -208,6 +208,11 @@ export default function Admin() {
             </div>
           </div>
           <div className="flex gap-2">
+            <Link to="/admin/suporte">
+              <Button variant="outline" size="sm" className="rounded-xl gap-2">
+                <MessageSquare className="w-4 h-4" /> Suporte
+              </Button>
+            </Link>
             <Button variant="outline" size="sm" className="rounded-xl gap-2" onClick={refreshAll}>
               <RefreshCw className="w-4 h-4" /> Atualizar dados
             </Button>
