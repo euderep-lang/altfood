@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      doctor_sections: {
+        Row: {
+          content: string
+          created_at: string
+          doctor_id: string
+          id: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          doctor_id: string
+          id?: string
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "doctor_sections_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       doctors: {
         Row: {
           bio: string | null
@@ -39,6 +74,7 @@ export type Database = {
           specialty: string
           subscription_end_date: string | null
           subscription_status: string
+          theme_layout: string
           trial_ends_at: string
           updated_at: string
           user_id: string
@@ -69,6 +105,7 @@ export type Database = {
           specialty?: string
           subscription_end_date?: string | null
           subscription_status?: string
+          theme_layout?: string
           trial_ends_at?: string
           updated_at?: string
           user_id: string
@@ -99,6 +136,7 @@ export type Database = {
           specialty?: string
           subscription_end_date?: string | null
           subscription_status?: string
+          theme_layout?: string
           trial_ends_at?: string
           updated_at?: string
           user_id?: string
@@ -110,6 +148,32 @@ export type Database = {
             foreignKeyName: "doctors_referred_by_fkey"
             columns: ["referred_by"]
             isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      domain_interests: {
+        Row: {
+          created_at: string
+          doctor_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          doctor_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          doctor_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "domain_interests_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: true
             referencedRelation: "doctors"
             referencedColumns: ["id"]
           },
