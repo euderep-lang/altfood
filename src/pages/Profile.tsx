@@ -143,6 +143,8 @@ export default function Profile() {
       whatsapp_link: getField('whatsapp_link') || null,
       instagram_link: getField('instagram_link') || null,
       welcome_message: getField('welcome_message') || null,
+      email_weekly_summary: emailPrefs.email_weekly_summary,
+      email_tips: emailPrefs.email_tips,
     };
 
     if (slugValue && slugValue !== doctor.slug && slugAvailable !== false) {
