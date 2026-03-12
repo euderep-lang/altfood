@@ -7,9 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, Loader2, X, Clock, AlertTriangle, ChevronDown, ChevronUp, Leaf, MessageCircle, Star, History, Heart, WifiOff, Download, Trash2 } from 'lucide-react';
+import { Search, Loader2, X, Clock, AlertTriangle, ChevronDown, ChevronUp, Leaf, MessageCircle, Star, History, Heart, WifiOff, Download, Trash2, GitCompare, Info } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import { calculateSubstitutions, getSimilarityLabel, type SubstitutionResult } from '@/lib/substitutionAlgorithm';
+import FoodDetailModal from '@/components/FoodDetailModal';
+import FoodComparisonModal from '@/components/FoodComparisonModal';
 import type { Database } from '@/integrations/supabase/types';
 
 type Food = Database['public']['Tables']['foods']['Row'];
