@@ -44,6 +44,7 @@ export default function AdminFoods() {
   const [editFood, setEditFood] = useState<any>(null);
   const [deleteFood, setDeleteFood] = useState<Food | null>(null);
   const [saving, setSaving] = useState(false);
+  const [featuredFoodId, setFeaturedFoodId] = useState<string | null>(null);
 
   const isAdmin = !!user && user.email === ADMIN_EMAIL;
 
