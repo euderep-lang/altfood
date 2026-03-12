@@ -37,6 +37,7 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [form, setForm] = useState<Record<string, string>>({});
+  const [emailPrefs, setEmailPrefs] = useState({ email_weekly_summary: true, email_tips: true });
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [slugValue, setSlugValue] = useState('');
