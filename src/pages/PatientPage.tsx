@@ -179,6 +179,7 @@ export default function PatientPage() {
   const [searchCount, setSearchCount] = useState(0);
   const [dismissedCards, setDismissedCards] = useState<Set<string>>(new Set());
   const [swipeHintShown, setSwipeHintShown] = useState(() => !!localStorage.getItem(SWIPE_HINT_KEY));
+  const [lang, setLang] = useState<Lang>(getSavedLang);
   const mainRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
 
