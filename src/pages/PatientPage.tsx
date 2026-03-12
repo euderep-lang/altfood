@@ -144,6 +144,7 @@ export default function PatientPage() {
   const [detailFood, setDetailFood] = useState<Food | null>(null);
   const [compareSelection, setCompareSelection] = useState<Food[]>([]);
   const [showComparison, setShowComparison] = useState(false);
+  const [searchCount, setSearchCount] = useState(0);
   const mainRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
 
