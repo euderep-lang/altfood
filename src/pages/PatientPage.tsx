@@ -1371,7 +1371,8 @@ export default function PatientPage() {
       <footer className="border-t border-border bg-card px-4 py-4 text-center mb-16 md:mb-0">
         <p className="text-xs text-muted-foreground">{doctor.name} • {doctor.document_type} {doctor.document_number}</p>
         {doctor.phone && <p className="text-xs text-muted-foreground mt-0.5">📞 {doctor.phone}</p>}
-        <p className="text-[10px] text-muted-foreground mt-2">
+        <p className="text-xs text-muted-foreground mt-2">Feito com 💚 para facilitar a vida dos seus pacientes.</p>
+        <p className="text-[10px] text-muted-foreground mt-1">
           Powered by{' '}
           <Link to="/" className="font-semibold text-foreground hover:text-primary transition-colors">Altfood</Link>
         </p>
