@@ -13,23 +13,24 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) {
-      toast({ title: 'Informe seu e-mail', variant: 'destructive' });
-      return;
-    }
+    if (!email.trim()) { setError('Campo obrigatório'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setError('E-mail inválido'); return; }
+    setError('');
     setLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+    const { error: apiErr } = await supabase.auth.resetPasswordForEmail(email.trim(), {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     setLoading(false);
-    if (error) {
-      toast({ title: 'Erro', description: error.message, variant: 'destructive' });
+    if (apiErr) {
+      toast({ title: 'Erro', description: apiErr.message, variant: 'destructive' });
     } else {
       setSent(true);
+      toast({ title: '✅ E-mail enviado!' });
     }
   };
 
@@ -74,10 +75,17 @@ export default function ForgotPassword() {
                   <p className="text-center text-sm text-muted-foreground mb-5">
                     Informe seu e-mail para receber o link de recuperação
                   </p>
-                  <form onSubmit={handleSubmit} className="space-y-4">
+                  <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                     <div className="space-y-1.5">
                       <Label className="text-xs font-medium">E-mail</Label>
-                      <Input type="email" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} className="rounded-xl h-11" />
+                      <Input
+                        type="email"
+                        placeholder="seu@email.com"
+                        value={email}
+                        onChange={e => { setEmail(e.target.value); setError(''); }}
+                        className={`rounded-xl h-11 ${error ? 'border-destructive' : ''}`}
+                      />
+                      {error && <p className="text-xs text-destructive">{error}</p>}
                     </div>
                     <Button type="submit" className="w-full rounded-xl h-11 bg-primary hover:bg-primary/90" disabled={loading}>
                       {loading && <Loader2 className="animate-spin mr-2 h-4 w-4" />}

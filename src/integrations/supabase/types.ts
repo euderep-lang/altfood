@@ -216,6 +216,27 @@ export type Database = {
           },
         ]
       }
+      rate_limits: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          ip_hash: string
+        }
+        Insert: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip_hash: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip_hash?: string
+        }
+        Relationships: []
+      }
       substitution_queries: {
         Row: {
           doctor_id: string
@@ -259,6 +280,7 @@ export type Database = {
           viewed_at: string
         }[]
       }
+      cleanup_rate_limits: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never

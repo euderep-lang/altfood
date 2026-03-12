@@ -31,6 +31,40 @@
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Altfood",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web",
+      "description": "Ferramenta de substituição alimentar baseada na Tabela TACO para médicos e nutricionistas.",
+      "url": "https://altfood.lovable.app",
+      "offers": [
+        {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "BRL",
+          "name": "Grátis"
+        },
+        {
+          "@type": "Offer",
+          "price": "29.00",
+          "priceCurrency": "BRL",
+          "name": "Pro",
+          "billingDuration": "P1M"
+        }
+      ],
+      "publisher": {
+        "@type": "Organization",
+        "name": "Altfood",
+        "url": "https://altfood.lovable.app",
+        "logo": "https://altfood.lovable.app/icon-512.png"
+      }
+    }
+    </script>
   </head>
 
   <body>
