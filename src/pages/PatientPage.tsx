@@ -822,7 +822,7 @@ export default function PatientPage() {
                   <div className="hidden md:block">
                     <Button onClick={findSubstitutions} className="w-full rounded-2xl h-14 text-base font-bold shadow-lg" style={{ backgroundColor: primaryColor }} disabled={computing}>
                       {computing && <Loader2 className="animate-spin mr-2 h-5 w-5" />}
-                      Encontrar Substituições
+                      {t(lang, 'findSubstitutions')}
                     </Button>
                   </div>
 
