@@ -6,14 +6,28 @@
     <title>Altfood — Substituição Alimentar para Profissionais de Saúde</title>
     <meta name="description" content="Ferramenta de substituição alimentar baseada na Tabela TACO para médicos e nutricionistas." />
     <meta name="author" content="Altfood" />
+    <meta name="theme-color" content="#16A34A" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Altfood" />
     <meta property="og:title" content="Altfood — Substituição Alimentar" />
     <meta property="og:description" content="Seus pacientes perguntam. O Altfood responde." />
     <meta property="og:type" content="website" />
     <link rel="canonical" href="https://altfood.lovable.app/" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icon-192.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>
