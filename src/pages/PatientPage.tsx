@@ -865,14 +865,44 @@ export default function PatientPage() {
                                     })}
                                   </div>
 
-                                  {/* Ver detalhes */}
-                                  <button
-                                    onClick={() => toggleCard(result.food.id)}
-                                    className="w-full flex items-center justify-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground mt-3 py-1 transition-colors min-h-[36px]"
-                                  >
-                                    {isExpanded ? 'Ocultar detalhes' : 'Ver detalhes'}
-                                    {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                                  </button>
+                                  {/* Actions row */}
+                                  <div className="flex items-center justify-center gap-2 mt-3">
+                                    <button
+                                      onClick={() => setDetailFood(result.food)}
+                                      className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 py-1 px-2 rounded-lg hover:bg-primary/5 transition-colors min-h-[36px]"
+                                    >
+                                      <Info className="w-3.5 h-3.5" /> Detalhes
+                                    </button>
+                                    <span className="text-muted-foreground/30">|</span>
+                                    <button
+                                      onClick={() => {
+                                        const isSelected = compareSelection.some(c => c.id === result.food.id);
+                                        if (isSelected) {
+                                          setCompareSelection(prev => prev.filter(c => c.id !== result.food.id));
+                                        } else if (compareSelection.length < 2) {
+                                          const next = [...compareSelection, result.food];
+                                          setCompareSelection(next);
+                                          if (next.length === 2) setShowComparison(true);
+                                        }
+                                        vibrate(5);
+                                      }}
+                                      className={`flex items-center gap-1 text-xs font-medium py-1 px-2 rounded-lg transition-colors min-h-[36px] ${
+                                        compareSelection.some(c => c.id === result.food.id)
+                                          ? 'text-primary bg-primary/10'
+                                          : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                                      }`}
+                                    >
+                                      <GitCompare className="w-3.5 h-3.5" /> Comparar
+                                    </button>
+                                    <span className="text-muted-foreground/30">|</span>
+                                    <button
+                                      onClick={() => toggleCard(result.food.id)}
+                                      className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground py-1 px-2 rounded-lg hover:bg-muted transition-colors min-h-[36px]"
+                                    >
+                                      {isExpanded ? 'Ocultar' : 'Nutrientes'}
+                                      {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                                    </button>
+                                  </div>
 
                                   <AnimatePresence>
                                     {isExpanded && (
