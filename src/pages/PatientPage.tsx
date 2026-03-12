@@ -369,6 +369,10 @@ export default function PatientPage() {
       setResults(subs);
       setComputing(false);
       setSearchCount(prev => prev + 1);
+      setDismissedCards(new Set());
+      if (!swipeHintShown) {
+        setTimeout(() => { localStorage.setItem(SWIPE_HINT_KEY, 'true'); setSwipeHintShown(true); }, 4000);
+      }
     }, 400);
   };
 
