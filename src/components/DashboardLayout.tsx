@@ -5,6 +5,8 @@ import { useDoctor } from '@/hooks/useDoctor';
 import { LayoutDashboard, User, HelpCircle, LogOut, Leaf, Loader2, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { daysRemaining } from '@/lib/helpers';
+import SupportWidget from '@/components/SupportWidget';
+import NpsSurvey from '@/components/NpsSurvey';
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
