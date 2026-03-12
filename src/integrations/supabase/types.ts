@@ -32,6 +32,8 @@ export type Database = {
           onboarding_completed: boolean
           phone: string | null
           primary_color: string
+          referral_code: string | null
+          referred_by: string | null
           secondary_color: string
           slug: string
           specialty: string
@@ -60,6 +62,8 @@ export type Database = {
           onboarding_completed?: boolean
           phone?: string | null
           primary_color?: string
+          referral_code?: string | null
+          referred_by?: string | null
           secondary_color?: string
           slug: string
           specialty?: string
@@ -88,6 +92,8 @@ export type Database = {
           onboarding_completed?: boolean
           phone?: string | null
           primary_color?: string
+          referral_code?: string | null
+          referred_by?: string | null
           secondary_color?: string
           slug?: string
           specialty?: string
@@ -99,7 +105,15 @@ export type Database = {
           welcome_message?: string | null
           whatsapp_link?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "doctors_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       food_categories: {
         Row: {
@@ -236,6 +250,48 @@ export type Database = {
           ip_hash?: string
         }
         Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          id: string
+          referred_id: string
+          referrer_id: string
+          reward_given_at: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referred_id: string
+          referrer_id: string
+          reward_given_at?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referred_id?: string
+          referrer_id?: string
+          reward_given_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       substitution_queries: {
         Row: {
