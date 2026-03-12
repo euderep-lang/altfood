@@ -29,7 +29,7 @@ export default function Profile() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
