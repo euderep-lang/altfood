@@ -192,6 +192,15 @@ export default function PatientPage() {
     },
   });
 
+  const { data: isMaintenanceMode = false } = useQuery({
+    queryKey: ['maintenance-mode-public'],
+    queryFn: async () => {
+      const { data } = await supabase.from('site_settings' as any).select('value').eq('key', 'maintenance_mode').single();
+      return (data as any)?.value === 'true';
+    },
+    staleTime: 30000,
+  });
+
   const { data: categories = [] } = useQuery({
     queryKey: ['food-categories'],
     queryFn: async () => {
