@@ -407,6 +407,36 @@ export default function Profile() {
         </CardContent>
       </Card>
 
+      {/* Email Preferences */}
+      <Card className="rounded-2xl shadow-sm">
+        <CardContent className="p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <Mail className="w-4 h-4 text-primary" />
+            <Label className="text-sm font-semibold">Notificações por e-mail</Label>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-foreground">Receber resumo semanal</p>
+              <p className="text-xs text-muted-foreground">Estatísticas de acesso toda segunda-feira</p>
+            </div>
+            <Switch
+              checked={emailPrefs.email_weekly_summary}
+              onCheckedChange={(v) => { setEmailPrefs(p => ({ ...p, email_weekly_summary: v })); setSaved(false); }}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-foreground">Receber dicas e novidades</p>
+              <p className="text-xs text-muted-foreground">Dicas para melhorar sua página e novidades do Altfood</p>
+            </div>
+            <Switch
+              checked={emailPrefs.email_tips}
+              onCheckedChange={(v) => { setEmailPrefs(p => ({ ...p, email_tips: v })); setSaved(false); }}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Danger zone */}
       <Card className="rounded-2xl shadow-sm border-destructive/20">
         <CardContent className="p-5 space-y-3">
