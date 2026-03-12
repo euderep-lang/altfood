@@ -12,6 +12,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from '
 import { calculateSubstitutions, getSimilarityLabel, type SubstitutionResult } from '@/lib/substitutionAlgorithm';
 import FoodDetailModal from '@/components/FoodDetailModal';
 import FoodComparisonModal from '@/components/FoodComparisonModal';
+import PatientFeedback from '@/components/PatientFeedback';
 import type { Database } from '@/integrations/supabase/types';
 
 type Food = Database['public']['Tables']['foods']['Row'];
