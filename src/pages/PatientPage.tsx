@@ -335,6 +335,7 @@ export default function PatientPage() {
       const subs = calculateSubstitutions(selectedFood, weight, foods, categories, categoryName);
       setResults(subs);
       setComputing(false);
+      setSearchCount(prev => prev + 1);
     }, 400);
   };
 
