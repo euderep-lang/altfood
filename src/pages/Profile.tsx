@@ -48,6 +48,11 @@ export default function Profile() {
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [mobileTab, setMobileTab] = useState<'edit' | 'preview'>('edit');
+  const [themeLayout, setThemeLayout] = useState('minimal');
+  const [sections, setSections] = useState<{ id?: string; title: string; content: string; sort_order: number }[]>([]);
+  const [savingSections, setSavingSections] = useState(false);
+  const [domainInterestSaved, setDomainInterestSaved] = useState(false);
+  const [savingDomainInterest, setSavingDomainInterest] = useState(false);
 
   useEffect(() => {
     if (doctor) {
