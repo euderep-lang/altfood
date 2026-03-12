@@ -857,7 +857,11 @@ export default function PatientPage() {
 
                         return (
                           <motion.div key={result.food.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05, duration: 0.25 }}>
-                            <SwipeableCard onSwipeRight={() => toggleFavorite(result)}>
+                            <SwipeableCard
+                              onSwipeRight={() => toggleFavorite(result)}
+                              onSwipeLeft={() => setDismissedCards(prev => new Set(prev).add(result.food.id))}
+                              showHint={idx === 0 && !swipeHintShown && (() => { localStorage.setItem(SWIPE_HINT_KEY, 'true'); setSwipeHintShown(true); return true; })()}
+                            >
                               <Card className="rounded-2xl shadow-sm overflow-hidden" style={{ borderLeft: `4px solid ${borderColor}` }}>
                                 <CardContent className="p-4">
                                   {/* Header */}
