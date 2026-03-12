@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import Support from "./pages/Support";
 import PatientPage from "./pages/PatientPage";
 import NotFound from "./pages/NotFound";
+import Stats from "./pages/Stats";
 import Pricing from "./pages/Pricing";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 
