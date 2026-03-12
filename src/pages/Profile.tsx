@@ -228,40 +228,65 @@ export default function Profile() {
     </div>
   );
 
+  const ProLock = ({ children, label }: { children: React.ReactNode; label?: string }) => {
+    if (isPro) return <>{children}</>;
+    return (
+      <div className="relative">
+        <div className="opacity-40 pointer-events-none select-none">{children}</div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Link to="/planos">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1.5 bg-card border border-border rounded-xl px-3 py-2 shadow-sm cursor-pointer hover:bg-muted transition-colors">
+                  <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+                  <span className="text-xs font-medium text-muted-foreground">Recurso Pro</span>
+                  <Crown className="w-3.5 h-3.5 text-primary" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent><p>Faça upgrade para desbloquear</p></TooltipContent>
+            </Tooltip>
+          </Link>
+        </div>
+      </div>
+    );
+  };
+
   const EditorPanel = () => (
     <div className="space-y-5">
       {/* Photo */}
-      <Card className="rounded-2xl shadow-sm">
-        <CardContent className="p-5 space-y-3">
-          <Label className="text-sm font-semibold">Foto de perfil</Label>
-          <div className="flex items-center gap-4">
-            <div
-              onClick={() => fileRef.current?.click()}
-              className="w-20 h-20 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-colors shrink-0"
-            >
-              {logoPreview || (getField('logo_url') !== '' && doctor.logo_url) ? (
-                <img src={logoPreview || doctor.logo_url || ''} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-xl font-bold" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`, color: '#fff' }}>
-                  {initials}
-                </div>
-              )}
-            </div>
-            <div className="space-y-1.5">
-              <Button variant="outline" size="sm" className="rounded-lg text-xs" onClick={() => fileRef.current?.click()}>
-                <Upload className="w-3.5 h-3.5 mr-1" /> Enviar foto
-              </Button>
-              {(logoPreview || doctor.logo_url) && (
-                <Button variant="ghost" size="sm" className="rounded-lg text-xs text-destructive" onClick={removeLogo}>
-                  <X className="w-3.5 h-3.5 mr-1" /> Remover
+      <ProLock>
+        <Card className="rounded-2xl shadow-sm">
+          <CardContent className="p-5 space-y-3">
+            <Label className="text-sm font-semibold">Foto de perfil</Label>
+            <div className="flex items-center gap-4">
+              <div
+                onClick={() => isPro && fileRef.current?.click()}
+                className="w-20 h-20 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden border-2 border-dashed border-border hover:border-primary/50 transition-colors shrink-0"
+              >
+                {logoPreview || (getField('logo_url') !== '' && doctor.logo_url) ? (
+                  <img src={logoPreview || doctor.logo_url || ''} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xl font-bold" style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`, color: '#fff' }}>
+                    {initials}
+                  </div>
+                )}
+              </div>
+              <div className="space-y-1.5">
+                <Button variant="outline" size="sm" className="rounded-lg text-xs" onClick={() => fileRef.current?.click()}>
+                  <Upload className="w-3.5 h-3.5 mr-1" /> Enviar foto
                 </Button>
-              )}
-              <p className="text-[10px] text-muted-foreground">PNG, JPG ou WebP • Máx. 2MB</p>
+                {(logoPreview || doctor.logo_url) && (
+                  <Button variant="ghost" size="sm" className="rounded-lg text-xs text-destructive" onClick={removeLogo}>
+                    <X className="w-3.5 h-3.5 mr-1" /> Remover
+                  </Button>
+                )}
+                <p className="text-[10px] text-muted-foreground">PNG, JPG ou WebP • Máx. 2MB</p>
+              </div>
             </div>
-          </div>
-          <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleLogoSelect} />
-        </CardContent>
-      </Card>
+            <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleLogoSelect} />
+          </CardContent>
+        </Card>
+      </ProLock>
 
       {/* Personal info */}
       <Card className="rounded-2xl shadow-sm">
