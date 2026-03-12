@@ -444,6 +444,23 @@ export default function PatientPage() {
     vibrate(10);
   };
 
+  if (isMaintenanceMode) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div className="max-w-sm w-full text-center space-y-6">
+          <div className="w-20 h-20 rounded-2xl bg-amber-100 flex items-center justify-center mx-auto">
+            <span className="text-4xl">🔧</span>
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">Altfood em manutenção</h1>
+            <p className="text-sm text-muted-foreground mt-2">Voltamos em breve!</p>
+          </div>
+          <p className="text-[10px] text-muted-foreground">Powered by <span className="font-semibold text-foreground">Altfood</span></p>
+        </div>
+      </div>
+    );
+  }
+
   if (loadingDoctor) {
     return (
       <div className="min-h-screen bg-background">
