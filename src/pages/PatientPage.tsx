@@ -907,7 +907,78 @@ export default function PatientPage() {
                               onSwipeLeft={() => setDismissedCards(prev => new Set(prev).add(result.food.id))}
                               showHint={idx === 0 && !swipeHintShown}
                             >
-                              <Card className="rounded-2xl shadow-sm overflow-hidden" style={{ borderLeft: `4px solid ${borderColor}` }}>
+                              {/* LIST THEME */}
+                              {themeLayout === 'list' ? (
+                                <Card className="rounded-xl shadow-sm overflow-hidden" style={{ borderLeft: `3px solid ${borderColor}` }}>
+                                  <CardContent className="p-2.5 flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0" style={{ backgroundColor: result.category?.color ? `${result.category.color}18` : '#f1f5f9' }}>
+                                      {result.category?.icon || '🍽️'}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm font-semibold text-foreground truncate">{result.food.name_short}</p>
+                                      <p className="text-[10px] text-muted-foreground">{result.food.preparation}</p>
+                                    </div>
+                                    <div className="text-right shrink-0">
+                                      <span className="text-2xl font-extrabold" style={{ color: primaryColor }}>{result.equivalentWeight}</span>
+                                      <span className="text-xs text-muted-foreground ml-0.5">g</span>
+                                    </div>
+                                    <button onClick={() => toggleFavorite(result)} className="p-1 shrink-0">
+                                      <Heart className={`w-3.5 h-3.5 ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+                                    </button>
+                                  </CardContent>
+                                </Card>
+                              ) : themeLayout === 'card' ? (
+                                /* CARD THEME - bigger cards */
+                                <Card className="rounded-2xl shadow-md overflow-hidden" style={{ borderLeft: `4px solid ${borderColor}` }}>
+                                  <CardContent className="p-0">
+                                    {/* Photo placeholder */}
+                                    <div className="h-24 flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${result.category?.color || primaryColor}15, ${result.category?.color || primaryColor}08)` }}>
+                                      <span className="text-5xl">{result.category?.icon || '🍽️'}</span>
+                                    </div>
+                                    <div className="p-4">
+                                      <div className="flex items-start justify-between mb-2">
+                                        <div>
+                                          <p className="font-bold text-foreground text-base">{result.food.name_short}</p>
+                                          <p className="text-xs text-muted-foreground">{result.food.preparation}</p>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                          <button onClick={() => toggleFavorite(result)} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
+                                            <Heart className={`w-4 h-4 ${isFav ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+                                          </button>
+                                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0" style={{ backgroundColor: sim.bg, color: sim.text }}>
+                                            {sim.label}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div className="text-center my-3">
+                                        <span className="text-5xl font-extrabold tracking-tight" style={{ color: primaryColor }}>
+                                          {result.equivalentWeight}
+                                        </span>
+                                        <span className="text-lg font-semibold text-muted-foreground ml-1">g</span>
+                                        <p className="text-xs text-muted-foreground mt-0.5">{t(lang, 'equivalent')} {weight}g {t(lang, 'of')} {selectedFood.name_short}</p>
+                                      </div>
+                                      <div className="flex gap-1.5 flex-wrap justify-center">
+                                        {macros.map(m => {
+                                          const badge = compareBadge(m.value, m.orig);
+                                          return (
+                                            <span key={m.label} className="text-[11px] px-2.5 py-1.5 rounded-full font-semibold flex items-center gap-1 bg-muted">
+                                              <span style={{ color: badge.color, fontWeight: 800 }}>{badge.icon}</span>
+                                              {m.label}
+                                            </span>
+                                          );
+                                        })}
+                                      </div>
+                                      <div className="flex items-center justify-center gap-2 mt-3">
+                                        <button onClick={() => setDetailFood(result.food)} className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 py-1 px-2 rounded-lg hover:bg-primary/5 transition-colors min-h-[36px]">
+                                          <Info className="w-3.5 h-3.5" /> {t(lang, 'details')}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              ) : (
+                                /* MINIMAL THEME (default) */
+                                <Card className="rounded-2xl shadow-sm overflow-hidden" style={{ borderLeft: `4px solid ${borderColor}` }}>
                                 <CardContent className="p-4">
                                   {/* Header */}
                                   <div className="flex items-start gap-3">
@@ -956,7 +1027,7 @@ export default function PatientPage() {
                                       onClick={() => setDetailFood(result.food)}
                                       className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 py-1 px-2 rounded-lg hover:bg-primary/5 transition-colors min-h-[36px]"
                                     >
-                                      <Info className="w-3.5 h-3.5" /> Detalhes
+                                      <Info className="w-3.5 h-3.5" /> {t(lang, 'details')}
                                     </button>
                                     <span className="text-muted-foreground/30">|</span>
                                     <button
@@ -977,14 +1048,14 @@ export default function PatientPage() {
                                           : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                       }`}
                                     >
-                                      <GitCompare className="w-3.5 h-3.5" /> Comparar
+                                      <GitCompare className="w-3.5 h-3.5" /> {t(lang, 'compare')}
                                     </button>
                                     <span className="text-muted-foreground/30">|</span>
                                     <button
                                       onClick={() => toggleCard(result.food.id)}
                                       className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground py-1 px-2 rounded-lg hover:bg-muted transition-colors min-h-[36px]"
                                     >
-                                      {isExpanded ? 'Ocultar' : 'Nutrientes'}
+                                      {isExpanded ? t(lang, 'hide') : t(lang, 'nutrients')}
                                       {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                                     </button>
                                   </div>
@@ -996,9 +1067,9 @@ export default function PatientPage() {
                                           <table className="w-full text-xs">
                                             <thead>
                                               <tr className="text-muted-foreground">
-                                                <th className="text-left pb-1.5 font-medium">Nutriente</th>
-                                                <th className="text-right pb-1.5 font-medium">Original ({weight}g)</th>
-                                                <th className="text-right pb-1.5 font-medium">Substituto ({result.equivalentWeight}g)</th>
+                                                <th className="text-left pb-1.5 font-medium">{t(lang, 'nutrient')}</th>
+                                                <th className="text-right pb-1.5 font-medium">{t(lang, 'original')} ({weight}g)</th>
+                                                <th className="text-right pb-1.5 font-medium">{t(lang, 'substitute')} ({result.equivalentWeight}g)</th>
                                               </tr>
                                             </thead>
                                             <tbody>
@@ -1010,19 +1081,20 @@ export default function PatientPage() {
                                                 </tr>
                                               ))}
                                               <tr className="border-t border-border/30">
-                                                <td className="py-1.5 text-foreground font-medium">Fibra</td>
+                                                <td className="py-1.5 text-foreground font-medium">{t(lang, 'fiber')}</td>
                                                 <td className="py-1.5 text-right text-muted-foreground">{Math.round(Number(selectedFood.fiber) * weight / 100 * 10) / 10} g</td>
                                                 <td className="py-1.5 text-right text-foreground font-semibold">{Math.round(Number(result.food.fiber) * result.equivalentWeight / 100 * 10) / 10} g</td>
                                               </tr>
                                             </tbody>
                                           </table>
-                                          <p className="text-[10px] text-muted-foreground mt-2">Fonte: TACO 4ª Ed. - NEPA/UNICAMP</p>
+                                          <p className="text-[10px] text-muted-foreground mt-2">{t(lang, 'source')}: TACO 4ª Ed. - NEPA/UNICAMP</p>
                                         </div>
                                       </motion.div>
                                     )}
                                   </AnimatePresence>
                                 </CardContent>
                               </Card>
+                              )}
                             </SwipeableCard>
                           </motion.div>
                         );
