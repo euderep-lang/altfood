@@ -236,6 +236,25 @@ export default function Admin() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+        {/* Custom domain banner */}
+        <Card className="rounded-2xl border-primary/30 bg-primary/5 shadow-sm">
+          <CardContent className="p-4 flex items-start gap-3">
+            <Globe className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">Domínio personalizado</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Para conectar seu domínio personalizado (ex: altfood.com.br), acesse as configurações do Lovable em <strong>Settings → Custom Domain</strong> e aponte seu DNS.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Maintenance mode + Backup */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <MaintenanceToggle />
+          <BackupCard />
+        </div>
+
         {/* Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {metrics.map((m, i) => (
