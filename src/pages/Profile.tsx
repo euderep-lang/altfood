@@ -522,6 +522,13 @@ export default function Profile() {
         </div>
       </div>
 
+      {/* Hidden Foods Manager */}
+      {doctor && (
+        <div className="mt-6">
+          <HiddenFoodsManager doctorId={doctor.id} />
+        </div>
+      )}
+
       {/* Bottom spacer for sticky button */}
       <div className="h-20" />
     </DashboardLayout>
