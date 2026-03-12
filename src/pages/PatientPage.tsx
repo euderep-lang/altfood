@@ -882,7 +882,7 @@ export default function PatientPage() {
                       {filteredResults.length === 0 && (
                         <Card className="rounded-2xl shadow-sm">
                           <CardContent className="p-8 text-center">
-                            <p className="text-sm text-muted-foreground">Nenhuma substituição nesta categoria.</p>
+                            <p className="text-sm text-muted-foreground">{t(lang, 'noSubsCategory')}</p>
                           </CardContent>
                         </Card>
                       )}
