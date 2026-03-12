@@ -894,10 +894,10 @@ export default function PatientPage() {
                         const isFav = isFavorited(result.food.id, selectedFood.name_short);
 
                         const macros = [
-                          { label: 'Calorias', value: result.calories, orig: origCal, unit: 'kcal' },
-                          { label: 'Proteína', value: result.protein, orig: origProt, unit: 'g' },
-                          { label: 'Carboidrato', value: result.carbohydrates, orig: origCarb, unit: 'g' },
-                          { label: 'Gordura', value: result.fat, orig: origFat, unit: 'g' },
+                          { label: t(lang, 'calories'), value: result.calories, orig: origCal, unit: 'kcal' },
+                          { label: t(lang, 'protein'), value: result.protein, orig: origProt, unit: 'g' },
+                          { label: t(lang, 'carbs'), value: result.carbohydrates, orig: origCarb, unit: 'g' },
+                          { label: t(lang, 'fat'), value: result.fat, orig: origFat, unit: 'g' },
                         ];
 
                         return (
