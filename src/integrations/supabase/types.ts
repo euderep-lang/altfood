@@ -14,7 +14,213 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      doctors: {
+        Row: {
+          created_at: string
+          document_number: string | null
+          document_type: string
+          email: string
+          id: string
+          logo_url: string | null
+          mp_payer_email: string | null
+          mp_subscription_id: string | null
+          name: string
+          phone: string | null
+          primary_color: string
+          secondary_color: string
+          slug: string
+          specialty: string
+          subscription_end_date: string | null
+          subscription_status: string
+          trial_ends_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          document_number?: string | null
+          document_type?: string
+          email: string
+          id?: string
+          logo_url?: string | null
+          mp_payer_email?: string | null
+          mp_subscription_id?: string | null
+          name: string
+          phone?: string | null
+          primary_color?: string
+          secondary_color?: string
+          slug: string
+          specialty?: string
+          subscription_end_date?: string | null
+          subscription_status?: string
+          trial_ends_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          document_number?: string | null
+          document_type?: string
+          email?: string
+          id?: string
+          logo_url?: string | null
+          mp_payer_email?: string | null
+          mp_subscription_id?: string | null
+          name?: string
+          phone?: string | null
+          primary_color?: string
+          secondary_color?: string
+          slug?: string
+          specialty?: string
+          subscription_end_date?: string | null
+          subscription_status?: string
+          trial_ends_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      food_categories: {
+        Row: {
+          color: string
+          icon: string
+          id: string
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          color?: string
+          icon?: string
+          id?: string
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          color?: string
+          icon?: string
+          id?: string
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      foods: {
+        Row: {
+          calories: number
+          carbohydrates: number
+          category_id: string | null
+          fat: number
+          fiber: number
+          id: string
+          is_active: boolean
+          name: string
+          name_short: string
+          photo_url: string | null
+          preparation: string | null
+          protein: number
+          source: string
+        }
+        Insert: {
+          calories?: number
+          carbohydrates?: number
+          category_id?: string | null
+          fat?: number
+          fiber?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          name_short: string
+          photo_url?: string | null
+          preparation?: string | null
+          protein?: number
+          source?: string
+        }
+        Update: {
+          calories?: number
+          carbohydrates?: number
+          category_id?: string | null
+          fat?: number
+          fiber?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          name_short?: string
+          photo_url?: string | null
+          preparation?: string | null
+          protein?: number
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "foods_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "food_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      page_views: {
+        Row: {
+          doctor_id: string
+          id: string
+          ip_hash: string | null
+          viewed_at: string
+        }
+        Insert: {
+          doctor_id: string
+          id?: string
+          ip_hash?: string | null
+          viewed_at?: string
+        }
+        Update: {
+          doctor_id?: string
+          id?: string
+          ip_hash?: string | null
+          viewed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_views_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      substitution_queries: {
+        Row: {
+          doctor_id: string
+          food_name: string
+          id: string
+          queried_at: string
+          weight_grams: number
+        }
+        Insert: {
+          doctor_id: string
+          food_name: string
+          id?: string
+          queried_at?: string
+          weight_grams: number
+        }
+        Update: {
+          doctor_id?: string
+          food_name?: string
+          id?: string
+          queried_at?: string
+          weight_grams?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "substitution_queries_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
