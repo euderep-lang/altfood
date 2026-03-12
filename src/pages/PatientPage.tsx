@@ -12,6 +12,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from '
 import { calculateSubstitutions, getSimilarityLabel, type SubstitutionResult } from '@/lib/substitutionAlgorithm';
 import FoodDetailModal from '@/components/FoodDetailModal';
 import FoodComparisonModal from '@/components/FoodComparisonModal';
+import PatientFeedback from '@/components/PatientFeedback';
 import type { Database } from '@/integrations/supabase/types';
 
 type Food = Database['public']['Tables']['foods']['Row'];
@@ -143,6 +144,7 @@ export default function PatientPage() {
   const [detailFood, setDetailFood] = useState<Food | null>(null);
   const [compareSelection, setCompareSelection] = useState<Food[]>([]);
   const [showComparison, setShowComparison] = useState(false);
+  const [searchCount, setSearchCount] = useState(0);
   const mainRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
 
@@ -333,6 +335,7 @@ export default function PatientPage() {
       const subs = calculateSubstitutions(selectedFood, weight, foods, categories, categoryName);
       setResults(subs);
       setComputing(false);
+      setSearchCount(prev => prev + 1);
     }, 400);
   };
 
@@ -1173,6 +1176,9 @@ export default function PatientPage() {
         open={showComparison}
         onClose={() => { setShowComparison(false); setCompareSelection([]); }}
       />
+
+      {/* Patient feedback */}
+      {doctor && <PatientFeedback doctorId={doctor.id} searchCount={searchCount} />}
 
       {/* Footer */}
       <footer className="border-t border-border bg-card px-4 py-4 text-center mb-16 md:mb-0">

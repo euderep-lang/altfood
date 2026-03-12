@@ -231,6 +231,38 @@ export type Database = {
           },
         ]
       }
+      nps_responses: {
+        Row: {
+          comment: string | null
+          created_at: string
+          doctor_id: string
+          id: string
+          score: number
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          doctor_id: string
+          id?: string
+          score: number
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nps_responses_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: true
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       page_views: {
         Row: {
           doctor_id: string
@@ -259,6 +291,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "page_views_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_feedback: {
+        Row: {
+          created_at: string
+          doctor_id: string
+          id: string
+          is_positive: boolean
+        }
+        Insert: {
+          created_at?: string
+          doctor_id: string
+          id?: string
+          is_positive: boolean
+        }
+        Update: {
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          is_positive?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_feedback_doctor_id_fkey"
             columns: ["doctor_id"]
             isOneToOne: false
             referencedRelation: "doctors"
@@ -361,6 +422,44 @@ export type Database = {
           },
         ]
       }
+      support_tickets: {
+        Row: {
+          admin_reply: string | null
+          created_at: string
+          doctor_id: string
+          id: string
+          message: string
+          resolved_at: string | null
+          status: string
+        }
+        Insert: {
+          admin_reply?: string | null
+          created_at?: string
+          doctor_id: string
+          id?: string
+          message: string
+          resolved_at?: string | null
+          status?: string
+        }
+        Update: {
+          admin_reply?: string | null
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          message?: string
+          resolved_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -371,6 +470,24 @@ export type Database = {
         Returns: {
           viewed_at: string
         }[]
+      }
+      admin_get_support_tickets: {
+        Args: never
+        Returns: {
+          admin_reply: string
+          created_at: string
+          doctor_email: string
+          doctor_id: string
+          doctor_name: string
+          id: string
+          message: string
+          resolved_at: string
+          status: string
+        }[]
+      }
+      admin_update_ticket_status: {
+        Args: { new_status: string; reply?: string; ticket_id: string }
+        Returns: undefined
       }
       cleanup_rate_limits: { Args: never; Returns: undefined }
     }

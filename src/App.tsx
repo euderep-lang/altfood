@@ -27,8 +27,10 @@ const Pricing = lazy(() => import("./pages/Pricing"));
 const SubscriptionSuccess = lazy(() => import("./pages/SubscriptionSuccess"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Admin = lazy(() => import("./pages/Admin"));
+const AdminSupport = lazy(() => import("./pages/AdminSupport"));
 const ReferralRedirect = lazy(() => import("./pages/ReferralRedirect"));
 const ShareKit = lazy(() => import("./pages/ShareKit"));
+const Changelog = lazy(() => import("./pages/Changelog"));
 
 const queryClient = new QueryClient();
 
@@ -66,6 +68,8 @@ const App = () => (
                 <Route path="/dashboard/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
                 <Route path="/compartilhar" element={<ProtectedRoute><ShareKit /></ProtectedRoute>} />
                 <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+                <Route path="/admin/suporte" element={<ProtectedRoute><AdminSupport /></ProtectedRoute>} />
+                <Route path="/novidades" element={<Changelog />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

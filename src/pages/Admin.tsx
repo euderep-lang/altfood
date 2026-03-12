@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,7 +15,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { motion } from 'framer-motion';
 import {
   Users, Crown, Eye, TrendingUp, TrendingDown, RefreshCw, Download, Search,
-  ChevronLeft, ChevronRight, ArrowUpRight, Loader2, Shield, DollarSign
+  ChevronLeft, ChevronRight, ArrowUpRight, Loader2, Shield, DollarSign, MessageSquare
 } from 'lucide-react';
 
 const ADMIN_EMAIL = 'carine@dracarinecassol.com.br';
@@ -208,6 +208,11 @@ export default function Admin() {
             </div>
           </div>
           <div className="flex gap-2">
+            <Link to="/admin/suporte">
+              <Button variant="outline" size="sm" className="rounded-xl gap-2">
+                <MessageSquare className="w-4 h-4" /> Suporte
+              </Button>
+            </Link>
             <Button variant="outline" size="sm" className="rounded-xl gap-2" onClick={refreshAll}>
               <RefreshCw className="w-4 h-4" /> Atualizar dados
             </Button>
