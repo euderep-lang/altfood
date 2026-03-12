@@ -66,7 +66,31 @@ export default function AdminFoods() {
     enabled: isAdmin,
   });
 
-  const filtered = useMemo(() => {
+  // Fetch admin doctor for featured food
+  useQuery({
+    queryKey: ['admin-doctor-featured', user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase.from('doctors').select('id, featured_food_id').eq('user_id', user.id).single();
+      if (data?.featured_food_id) setFeaturedFoodId(data.featured_food_id);
+      return data;
+    },
+    enabled: isAdmin && !!user,
+  });
+
+  const toggleFeatured = async (foodId: string) => {
+    if (!user) return;
+    const newId = featuredFoodId === foodId ? null : foodId;
+    setFeaturedFoodId(newId);
+    // Update all doctors (admin sets globally)
+    const { data: doc } = await supabase.from('doctors').select('id').eq('user_id', user.id).single();
+    if (doc) {
+      await supabase.from('doctors').update({ featured_food_id: newId }).eq('id', doc.id);
+    }
+    toast({ title: newId ? '🌟 Destaque do dia definido' : 'Destaque removido' });
+  };
+
+
     let list = foods;
     if (search) {
       const q = search.toLowerCase();
