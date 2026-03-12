@@ -27,6 +27,7 @@ export type Database = {
           mp_payer_email: string | null
           mp_subscription_id: string | null
           name: string
+          onboarding_completed: boolean
           phone: string | null
           primary_color: string
           secondary_color: string
@@ -52,6 +53,7 @@ export type Database = {
           mp_payer_email?: string | null
           mp_subscription_id?: string | null
           name: string
+          onboarding_completed?: boolean
           phone?: string | null
           primary_color?: string
           secondary_color?: string
@@ -77,6 +79,7 @@ export type Database = {
           mp_payer_email?: string | null
           mp_subscription_id?: string | null
           name?: string
+          onboarding_completed?: boolean
           phone?: string | null
           primary_color?: string
           secondary_color?: string

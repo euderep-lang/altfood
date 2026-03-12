@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,6 +20,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const update = (field: string, value: string) => setForm(f => ({ ...f, [field]: value }));
@@ -78,7 +79,8 @@ export default function Register() {
       toast({ title: 'Erro ao criar perfil', description: docError.message, variant: 'destructive' });
       return;
     }
-    setSuccess(`${window.location.origin}/p/${slug}`);
+    // Redirect to onboarding
+    navigate('/onboarding', { replace: true });
   };
 
   const copyLink = async () => {
