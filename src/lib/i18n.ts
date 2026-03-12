@@ -1,0 +1,133 @@
+const translations = {
+  pt: {
+    searchPlaceholder: 'Buscar alimento... ex: arroz, frango, leite',
+    recentLabel: 'Recentes',
+    recentlySearched: 'Buscados recentemente',
+    findSubstitutions: 'Encontrar Substituições',
+    substitutionsFound: 'substituições encontradas',
+    allCategories: 'Todas categorias',
+    items: 'itens',
+    item: 'item',
+    equivalent: 'equivalente a',
+    of: 'de',
+    details: 'Detalhes',
+    compare: 'Comparar',
+    nutrients: 'Nutrientes',
+    hide: 'Ocultar',
+    favorites: 'Favoritos',
+    history: 'Histórico',
+    search: 'Buscar',
+    noFavorites: 'Nenhum favorito salvo',
+    noFavoritesHint: 'Deslize para a direita nos resultados ou toque no ❤️ para salvar',
+    noHistory: 'Nenhuma busca recente',
+    noHistoryHint: 'Suas últimas 5 buscas aparecerão aqui',
+    clearAll: 'Limpar tudo',
+    quantity: 'Quantidade',
+    substitutionTable: 'Tabela de Substituição Alimentar',
+    pageNotFound: 'Esta página não existe',
+    pageNotFoundHint: 'O link que você acessou não foi encontrado ou foi removido.',
+    createAccount: 'Criar minha conta grátis',
+    wantToCreate: 'Quer criar a sua?',
+    offlineMessage: 'Você está offline — mostrando versão salva',
+    updating: 'Atualizando...',
+    addToHome: 'Adicione à tela inicial',
+    addToHomeHint: 'Acesso rápido ao Altfood sem abrir o navegador',
+    add: 'Adicionar',
+    notNow: 'Agora não',
+    swipeFavorite: 'Favoritar',
+    swipeHide: 'Ocultar',
+    swipeHint: '← deslize para favoritar',
+    noSubsCategory: 'Nenhuma substituição nesta categoria.',
+    selected: 'selecionado',
+    selectOneMore: 'Selecione mais 1 alimento para comparar',
+    nutrient: 'Nutriente',
+    original: 'Original',
+    substitute: 'Substituto',
+    fiber: 'Fibra',
+    calories: 'Calorias',
+    protein: 'Proteína',
+    carbs: 'Carboidrato',
+    fat: 'Gordura',
+    verySimilar: 'Muito similar',
+    similar: 'Similar',
+    different: 'Diferente',
+    poweredBy: 'Powered by',
+    source: 'Fonte',
+  },
+  en: {
+    searchPlaceholder: 'Search food... e.g. rice, chicken, milk',
+    recentLabel: 'Recent',
+    recentlySearched: 'Recently searched',
+    findSubstitutions: 'Find Substitutions',
+    substitutionsFound: 'substitutions found',
+    allCategories: 'All categories',
+    items: 'items',
+    item: 'item',
+    equivalent: 'equivalent to',
+    of: 'of',
+    details: 'Details',
+    compare: 'Compare',
+    nutrients: 'Nutrients',
+    hide: 'Hide',
+    favorites: 'Favorites',
+    history: 'History',
+    search: 'Search',
+    noFavorites: 'No favorites saved',
+    noFavoritesHint: 'Swipe right on results or tap ❤️ to save',
+    noHistory: 'No recent searches',
+    noHistoryHint: 'Your last 5 searches will appear here',
+    clearAll: 'Clear all',
+    quantity: 'Quantity',
+    substitutionTable: 'Food Substitution Table',
+    pageNotFound: 'This page does not exist',
+    pageNotFoundHint: 'The link you visited was not found or has been removed.',
+    createAccount: 'Create my free account',
+    wantToCreate: 'Want to create yours?',
+    offlineMessage: 'You are offline — showing cached version',
+    updating: 'Updating...',
+    addToHome: 'Add to home screen',
+    addToHomeHint: 'Quick access to Altfood without opening a browser',
+    add: 'Add',
+    notNow: 'Not now',
+    swipeFavorite: 'Favorite',
+    swipeHide: 'Hide',
+    swipeHint: '← swipe to favorite',
+    noSubsCategory: 'No substitutions in this category.',
+    selected: 'selected',
+    selectOneMore: 'Select 1 more food to compare',
+    nutrient: 'Nutrient',
+    original: 'Original',
+    substitute: 'Substitute',
+    fiber: 'Fiber',
+    calories: 'Calories',
+    protein: 'Protein',
+    carbs: 'Carbohydrate',
+    fat: 'Fat',
+    verySimilar: 'Very similar',
+    similar: 'Similar',
+    different: 'Different',
+    poweredBy: 'Powered by',
+    source: 'Source',
+  },
+} as const;
+
+export type Lang = 'pt' | 'en';
+export type TranslationKey = keyof typeof translations.pt;
+
+export function t(lang: Lang, key: TranslationKey): string {
+  return translations[lang][key];
+}
+
+const LANG_KEY = 'altfood_lang';
+
+export function getSavedLang(): Lang {
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === 'en' || saved === 'pt') return saved;
+  } catch {}
+  return 'pt';
+}
+
+export function saveLang(lang: Lang) {
+  try { localStorage.setItem(LANG_KEY, lang); } catch {}
+}
