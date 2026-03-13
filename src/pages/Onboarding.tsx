@@ -192,8 +192,6 @@ export default function Onboarding() {
     setStep(3);
   };
 
-  const [showSubscribePopup, setShowSubscribePopup] = useState(false);
-
   const completeOnboarding = async () => {
     await supabase.from('doctors').update({ onboarding_completed: true } as any).eq('id', doctor.id);
     queryClient.invalidateQueries({ queryKey: ['doctor'] });
