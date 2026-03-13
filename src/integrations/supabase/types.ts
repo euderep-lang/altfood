@@ -401,6 +401,53 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          doctor_id: string
+          id: string
+          mp_payment_id: string
+          paid_at: string
+          payer_email: string | null
+          plan: string
+          status: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          doctor_id: string
+          id?: string
+          mp_payment_id: string
+          paid_at?: string
+          payer_email?: string | null
+          plan: string
+          status?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          doctor_id?: string
+          id?: string
+          mp_payment_id?: string
+          paid_at?: string
+          payer_email?: string | null
+          plan?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rate_limits: {
         Row: {
           action: string

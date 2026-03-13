@@ -101,6 +101,18 @@ Deno.serve(async (req) => {
       })
       .eq('id', doctorId);
 
+    // Save payment record
+    await supabase.from('payments').insert({
+      doctor_id: doctorId,
+      mp_payment_id: String(paymentId),
+      amount: payment.transaction_amount || (isAnnual ? 298.80 : 27.90),
+      currency: payment.currency_id || 'BRL',
+      plan: plan,
+      status: 'approved',
+      payer_email: payment.payer?.email || null,
+      paid_at: new Date().toISOString(),
+    });
+
     if (updateErr) {
       console.error('Failed to update doctor:', updateErr);
       return new Response(JSON.stringify({ error: 'Database update failed' }), {

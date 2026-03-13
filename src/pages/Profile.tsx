@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Upload, X, Check, AlertTriangle, Trash2, ExternalLink, MessageCircle, Lock, Crown, Mail, Plus, Globe, Palette, Layout } from 'lucide-react';
 import HiddenFoodsManager from '@/components/HiddenFoodsManager';
+import SubscriptionManager from '@/components/SubscriptionManager';
 import { Switch } from '@/components/ui/switch';
 import { generateSlug, daysRemaining, formatDate } from '@/lib/helpers';
 import { useAuth } from '@/hooks/useAuth';
@@ -570,6 +571,8 @@ export default function Profile() {
         </CardContent>
       </Card>
 
+      {/* Subscription Manager */}
+      <SubscriptionManager doctor={doctor as any} />
 
       <Card className="rounded-2xl shadow-sm">
         <CardContent className="p-5 space-y-4">
