@@ -42,7 +42,7 @@ function getBadges(doctor: any, pageViewCount: number, referralCount: number) {
 }
 
 export default function Dashboard() {
-  const { data: doctor } = useDoctor();
+  const { data: doctor, isLoading: doctorLoading, isError: doctorError } = useDoctor();
   const { toast } = useToast();
 
   const { data: pageViews = [] } = useQuery({
