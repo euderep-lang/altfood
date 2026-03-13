@@ -191,9 +191,23 @@ export default function Onboarding() {
     setStep(3);
   };
 
+  const [showSubscribePopup, setShowSubscribePopup] = useState(false);
+
   const completeOnboarding = async () => {
     await supabase.from('doctors').update({ onboarding_completed: true } as any).eq('id', doctor.id);
     queryClient.invalidateQueries({ queryKey: ['doctor'] });
+    setShowSubscribePopup(true);
+  };
+
+  const startTrial = async () => {
+    // Set trial to 3 days from now
+    const trialEnd = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+    await supabase.from('doctors').update({
+      subscription_status: 'trial',
+      trial_ends_at: trialEnd,
+    } as any).eq('id', doctor.id);
+    queryClient.invalidateQueries({ queryKey: ['doctor'] });
+    setShowSubscribePopup(false);
     navigate('/dashboard', { replace: true });
   };
 
