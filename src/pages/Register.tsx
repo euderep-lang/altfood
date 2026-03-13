@@ -101,38 +101,25 @@ export default function Register() {
       referrerDoctor = refDoc;
     }
 
-    const insertData: any = {
-      user_id: authData.user.id,
-      name: cleanName,
-      email: cleanEmail,
-      document_number: cleanDoc || null,
-      specialty: form.specialty,
-      slug,
-    };
-
-    // Track referral origin (reward only after payment)
-    if (referrerDoctor) {
-      insertData.referred_by = referrerDoctor.id;
-    }
-
-    const { error: docError, data: newDoc } = await supabase.from('doctors').insert(insertData).select('id').single();
+    const { data: profileData, error: profileError } = await supabase.functions.invoke('create-doctor-profile', {
+      body: {
+        user_id: authData.user.id,
+        name: cleanName,
+        email: cleanEmail,
+        document_number: cleanDoc || null,
+        specialty: form.specialty,
+        slug,
+        referred_by: referrerDoctor?.id || null,
+      },
+    });
 
     setLoading(false);
-    if (docError) {
-      toast({ title: 'Erro ao criar perfil', description: docError.message, variant: 'destructive' });
+    if (profileError || (profileData && profileData.error)) {
+      toast({ title: 'Erro ao criar perfil', description: profileData?.error || profileError?.message || 'Tente novamente.', variant: 'destructive' });
       return;
     }
 
-    // Create referral record as pending — reward only given after referred user pays
-    if (referrerDoctor && newDoc) {
-      try {
-        await supabase.from('referrals').insert({
-          referrer_id: referrerDoctor.id,
-          referred_id: newDoc.id,
-          status: 'pending',
-        } as any);
-      } catch { /* ignore duplicate */ }
-
+    if (referrerDoctor) {
       localStorage.removeItem('altfood_referral_code');
     }
 
