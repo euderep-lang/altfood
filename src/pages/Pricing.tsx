@@ -32,10 +32,10 @@ export default function Pricing() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const monthlyPrice = 27.9;
-  const annualPricePerMonth = 24.9;
-  const annualTotal = annualPricePerMonth * 12;
-  const savingsPerYear = ((monthlyPrice - annualPricePerMonth) * 12).toFixed(0);
+  const monthlyPrice = 47.90;
+  const annualPricePerMonth = 29.90;
+  const annualTotal = 358.80;
+  const savingsPerYear = ((monthlyPrice * 12) - annualTotal).toFixed(0);
 
   const price = annual ? annualPricePerMonth : monthlyPrice;
   const period = annual ? '/mês' : '/mês';
