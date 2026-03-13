@@ -17,8 +17,10 @@ import { motion } from 'framer-motion';
 import {
   Users, Crown, Eye, TrendingUp, TrendingDown, RefreshCw, Download, Search,
   ChevronLeft, ChevronRight, ArrowUpRight, Loader2, Shield, DollarSign, MessageSquare, UtensilsCrossed, Tags,
-  Globe, Wrench, Database, AlertTriangle
+  Globe, Wrench, Database, AlertTriangle, Ban, Trash2, LogOut
 } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useAuth } from '@/hooks/useAuth';
 
 const PER_PAGE = 20;
 const PRO_PRICE = 27.90;
