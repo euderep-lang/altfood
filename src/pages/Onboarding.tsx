@@ -43,7 +43,7 @@ function ConfettiPiece({ delay, x }: { delay: number; x: number }) {
 
 export default function Onboarding() {
   const { user } = useAuth();
-  const { data: doctor, isLoading } = useDoctor();
+  const { data: doctor, isLoading, error: doctorError, refetch: refetchDoctor } = useDoctor();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -186,33 +186,36 @@ export default function Onboarding() {
     );
   }
 
-  // Still waiting for doctor to be created (effect hasn't fired yet)
-  if (!doctor && !creationError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="animate-spin h-8 w-8 text-primary" />
-      </div>
-    );
-  }
+  if (doctorError || creationError) {
+    const message = creationError || (doctorError instanceof Error ? doctorError.message : 'Erro ao carregar seu perfil.');
 
-  if (creationError) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="max-w-md w-full rounded-2xl border-border/50">
           <CardContent className="p-6 text-center space-y-4">
             <h1 className="text-lg font-bold text-foreground">Não conseguimos preparar seu cadastro</h1>
-            <p className="text-sm text-muted-foreground">{creationError}</p>
+            <p className="text-sm text-muted-foreground">{message}</p>
             <Button
               className="rounded-xl"
-              onClick={() => {
+              onClick={async () => {
                 setCreationError(null);
-                queryClient.invalidateQueries({ queryKey: ['doctor', user?.id] });
+                await queryClient.invalidateQueries({ queryKey: ['doctor', user?.id] });
+                await refetchDoctor();
               }}
             >
               Tentar novamente
             </Button>
           </CardContent>
         </Card>
+      </div>
+    );
+  }
+
+  // Still waiting for doctor to be created (effect hasn't fired yet)
+  if (!doctor) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="animate-spin h-8 w-8 text-primary" />
       </div>
     );
   }

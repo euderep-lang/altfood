@@ -14,10 +14,11 @@ export function useDoctor() {
         .from('doctors')
         .select('*')
         .eq('user_id', user.id)
-        .maybeSingle();
+        .order('created_at', { ascending: false })
+        .limit(1);
 
       if (error) throw error;
-      return data;
+      return data?.[0] ?? null;
     },
     enabled: !!user,
     retry: false,
