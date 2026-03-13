@@ -35,6 +35,7 @@ const AdminCategories = lazy(() => import("./pages/AdminCategories"));
 const ReferralRedirect = lazy(() => import("./pages/ReferralRedirect"));
 const ShareKit = lazy(() => import("./pages/ShareKit"));
 const Changelog = lazy(() => import("./pages/Changelog"));
+const Billing = lazy(() => import("./pages/Billing"));
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ const App = () => (
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/dashboard/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="/dashboard/stats" element={<ProtectedRoute><Stats /></ProtectedRoute>} />
+                <Route path="/dashboard/financeiro" element={<ProtectedRoute><Billing /></ProtectedRoute>} />
                 <Route path="/dashboard/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
                 <Route path="/compartilhar" element={<ProtectedRoute><ShareKit /></ProtectedRoute>} />
                 <Route path="/admin/login" element={<AdminLogin />} />

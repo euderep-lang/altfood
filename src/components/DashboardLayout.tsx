@@ -2,7 +2,7 @@ import { ReactNode, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useDoctor } from '@/hooks/useDoctor';
-import { LayoutDashboard, User, HelpCircle, LogOut, Loader2, BarChart3, ExternalLink, X } from 'lucide-react';
+import { LayoutDashboard, User, HelpCircle, LogOut, Loader2, BarChart3, ExternalLink, X, Wallet } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { cn } from '@/lib/utils';
 import { daysRemaining } from '@/lib/helpers';
@@ -14,6 +14,7 @@ const sidebarNav = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/dashboard/stats', icon: BarChart3, label: 'Estatísticas' },
   { to: '/dashboard/profile', icon: User, label: 'Perfil' },
+  { to: '/dashboard/financeiro', icon: Wallet, label: 'Financeiro' },
   { to: '/dashboard/support', icon: HelpCircle, label: 'Suporte' },
 ];
 
