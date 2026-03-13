@@ -393,12 +393,12 @@ export default function Landing() {
             </motion.p>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-2 gap-6 items-start">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-2 gap-8 items-stretch">
             {/* Mensal */}
-            <motion.div variants={scaleIn} custom={0}>
-              <Card className="rounded-3xl bg-primary-foreground/[0.05] backdrop-blur-xl border border-primary-foreground/10 overflow-visible relative h-full">
-                <CardContent className="p-7 space-y-5 pt-8">
-                  <div className="text-center space-y-1">
+            <motion.div variants={scaleIn} custom={0} className="pt-5">
+              <Card className="rounded-3xl bg-primary-foreground/[0.05] backdrop-blur-xl border border-primary-foreground/10 relative h-full flex flex-col">
+                <CardContent className="p-8 flex flex-col flex-1">
+                  <div className="text-center space-y-2 mb-6">
                     <p className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/40">Mensal</p>
                     <div>
                       <span className="text-4xl font-display font-bold text-primary-foreground">R$ 47<span className="text-2xl">,90</span></span>
@@ -407,7 +407,7 @@ export default function Landing() {
                     <p className="text-xs text-primary-foreground/30">Cobrado mensalmente. Cancele quando quiser.</p>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-3 flex-1">
                     {[
                       'Substituições ilimitadas',
                       'Base TACO completa (463+ alimentos)',
@@ -424,7 +424,7 @@ export default function Landing() {
                     ))}
                   </div>
 
-                  <Link to="/register" className="block pt-2">
+                  <Link to="/register" className="block mt-6">
                     <Button size="xl" className="w-full bg-primary-foreground/10 text-primary-foreground border border-primary-foreground/20 hover:bg-primary-foreground/15 rounded-xl">
                       Começar teste grátis
                     </Button>
@@ -434,30 +434,30 @@ export default function Landing() {
             </motion.div>
 
             {/* Anual — destaque */}
-            <motion.div variants={scaleIn} custom={1} className="overflow-visible pt-4">
-              <Card className="rounded-3xl bg-primary-foreground/[0.08] backdrop-blur-xl border-2 border-primary/40 shimmer overflow-visible relative h-full shadow-[0_0_60px_-10px_hsl(170_60%_30%/0.25)]">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                  <span className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full gradient-gold text-primary-foreground text-xs font-bold shadow-lg tracking-wide whitespace-nowrap">
-                    <Crown className="w-3.5 h-3.5" /> MAIS POPULAR
-                  </span>
-                </div>
-                <CardContent className="p-7 space-y-5 pt-10">
-                  <div className="text-center space-y-1">
+            <motion.div variants={scaleIn} custom={1} className="relative pt-5">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
+                <span className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full gradient-gold text-primary-foreground text-xs font-bold shadow-lg tracking-wide whitespace-nowrap">
+                  <Crown className="w-3.5 h-3.5" /> MAIS POPULAR
+                </span>
+              </div>
+              <Card className="rounded-3xl bg-primary-foreground/[0.08] backdrop-blur-xl border-2 border-primary/40 shimmer relative h-full flex flex-col shadow-[0_0_60px_-10px_hsl(170_60%_30%/0.25)]">
+                <CardContent className="p-8 flex flex-col flex-1 pt-10">
+                  <div className="text-center space-y-2 mb-6">
                     <p className="text-xs font-semibold tracking-widest uppercase text-primary/80">Anual</p>
                     <div>
-                      <span className="text-5xl font-display font-bold text-primary-foreground">R$ 29<span className="text-3xl">,90</span></span>
+                      <span className="text-4xl font-display font-bold text-primary-foreground">R$ 29<span className="text-2xl">,90</span></span>
                       <span className="text-sm text-primary-foreground/40 font-medium">/mês</span>
                     </div>
                     <p className="text-xs text-primary/70 font-medium">
                       12× de R$ 29,90 = R$ 358,80/ano
                     </p>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 mt-2">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 mt-1">
                       <Sparkles className="w-3 h-3 text-primary" />
                       <span className="text-xs font-bold text-primary">Menos de R$ 1 por dia</span>
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-3 flex-1">
                     {[
                       'Tudo do plano Mensal',
                       'Economia de R$ ' + savingsPerYear + '/ano',
@@ -475,13 +475,13 @@ export default function Landing() {
                     ))}
                   </div>
 
-                  <Link to="/register" className="block pt-2">
+                  <Link to="/register" className="block mt-6">
                     <Button variant="premium" size="xl" className="w-full group">
                       Começar teste grátis
                       <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
-                  <p className="text-[10px] text-primary-foreground/25 text-center">3 dias grátis • Cancele a qualquer momento</p>
+                  <p className="text-[10px] text-primary-foreground/25 text-center mt-3">3 dias grátis • Cancele a qualquer momento</p>
                 </CardContent>
               </Card>
             </motion.div>
