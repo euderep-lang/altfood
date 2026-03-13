@@ -30,6 +30,7 @@ export default function Register() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showEmailSent, setShowEmailSent] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const update = (field: string, value: string) => {
     setForm(f => ({ ...f, [field]: value }));
