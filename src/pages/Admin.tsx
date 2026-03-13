@@ -624,22 +624,58 @@ export default function Admin() {
         </DialogContent>
       </Dialog>
 
-      {/* Upgrade confirmation */}
+      {/* Upgrade dialog with plan choice */}
       <AlertDialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen}>
         <AlertDialogContent className="rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Upgrade para Pro</AlertDialogTitle>
-            <AlertDialogDescription>
-              Deseja registrar o pagamento de <strong>R$ {PRO_PRICE.toFixed(2).replace('.', ',')}</strong> para <strong>{doctorToUpgrade?.name}</strong> no financeiro?
+            <AlertDialogDescription asChild>
+              <div className="space-y-4">
+                <p>Escolha o plano para <strong>{doctorToUpgrade?.name}</strong>:</p>
+                
+                {/* Plan selection */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setUpgradePlan('monthly')}
+                    className={`p-3 rounded-xl border-2 text-left transition-colors ${
+                      upgradePlan === 'monthly' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground'
+                    }`}
+                  >
+                    <p className="text-sm font-semibold text-foreground">Mensal</p>
+                    <p className="text-lg font-bold text-foreground">R$ {PRO_PRICE_MONTHLY.toFixed(2).replace('.', ',')}</p>
+                    <p className="text-xs text-muted-foreground">/mês</p>
+                  </button>
+                  <button
+                    onClick={() => setUpgradePlan('annual')}
+                    className={`p-3 rounded-xl border-2 text-left transition-colors ${
+                      upgradePlan === 'annual' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground'
+                    }`}
+                  >
+                    <p className="text-sm font-semibold text-foreground">Anual</p>
+                    <p className="text-lg font-bold text-foreground">R$ {PRO_PRICE_ANNUAL.toFixed(2).replace('.', ',')}</p>
+                    <p className="text-xs text-muted-foreground">R$ {(PRO_PRICE_ANNUAL / 12).toFixed(2).replace('.', ',')}/mês</p>
+                  </button>
+                </div>
+
+                {/* Register payment toggle */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-muted/50">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Registrar no financeiro?</p>
+                    <p className="text-xs text-muted-foreground">
+                      {upgradeRegisterPayment
+                        ? `Será registrado R$ ${(upgradePlan === 'annual' ? PRO_PRICE_ANNUAL : PRO_PRICE_MONTHLY).toFixed(2).replace('.', ',')}`
+                        : 'Nenhum valor será registrado'}
+                    </p>
+                  </div>
+                  <Switch checked={upgradeRegisterPayment} onCheckedChange={setUpgradeRegisterPayment} />
+                </div>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col sm:flex-row gap-2">
             <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
-            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', false)}>
-              Não, upgrade gratuito
-            </Button>
-            <Button size="sm" className="rounded-xl gap-1" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', true)}>
-              <DollarSign className="w-3 h-3" /> Sim, registrar pagamento
+            <Button size="sm" className="rounded-xl gap-1" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', upgradePlan, upgradeRegisterPayment)}>
+              <Crown className="w-3 h-3" /> Confirmar Upgrade
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
