@@ -30,14 +30,17 @@ function MaintenanceToggle() {
   const { data: isMaintenanceOn = false } = useQuery({
     queryKey: ['maintenance-mode'],
     queryFn: async () => {
-      const { data } = await supabase.from('site_settings' as any).select('value').eq('key', 'maintenance_mode').single();
-      return (data as any)?.value === 'true';
+      const { data } = await supabase.from('site_settings').select('value').eq('key', 'maintenance_mode').maybeSingle();
+      return data?.value === 'true';
     },
   });
 
   const toggleMutation = useMutation({
     mutationFn: async (enabled: boolean) => {
-      const { error } = await supabase.from('site_settings' as any).update({ value: String(enabled), updated_at: new Date().toISOString() } as any).eq('key', 'maintenance_mode');
+      const { error } = await supabase.from('site_settings').upsert(
+        { key: 'maintenance_mode', value: String(enabled), updated_at: new Date().toISOString() },
+        { onConflict: 'key' }
+      );
       if (error) throw error;
     },
     onSuccess: (_, enabled) => {
