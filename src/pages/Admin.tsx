@@ -144,6 +144,8 @@ export default function Admin() {
   const [doctorToDelete, setDoctorToDelete] = useState<any>(null);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [doctorToUpgrade, setDoctorToUpgrade] = useState<any>(null);
+  const [upgradePlan, setUpgradePlan] = useState<'monthly' | 'annual'>('monthly');
+  const [upgradeRegisterPayment, setUpgradeRegisterPayment] = useState(true);
 
   // Fetch all doctors
   const { data: doctors = [], isLoading: doctorsLoading } = useQuery({
