@@ -482,7 +482,7 @@ export default function Admin() {
         <Card className="rounded-2xl shadow-sm border-border/50">
           <CardHeader className="pb-3">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <CardTitle className="text-sm font-semibold text-foreground">Médicos cadastrados ({filtered.length})</CardTitle>
+              <CardTitle className="text-sm font-semibold text-foreground">Profissionais cadastrados ({filtered.length})</CardTitle>
               <div className="flex gap-2 w-full sm:w-auto">
                 <div className="relative flex-1 sm:w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
