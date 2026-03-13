@@ -397,7 +397,7 @@ export default function Landing() {
             {/* Mensal */}
             <motion.div variants={scaleIn} custom={0} className="pt-5">
               <div className="rounded-3xl bg-white/[0.05] backdrop-blur-xl border border-white/10 relative h-full flex flex-col overflow-hidden">
-                <CardContent className="p-8 flex flex-col flex-1">
+                <div className="p-8 flex flex-col flex-1">
                   <div className="text-center space-y-2 mb-6">
                     <p className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/40">Mensal</p>
                     <div>
