@@ -1,9 +1,10 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useDoctor } from '@/hooks/useDoctor';
-import { Loader2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 function isSubscriptionValid(doctor: any): boolean {
   if (!doctor) return false;
@@ -36,8 +37,18 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   // Don't block onboarding, pricing, or admin pages
   const isExempt = EXEMPT_ROUTES.some(r => location.pathname.startsWith(r)) || location.pathname.startsWith('/admin');
 
+  // No doctor profile exists — redirect to onboarding (exempt pages still allowed)
+  if (!doctor && !isExempt) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
   // If doctor exists, check subscription
   if (doctor && !isExempt && !isSubscriptionValid(doctor)) {
+    const handleLogout = async () => {
+      await supabase.auth.signOut();
+      window.location.href = '/login';
+    };
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <div className="max-w-sm w-full text-center space-y-6">
@@ -52,11 +63,16 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                 : 'Seu período de teste expirou ou sua assinatura está inativa. Assine para continuar usando o Altfood.'}
             </p>
           </div>
-          <Link to="/planos">
-            <Button className="rounded-xl h-11 px-8 bg-primary hover:bg-primary/90">
-              Ver planos
+          <div className="space-y-3">
+            <Link to="/planos">
+              <Button className="w-full rounded-xl h-11 px-8 bg-primary hover:bg-primary/90">
+                Ver planos
+              </Button>
+            </Link>
+            <Button variant="ghost" onClick={handleLogout} className="w-full rounded-xl gap-2 text-muted-foreground">
+              <LogOut className="w-4 h-4" /> Sair
             </Button>
-          </Link>
+          </div>
         </div>
       </div>
     );
