@@ -551,7 +551,7 @@ export default function Landing() {
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
                   Pare de calcular "100g de frango = Xg de patinho" no WhatsApp. Deixa o Altfood fazer isso por você. Teste grátis por 3 dias.
                 </p>
-                <Link to="/register">
+                <Link to="/register" className="pt-4 block">
                   <Button variant="premium" size="xl" className="group">
                     Quero meu tempo de volta
                     <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
