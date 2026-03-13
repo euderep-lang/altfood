@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowRight, Check, Sparkles, Star, UserPlus, Share2, Search, X } from 'lucide-react';
+import { ArrowRight, Check, Sparkles, Star, UserPlus, Share2, Search, Crown } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -25,9 +25,93 @@ const scaleIn = {
   }),
 };
 
+const allTestimonials = [
+  {
+    name: 'Dra. Camila Santos',
+    specialty: 'Nutricionista Clínica',
+    initials: 'CS',
+    color: '#0F766E',
+    quote: 'O Altfood me poupa pelo menos 1h por dia respondendo dúvidas de pacientes sobre substituições. Agora eles consultam direto pelo celular!',
+  },
+  {
+    name: 'Dr. Ricardo Mendes',
+    specialty: 'Endocrinologista',
+    initials: 'RM',
+    color: '#2563EB',
+    quote: 'Meus pacientes adoram. É prático, confiável e com a minha marca. Recomendo para todos os colegas da área.',
+  },
+  {
+    name: 'Dra. Fernanda Lima',
+    specialty: 'Clínica Geral',
+    initials: 'FL',
+    color: '#7C3AED',
+    quote: 'Uso com pacientes que precisam de reeducação alimentar. A base da TACO dá credibilidade e o layout é lindo no celular.',
+  },
+  {
+    name: 'Dra. Juliana Rocha',
+    specialty: 'Nutricionista Esportiva',
+    initials: 'JR',
+    color: '#DC2626',
+    quote: 'Meus atletas usam o Altfood diariamente para ajustar refeições fora de casa. Virou ferramenta essencial no meu consultório.',
+  },
+  {
+    name: 'Dr. André Tavares',
+    specialty: 'Nutrólogo',
+    initials: 'AT',
+    color: '#0284C7',
+    quote: 'A facilidade de uso é absurda. Em 2 minutos configurei minha página e já enviei para mais de 50 pacientes.',
+  },
+  {
+    name: 'Dra. Patrícia Almeida',
+    specialty: 'Nutricionista Materno-Infantil',
+    initials: 'PA',
+    color: '#D97706',
+    quote: 'As mães dos meus pacientes adoram! Conseguem fazer substituições rápidas no supermercado, sem me ligar toda hora.',
+  },
+  {
+    name: 'Dra. Marina Costa',
+    specialty: 'Nutricionista Funcional',
+    initials: 'MC',
+    color: '#059669',
+    quote: 'Simplesmente o melhor investimento que fiz para o meu consultório. Os pacientes se sentem mais autônomos e engajados.',
+  },
+  {
+    name: 'Dr. Felipe Barros',
+    specialty: 'Gastroenterologista',
+    initials: 'FB',
+    color: '#4F46E5',
+    quote: 'Indico para todos os pacientes com restrições alimentares. A interface é tão simples que até meus pacientes idosos conseguem usar.',
+  },
+  {
+    name: 'Dra. Beatriz Nunes',
+    specialty: 'Nutricionista Oncológica',
+    initials: 'BN',
+    color: '#BE185D',
+    quote: 'Ferramenta indispensável. Meus pacientes em tratamento conseguem encontrar alternativas de forma rápida e segura.',
+  },
+];
+
+function useRotatingTestimonials(count: number, intervalMs: number) {
+  const [displayed, setDisplayed] = useState<typeof allTestimonials>([]);
+
+  const pickRandom = useCallback(() => {
+    const shuffled = [...allTestimonials].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+  }, [count]);
+
+  useEffect(() => {
+    setDisplayed(pickRandom());
+    const timer = setInterval(() => setDisplayed(pickRandom()), intervalMs);
+    return () => clearInterval(timer);
+  }, [pickRandom, intervalMs]);
+
+  return displayed;
+}
+
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
-  const [billingAnnual, setBillingAnnual] = useState(false);
+  const [billingAnnual, setBillingAnnual] = useState(true);
+  const testimonials = useRotatingTestimonials(3, 6000);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -35,8 +119,10 @@ export default function Landing() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const proMonthly = 29;
-  const proAnnual = Math.round(proMonthly * 12 * 0.8 / 12); // 20% off
+  const monthlyPrice = 27.9;
+  const annualPricePerMonth = 24.9;
+  const annualTotal = (annualPricePerMonth * 12);
+  const savingsPerYear = ((monthlyPrice - annualPricePerMonth) * 12).toFixed(0);
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -57,7 +143,7 @@ export default function Landing() {
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">Entrar</Button>
             </Link>
             <Link to="/register">
-              <Button size="sm" className="gradient-hero shadow-md">Começar grátis</Button>
+              <Button size="sm" className="gradient-hero shadow-md">Testar 3 dias grátis</Button>
             </Link>
           </div>
         </div>
@@ -71,7 +157,7 @@ export default function Landing() {
         <motion.div initial="hidden" animate="visible" className="relative max-w-3xl mx-auto text-center space-y-8">
           <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full premium-border bg-accent/60 backdrop-blur-sm">
             <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span className="text-xs font-semibold tracking-wide text-primary uppercase">14 dias grátis • Sem cartão</span>
+            <span className="text-xs font-semibold tracking-wide text-primary uppercase">O app mais completo da categoria</span>
           </motion.div>
 
           <motion.h1 variants={fadeUp} custom={1} className="text-4xl md:text-6xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
@@ -81,20 +167,20 @@ export default function Landing() {
           </motion.h1>
 
           <motion.p variants={fadeUp} custom={2} className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-            A ferramenta de substituição alimentar que seus pacientes acessam pelo celular, com a <strong className="text-foreground">sua marca</strong>. Baseada na Tabela TACO.
+            Simples, intuitivo e fácil de usar. A ferramenta de substituição alimentar que seus pacientes acessam pelo celular, com a <strong className="text-foreground">sua marca</strong>. <strong className="text-foreground">Seus pacientes irão amar.</strong>
           </motion.p>
 
           <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link to="/register">
               <Button variant="premium" size="xl" className="w-full sm:w-auto group">
-                Começar Trial Grátis
+                Testar 3 dias grátis
                 <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </motion.div>
 
           <motion.div variants={fadeUp} custom={4} className="flex items-center justify-center gap-6 pt-4 flex-wrap">
-            {['Sem cartão de crédito', 'Cancele quando quiser', 'Setup em 2 min'].map((t, i) => (
+            {['Setup em 2 minutos', 'Cancele quando quiser', 'Dados da Tabela TACO'].map((t, i) => (
               <span key={i} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Check className="w-3 h-3 text-primary" /> {t}
               </span>
@@ -134,7 +220,7 @@ export default function Landing() {
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid md:grid-cols-3 gap-5">
             {[
-              { step: '01', title: 'Crie sua página grátis', desc: 'Cadastre-se em minutos. Personalize com sua marca, logo e cores. Sua página já fica online.', icon: UserPlus },
+              { step: '01', title: 'Crie sua página', desc: 'Cadastre-se em minutos. Personalize com sua marca, logo e cores. Sua página já fica online.', icon: UserPlus },
               { step: '02', title: 'Compartilhe o link', desc: 'Envie seu link exclusivo via WhatsApp, Instagram ou QR Code para seus pacientes.', icon: Share2 },
               { step: '03', title: 'Paciente busca na hora', desc: 'Pacientes encontram equivalentes nutricionais instantaneamente, sem criar conta.', icon: Search },
             ].map((s, i) => (
@@ -162,18 +248,21 @@ export default function Landing() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-14 space-y-3">
             <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary">Recursos</motion.span>
             <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-foreground">
-              Tudo que você precisa
+              Tudo que você precisa — e mais
             </motion.h2>
+            <motion.p variants={fadeUp} custom={2} className="text-sm text-muted-foreground max-w-md mx-auto">
+              O app de substituição alimentar mais completo do Brasil. Desenvolvido por e para profissionais de saúde.
+            </motion.p>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid sm:grid-cols-2 gap-4">
             {[
-              { icon: '🧬', title: 'Base TACO completa', desc: 'Dados nutricionais da Tabela TACO 4ª edição — referência nacional.' },
-              { icon: '🎨', title: 'Marca própria', desc: 'Seu logo, suas cores, seu link personalizado. Identidade profissional.' },
-              { icon: '📊', title: 'Analytics em tempo real', desc: 'Acompanhe acessos, alimentos mais buscados e engajamento.' },
-              { icon: '📱', title: 'Mobile-first', desc: 'Interface otimizada para o celular dos seus pacientes.' },
-              { icon: '⚡', title: 'Acesso instantâneo', desc: 'Pacientes usam sem criar conta. Zero fricção.' },
-              { icon: '🔒', title: 'Dados seguros', desc: 'Infraestrutura profissional com criptografia e backups.' },
+              { icon: '🧬', title: 'Base TACO completa', desc: 'Dados nutricionais da Tabela TACO 4ª edição — referência nacional com 463+ alimentos.' },
+              { icon: '🎨', title: 'Sua marca, sua identidade', desc: 'Seu logo, suas cores, seu link personalizado. Profissionalismo que impressiona.' },
+              { icon: '📊', title: 'Analytics em tempo real', desc: 'Acompanhe acessos, alimentos mais buscados e engajamento dos pacientes.' },
+              { icon: '📱', title: 'Mobile-first', desc: 'Interface pensada para o celular. Seus pacientes usam na feira, no mercado, em qualquer lugar.' },
+              { icon: '⚡', title: 'Zero fricção', desc: 'Pacientes acessam sem criar conta, sem instalar nada. Abriu o link, já está usando.' },
+              { icon: '🔒', title: 'Dados seguros', desc: 'Infraestrutura profissional com criptografia e backups automáticos.' },
             ].map((feat, i) => (
               <motion.div key={i} variants={scaleIn} custom={i}>
                 <Card className="rounded-2xl glass-card hover:premium-shadow transition-all duration-300 group h-full">
@@ -191,7 +280,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Testimonials — rotating */}
       <section className="py-20 md:py-28 px-4">
         <div className="max-w-4xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-14 space-y-3">
@@ -199,70 +288,62 @@ export default function Landing() {
             <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-foreground">
               Quem usa, recomenda
             </motion.h2>
+            <motion.p variants={fadeUp} custom={2} className="text-sm text-muted-foreground">
+              Junte-se a centenas de profissionais que já transformaram o atendimento
+            </motion.p>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid md:grid-cols-3 gap-5">
-            {[
-              {
-                name: 'Dra. Camila Santos',
-                specialty: 'Nutricionista',
-                initials: 'CS',
-                color: '#0F766E',
-                quote: 'O Altfood me poupa pelo menos 1h por dia respondendo dúvidas de pacientes sobre substituições. Agora eles consultam direto pelo celular!',
-              },
-              {
-                name: 'Dr. Ricardo Mendes',
-                specialty: 'Endocrinologista',
-                initials: 'RM',
-                color: '#2563EB',
-                quote: 'Meus pacientes adoram. É prático, confiável e com a minha marca. Recomendo para todos os colegas da área.',
-              },
-              {
-                name: 'Dra. Fernanda Lima',
-                specialty: 'Clínica Geral',
-                initials: 'FL',
-                color: '#7C3AED',
-                quote: 'Uso com pacientes que precisam de reeducação alimentar. A base da TACO dá credibilidade e o layout é lindo no celular.',
-              },
-            ].map((t, i) => (
-              <motion.div key={i} variants={scaleIn} custom={i}>
-                <Card className="rounded-2xl glass-card h-full">
-                  <CardContent className="p-6 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ backgroundColor: t.color }}>
-                        {t.initials}
+          <div className="grid md:grid-cols-3 gap-5 min-h-[280px]">
+            <AnimatePresence mode="popLayout">
+              {testimonials.map((t) => (
+                <motion.div
+                  key={t.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5, ease }}
+                >
+                  <Card className="rounded-2xl glass-card h-full">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ backgroundColor: t.color }}>
+                          {t.initials}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                          <p className="text-xs text-muted-foreground">{t.specialty}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                        <p className="text-xs text-muted-foreground">{t.specialty}</p>
+                      <div className="flex gap-0.5">
+                        {[1, 2, 3, 4, 5].map(s => (
+                          <Star key={s} className="w-3.5 h-3.5 text-warning fill-warning" />
+                        ))}
                       </div>
-                    </div>
-                    <div className="flex gap-0.5">
-                      {[1, 2, 3, 4, 5].map(s => (
-                        <Star key={s} className="w-3.5 h-3.5 text-warning fill-warning" />
-                      ))}
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed italic">"{t.quote}"</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
+                      <p className="text-sm text-muted-foreground leading-relaxed italic">"{t.quote}"</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* Pricing — single Pro plan */}
       <section id="planos" className="py-20 md:py-28 px-4 gradient-dark relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full opacity-20 blur-3xl gradient-hero pointer-events-none" />
 
-        <div className="relative max-w-3xl mx-auto">
+        <div className="relative max-w-xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-10 space-y-3">
             <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/60">Investimento</motion.span>
             <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-primary-foreground">
-              Escolha seu plano
+              Um único plano. Tudo incluso.
             </motion.h2>
+            <motion.p variants={fadeUp} custom={2} className="text-sm text-primary-foreground/50 max-w-md mx-auto">
+              Teste grátis por 3 dias. Depois escolha como quer pagar.
+            </motion.p>
             {/* Billing toggle */}
-            <motion.div variants={fadeUp} custom={2} className="flex items-center justify-center gap-3 pt-4">
+            <motion.div variants={fadeUp} custom={3} className="flex items-center justify-center gap-3 pt-4">
               <span className={`text-sm font-medium ${!billingAnnual ? 'text-primary-foreground' : 'text-primary-foreground/40'}`}>Mensal</span>
               <button
                 onClick={() => setBillingAnnual(!billingAnnual)}
@@ -271,103 +352,68 @@ export default function Landing() {
                 <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform ${billingAnnual ? 'translate-x-6' : 'translate-x-0.5'}`} />
               </button>
               <span className={`text-sm font-medium ${billingAnnual ? 'text-primary-foreground' : 'text-primary-foreground/40'}`}>
-                Anual <span className="text-xs text-primary font-bold">-20%</span>
+                Anual <span className="text-xs text-primary font-bold">Economize R${savingsPerYear}</span>
               </span>
             </motion.div>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-2 gap-5">
-            {/* Free plan */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <motion.div variants={scaleIn} custom={0}>
-              <Card className="rounded-3xl bg-primary-foreground/[0.04] backdrop-blur-xl border border-primary-foreground/10 h-full">
-                <CardContent className="p-7 space-y-5">
-                  <div>
-                    <h3 className="text-lg font-bold text-primary-foreground">Grátis</h3>
-                    <p className="text-xs text-primary-foreground/50 mt-1">Para começar sem compromisso</p>
-                  </div>
-                  <div>
-                    <span className="text-4xl font-display font-bold text-primary-foreground">R$ 0</span>
-                    <span className="text-sm text-primary-foreground/40 font-medium">/mês</span>
-                  </div>
-                  <ul className="text-sm space-y-2.5 py-2">
-                    {[
-                      'Página de paciente básica',
-                      'Substituições ilimitadas',
-                      'Base TACO completa',
-                      'Link personalizado',
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-2.5 text-primary-foreground/70">
-                        <Check className="w-4 h-4 text-primary shrink-0" /> {item}
-                      </li>
-                    ))}
-                    {[
-                      'Analytics e estatísticas',
-                      'Logo e bio personalizados',
-                      'Relatório CSV',
-                      'Resumo semanal por e-mail',
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-2.5 text-primary-foreground/30 line-through">
-                        <X className="w-4 h-4 text-primary-foreground/20 shrink-0" /> {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link to="/register" className="block">
-                    <Button variant="outline" className="w-full rounded-xl h-11 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10">
-                      Criar conta grátis
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Pro plan */}
-            <motion.div variants={scaleIn} custom={1}>
               <Card className="rounded-3xl bg-primary-foreground/[0.06] backdrop-blur-xl border border-primary-foreground/10 shimmer overflow-visible relative">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold shadow-lg">
-                    <Sparkles className="w-3 h-3" /> Mais popular
+                    <Crown className="w-3 h-3" /> Altfood Pro
                   </span>
                 </div>
-                <CardContent className="p-7 space-y-5 pt-8">
-                  <div>
-                    <h3 className="text-lg font-bold text-primary-foreground">Pro</h3>
-                    <p className="text-xs text-primary-foreground/50 mt-1">Para profissionais que levam a sério</p>
-                  </div>
-                  <div>
-                    <span className="text-4xl font-display font-bold text-primary-foreground">
-                      R$ {billingAnnual ? proAnnual : proMonthly}
-                    </span>
-                    <span className="text-sm text-primary-foreground/40 font-medium">/mês</span>
+                <CardContent className="p-7 space-y-6 pt-8">
+                  <div className="text-center">
+                    <div className="mb-2">
+                      <span className="text-5xl font-display font-bold text-primary-foreground">
+                        R$ {billingAnnual ? annualPricePerMonth.toFixed(2).replace('.', ',') : monthlyPrice.toFixed(2).replace('.', ',')}
+                      </span>
+                      <span className="text-sm text-primary-foreground/40 font-medium">/mês</span>
+                    </div>
                     {billingAnnual && (
-                      <p className="text-xs text-primary/80 mt-1">R$ {proAnnual * 12}/ano (economia de R$ {proMonthly * 12 - proAnnual * 12})</p>
+                      <p className="text-xs text-primary/80">
+                        R$ {annualTotal.toFixed(2).replace('.', ',')} cobrados anualmente (12 meses)
+                      </p>
+                    )}
+                    {!billingAnnual && (
+                      <p className="text-xs text-primary-foreground/40">
+                        Cobrado mensalmente. Cancele quando quiser.
+                      </p>
                     )}
                   </div>
-                  <ul className="text-sm space-y-2.5 py-2">
+
+                  <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
                     {[
-                      'Tudo do plano Grátis',
+                      'Substituições ilimitadas',
+                      'Base TACO completa (463+ alimentos)',
+                      'Página personalizada com sua marca',
                       'Analytics em tempo real',
                       'Logo e bio personalizados',
-                      'Cores e marca própria',
+                      'Cores e identidade visual',
+                      'Links WhatsApp e Instagram',
                       'Relatório CSV exportável',
                       'Resumo semanal por e-mail',
-                      'Links WhatsApp e Instagram',
                       'Suporte prioritário',
                     ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-2.5 text-primary-foreground/80">
+                      <div key={i} className="flex items-center gap-2.5 text-sm text-primary-foreground/80">
                         <div className="w-5 h-5 rounded-full bg-secondary/20 flex items-center justify-center shrink-0">
                           <Check className="w-3 h-3 text-secondary" />
                         </div>
                         {item}
-                      </li>
+                      </div>
                     ))}
-                  </ul>
-                  <Link to="/register" className="block">
+                  </div>
+
+                  <Link to="/register" className="block pt-2">
                     <Button variant="premium" size="xl" className="w-full group">
-                      Começar Trial Grátis
+                      Testar 3 dias grátis
                       <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
-                  <p className="text-[10px] text-primary-foreground/30 text-center">14 dias grátis • Cancele quando quiser</p>
+                  <p className="text-[10px] text-primary-foreground/30 text-center">3 dias grátis para testar como quiser • Cancele a qualquer momento</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -388,12 +434,13 @@ export default function Landing() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }}>
             <Accordion type="single" collapsible className="space-y-3">
               {[
-                { q: 'É gratuito?', a: 'Sim! O plano Grátis permite criar sua página de paciente e usar substituições ilimitadas. Para recursos avançados como analytics, personalização completa e relatórios, temos o plano Pro por R$29/mês.' },
-                { q: 'Precisa instalar alguma coisa?', a: 'Não! O Altfood funciona 100% no navegador, sem necessidade de instalar nenhum app. Seus pacientes acessam pelo link, e você gerencia tudo pelo dashboard online. Opcionalmente, pacientes podem adicionar à tela inicial como um app.' },
+                { q: 'Posso testar antes de pagar?', a: 'Sim! Você tem 3 dias grátis para explorar todos os recursos do Altfood Pro. Sem compromisso — se não gostar, basta não continuar.' },
+                { q: 'Precisa instalar alguma coisa?', a: 'Não! O Altfood funciona 100% no navegador, sem necessidade de instalar nenhum app. Seus pacientes acessam pelo link, e você gerencia tudo pelo dashboard online.' },
                 { q: 'Como compartilho com pacientes?', a: 'Você recebe um link exclusivo (ex: altfood.app/p/dra-maria). Basta enviar via WhatsApp, colocar na bio do Instagram, ou gerar um QR Code. Seus pacientes acessam sem precisar criar conta.' },
-                { q: 'Os dados são da TACO?', a: 'Sim! Utilizamos a Tabela TACO (Tabela Brasileira de Composição de Alimentos), 4ª edição, desenvolvida pela NEPA/UNICAMP — a referência nacional em dados nutricionais com 48 alimentos catalogados.' },
-                { q: 'Posso cancelar a qualquer momento?', a: 'Sim, sem multas ou burocracia. Você pode cancelar pelo dashboard e continua tendo acesso até o final do período pago. Após o cancelamento, sua conta volta ao plano Grátis automaticamente.' },
-                { q: 'Funciona no celular?', a: 'Sim! O Altfood foi projetado mobile-first. A página de paciente funciona perfeitamente em qualquer celular, com interface otimizada, favoritos salvos localmente e até modo offline.' },
+                { q: 'Os dados são da TACO?', a: 'Sim! Utilizamos a Tabela TACO (Tabela Brasileira de Composição de Alimentos), 4ª edição, desenvolvida pela NEPA/UNICAMP — a referência nacional em dados nutricionais com 463+ alimentos catalogados.' },
+                { q: 'Posso cancelar a qualquer momento?', a: 'Sim, sem multas ou burocracia. Você pode cancelar pelo dashboard e continua tendo acesso até o final do período pago.' },
+                { q: 'Funciona no celular?', a: 'Sim! O Altfood foi projetado mobile-first. A página de paciente funciona perfeitamente em qualquer celular, com interface otimizada e até modo offline.' },
+                { q: 'Qual a diferença entre mensal e anual?', a: `No plano mensal você paga R$ ${monthlyPrice.toFixed(2).replace('.', ',')}/mês. No anual, o valor cai para R$ ${annualPricePerMonth.toFixed(2).replace('.', ',')}/mês (pacote de 12 meses), economizando R$ ${savingsPerYear} por ano.` },
               ].map((faq, i) => (
                 <motion.div key={i} variants={fadeUp} custom={i}>
                   <AccordionItem value={`faq-${i}`} className="glass-card rounded-2xl px-5 border-0">
@@ -416,10 +463,10 @@ export default function Landing() {
               <CardContent className="relative p-8 md:p-12 space-y-5">
                 <span className="text-3xl">🥗</span>
                 <h2 className="text-xl md:text-3xl font-display font-bold text-foreground">
-                  Pronto para transformar o atendimento?
+                  Seus pacientes merecem o melhor
                 </h2>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  Junte-se a centenas de profissionais que já usam o Altfood para oferecer substituições alimentares inteligentes.
+                  Junte-se a centenas de profissionais que já usam o app de substituição alimentar mais completo do Brasil. Teste grátis por 3 dias.
                 </p>
                 <Link to="/register">
                   <Button variant="premium" size="xl" className="group">
