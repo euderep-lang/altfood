@@ -52,9 +52,12 @@
     --gradient-hero: linear-gradient(135deg, hsl(170 60% 30%), hsl(160 50% 42%), hsl(145 55% 48%));
     --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(170 60% 30% / 0.15) 0%, transparent 60%);
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(160 20% 98%) 100%);
-    --gradient-dark-section: linear-gradient(180deg, hsl(180 20% 8%) 0%, hsl(170 25% 12%) 100%);
+    --gradient-dark-section: linear-gradient(180deg, hsl(180 20% 5%) 0%, hsl(170 30% 8%) 50%, hsl(160 25% 6%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(42 80% 55%), hsl(38 85% 48%), hsl(32 90% 42%));
+    --gradient-gold-soft: linear-gradient(135deg, hsl(42 60% 70% / 0.15), hsl(38 70% 55% / 0.08));
     --shadow-premium: 0 4px 30px -4px hsl(170 60% 30% / 0.12), 0 1px 3px hsl(170 60% 30% / 0.06);
     --shadow-glow: 0 0 40px hsl(170 60% 30% / 0.2);
+    --shadow-luxury: 0 8px 40px -8px hsl(42 60% 40% / 0.2), 0 2px 8px hsl(42 60% 40% / 0.08);
   }
 
   .dark {
