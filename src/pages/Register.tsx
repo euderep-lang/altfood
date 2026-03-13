@@ -123,8 +123,14 @@ export default function Register() {
 
     setLoading(false);
 
-    // Exige confirmação de e-mail antes de criar o perfil profissional
-    await supabase.auth.signOut();
+    // Quando auto-confirm está ativo, a sessão vem no signUp e seguimos direto
+    if (authData.session) {
+      toast({ title: 'Conta criada com sucesso', description: 'Vamos finalizar seu perfil.' });
+      navigate('/onboarding', { replace: true });
+      return;
+    }
+
+    // Fallback para ambientes com confirmação por e-mail
     setShowEmailSent(true);
   };
 
