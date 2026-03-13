@@ -8,6 +8,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import GlobalLoadingBar from "@/components/GlobalLoadingBar";
 import CookieConsent from "@/components/CookieConsent";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import AdminRoute from "@/components/AdminRoute";
 import { lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
