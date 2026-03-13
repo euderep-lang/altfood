@@ -14,6 +14,7 @@ const sidebarNav = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/dashboard/stats', icon: BarChart3, label: 'Estatísticas' },
   { to: '/dashboard/profile', icon: User, label: 'Perfil' },
+  { to: '/dashboard/financeiro', icon: Wallet, label: 'Financeiro' },
   { to: '/dashboard/support', icon: HelpCircle, label: 'Suporte' },
 ];
 
