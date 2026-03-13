@@ -491,8 +491,8 @@ export default function Admin() {
                         <th className="text-left py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider">Nome</th>
                         <th className="text-left py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider hidden md:table-cell">E-mail</th>
                         <th className="text-center py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider">Plano</th>
+                        <th className="text-center py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider">Pagamento</th>
                         <th className="text-left py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider hidden lg:table-cell">Cadastro</th>
-                        <th className="text-left py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider hidden lg:table-cell">Última atividade</th>
                         <th className="text-right py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider">Ações</th>
                       </tr>
                     </thead>
@@ -505,8 +505,8 @@ export default function Admin() {
                           </td>
                           <td className="py-2.5 text-muted-foreground hidden md:table-cell">{d.email}</td>
                           <td className="py-2.5 text-center">{planBadge(d.subscription_status)}</td>
+                          <td className="py-2.5 text-center">{paymentBadge(d)}</td>
                           <td className="py-2.5 text-muted-foreground text-xs hidden lg:table-cell">{formatDate(d.created_at)}</td>
-                          <td className="py-2.5 text-muted-foreground text-xs hidden lg:table-cell">{formatDate(d.updated_at)}</td>
                           <td className="py-2.5 text-right">
                             <Button variant="ghost" size="sm" className="rounded-lg text-xs gap-1" onClick={() => { setSelectedDoctor(d); setDialogOpen(true); }}>
                               <ArrowUpRight className="w-3 h-3" /> Ver
