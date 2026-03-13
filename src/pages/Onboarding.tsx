@@ -162,9 +162,7 @@ export default function Onboarding() {
       <header className="border-b border-border bg-card px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Leaf className="w-4 h-4 text-primary-foreground" />
-            </div>
+            <AltfoodIcon size="sm" />
             <span className="font-bold text-foreground">Altfood</span>
           </div>
           <button onClick={skipStep} className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
