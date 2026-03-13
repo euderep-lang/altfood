@@ -194,6 +194,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </Link>
           );
         })}
+        <button
+          onClick={handleSignOut}
+          className="flex flex-col items-center gap-0.5 text-xs py-1 px-3 text-muted-foreground"
+        >
+          <span className="text-lg">🚪</span>
+          <span className="text-[10px] font-medium">Sair</span>
+        </button>
       </nav>
 
       <SupportWidget />

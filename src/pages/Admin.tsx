@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAdmin } from '@/hooks/useAdmin';
@@ -17,8 +17,10 @@ import { motion } from 'framer-motion';
 import {
   Users, Crown, Eye, TrendingUp, TrendingDown, RefreshCw, Download, Search,
   ChevronLeft, ChevronRight, ArrowUpRight, Loader2, Shield, DollarSign, MessageSquare, UtensilsCrossed, Tags,
-  Globe, Wrench, Database, AlertTriangle
+  Globe, Wrench, Database, AlertTriangle, Ban, Trash2, LogOut
 } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useAuth } from '@/hooks/useAuth';
 
 const PER_PAGE = 20;
 const PRO_PRICE = 27.90;
@@ -30,14 +32,17 @@ function MaintenanceToggle() {
   const { data: isMaintenanceOn = false } = useQuery({
     queryKey: ['maintenance-mode'],
     queryFn: async () => {
-      const { data } = await supabase.from('site_settings' as any).select('value').eq('key', 'maintenance_mode').single();
-      return (data as any)?.value === 'true';
+      const { data } = await supabase.from('site_settings').select('value').eq('key', 'maintenance_mode').maybeSingle();
+      return data?.value === 'true';
     },
   });
 
   const toggleMutation = useMutation({
     mutationFn: async (enabled: boolean) => {
-      const { error } = await supabase.from('site_settings' as any).update({ value: String(enabled), updated_at: new Date().toISOString() } as any).eq('key', 'maintenance_mode');
+      const { error } = await supabase.from('site_settings').upsert(
+        { key: 'maintenance_mode', value: String(enabled), updated_at: new Date().toISOString() },
+        { onConflict: 'key' }
+      );
       if (error) throw error;
     },
     onSuccess: (_, enabled) => {
@@ -124,14 +129,18 @@ function pctChange(current: number, previous: number) {
 
 export default function Admin() {
   const { isAdmin, loading: authLoading, user } = useAdmin();
+  const { signOut } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState('');
   const [planFilter, setPlanFilter] = useState<string>('all');
   const [page, setPage] = useState(1);
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [doctorToDelete, setDoctorToDelete] = useState<any>(null);
 
   // Fetch all doctors
   const { data: doctors = [], isLoading: doctorsLoading } = useQuery({
@@ -260,14 +269,69 @@ export default function Admin() {
     }
   };
 
+  const deleteDoctor = async (doctorId: string) => {
+    const { error } = await supabase.from('doctors').delete().eq('id', doctorId);
+    if (error) {
+      toast({ title: 'Erro ao excluir', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: '✅ Cadastro excluído' });
+      queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
+      setDialogOpen(false);
+      setDeleteConfirmOpen(false);
+      setDoctorToDelete(null);
+    }
+  };
+
+  const blockDoctor = async (doctorId: string) => {
+    const { error } = await supabase.from('doctors').update({ subscription_status: 'blocked' }).eq('id', doctorId);
+    if (error) {
+      toast({ title: 'Erro ao bloquear', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: '🚫 Usuário bloqueado' });
+      queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
+      setDialogOpen(false);
+    }
+  };
+
+  const unblockDoctor = async (doctorId: string) => {
+    const { error } = await supabase.from('doctors').update({ subscription_status: 'trial' }).eq('id', doctorId);
+    if (error) {
+      toast({ title: 'Erro ao desbloquear', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: '✅ Usuário desbloqueado' });
+      queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
+      setDialogOpen(false);
+    }
+  };
+
+  const handleAdminLogout = async () => {
+    await signOut();
+    navigate('/login');
+  };
+
+  const isPaymentOk = (d: any) => {
+    if (d.subscription_status === 'active') return true;
+    if (d.subscription_status === 'trial') {
+      return new Date(d.trial_ends_at) > new Date();
+    }
+    return false;
+  };
+
   const planBadge = (status: string) => {
     const map: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
       active: { label: 'Pro', variant: 'default' },
       trial: { label: 'Trial', variant: 'secondary' },
       inactive: { label: 'Inativo', variant: 'destructive' },
+      blocked: { label: 'Bloqueado', variant: 'destructive' },
     };
     const conf = map[status] || { label: status, variant: 'outline' as const };
     return <Badge variant={conf.variant}>{conf.label}</Badge>;
+  };
+
+  const paymentBadge = (d: any) => {
+    if (d.subscription_status === 'blocked') return <Badge variant="destructive">Bloqueado</Badge>;
+    if (isPaymentOk(d)) return <Badge variant="default" className="bg-green-600">Em dia</Badge>;
+    return <Badge variant="destructive">Pendente</Badge>;
   };
 
   const TrendArrow = ({ value }: { value: number }) => (
@@ -321,6 +385,9 @@ export default function Admin() {
             </Button>
             <Button variant="outline" size="sm" className="rounded-xl gap-2" onClick={exportCSV}>
               <Download className="w-4 h-4" /> CSV
+            </Button>
+            <Button variant="ghost" size="sm" className="rounded-xl gap-2 text-muted-foreground" onClick={handleAdminLogout}>
+              <LogOut className="w-4 h-4" /> Sair
             </Button>
           </div>
         </div>
@@ -401,12 +468,13 @@ export default function Admin() {
                   <SelectTrigger className="w-32 rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
-                    <SelectItem value="active">Pro</SelectItem>
-                    <SelectItem value="trial">Trial</SelectItem>
-                    <SelectItem value="inactive">Inativo</SelectItem>
-                  </SelectContent>
+                    <SelectContent>
+                      <SelectItem value="all">Todos</SelectItem>
+                      <SelectItem value="active">Pro</SelectItem>
+                      <SelectItem value="trial">Trial</SelectItem>
+                      <SelectItem value="inactive">Inativo</SelectItem>
+                      <SelectItem value="blocked">Bloqueado</SelectItem>
+                    </SelectContent>
                 </Select>
               </div>
             </div>
@@ -423,8 +491,8 @@ export default function Admin() {
                         <th className="text-left py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider">Nome</th>
                         <th className="text-left py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider hidden md:table-cell">E-mail</th>
                         <th className="text-center py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider">Plano</th>
+                        <th className="text-center py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider">Pagamento</th>
                         <th className="text-left py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider hidden lg:table-cell">Cadastro</th>
-                        <th className="text-left py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider hidden lg:table-cell">Última atividade</th>
                         <th className="text-right py-2.5 font-semibold text-xs text-muted-foreground uppercase tracking-wider">Ações</th>
                       </tr>
                     </thead>
@@ -437,8 +505,8 @@ export default function Admin() {
                           </td>
                           <td className="py-2.5 text-muted-foreground hidden md:table-cell">{d.email}</td>
                           <td className="py-2.5 text-center">{planBadge(d.subscription_status)}</td>
+                          <td className="py-2.5 text-center">{paymentBadge(d)}</td>
                           <td className="py-2.5 text-muted-foreground text-xs hidden lg:table-cell">{formatDate(d.created_at)}</td>
-                          <td className="py-2.5 text-muted-foreground text-xs hidden lg:table-cell">{formatDate(d.updated_at)}</td>
                           <td className="py-2.5 text-right">
                             <Button variant="ghost" size="sm" className="rounded-lg text-xs gap-1" onClick={() => { setSelectedDoctor(d); setDialogOpen(true); }}>
                               <ArrowUpRight className="w-3 h-3" /> Ver
@@ -486,20 +554,33 @@ export default function Admin() {
                   <div><span className="text-muted-foreground">Slug:</span><p className="font-medium text-foreground">/p/{selectedDoctor.slug}</p></div>
                   <div><span className="text-muted-foreground">Cadastro:</span><p className="font-medium text-foreground">{formatDate(selectedDoctor.created_at)}</p></div>
                   <div><span className="text-muted-foreground">Plano:</span><p className="font-medium">{planBadge(selectedDoctor.subscription_status)}</p></div>
+                  <div><span className="text-muted-foreground">Pagamento:</span><p className="font-medium">{paymentBadge(selectedDoctor)}</p></div>
                   <div><span className="text-muted-foreground">Trial até:</span><p className="font-medium text-foreground">{formatDate(selectedDoctor.trial_ends_at)}</p></div>
                 </div>
               </div>
               <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
-                {selectedDoctor.subscription_status !== 'active' && (
+                {selectedDoctor.subscription_status !== 'active' && selectedDoctor.subscription_status !== 'blocked' && (
                   <Button size="sm" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'active')}>
                     <Crown className="w-3 h-3" /> Upgrade para Pro
                   </Button>
                 )}
                 {selectedDoctor.subscription_status === 'active' && (
-                  <Button size="sm" variant="destructive" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'inactive')}>
-                    Downgrade para Free
+                  <Button size="sm" variant="outline" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'inactive')}>
+                    Remover Pro
                   </Button>
                 )}
+                {selectedDoctor.subscription_status !== 'blocked' ? (
+                  <Button size="sm" variant="outline" className="rounded-xl gap-1 text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => blockDoctor(selectedDoctor.id)}>
+                    <Ban className="w-3 h-3" /> Bloquear
+                  </Button>
+                ) : (
+                  <Button size="sm" variant="outline" className="rounded-xl gap-1" onClick={() => unblockDoctor(selectedDoctor.id)}>
+                    Desbloquear
+                  </Button>
+                )}
+                <Button size="sm" variant="destructive" className="rounded-xl gap-1" onClick={() => { setDoctorToDelete(selectedDoctor); setDeleteConfirmOpen(true); }}>
+                  <Trash2 className="w-3 h-3" /> Excluir
+                </Button>
                 <Button size="sm" variant="outline" className="rounded-xl" onClick={() => setDialogOpen(false)}>
                   Fechar
                 </Button>
@@ -508,6 +589,24 @@ export default function Admin() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Delete confirmation */}
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent className="rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir cadastro</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir <strong>{doctorToDelete?.name}</strong>? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
+            <AlertDialogAction className="rounded-xl bg-destructive hover:bg-destructive/90" onClick={() => doctorToDelete && deleteDoctor(doctorToDelete.id)}>
+              Excluir permanentemente
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
