@@ -42,7 +42,7 @@ function getBadges(doctor: any, pageViewCount: number, referralCount: number) {
 }
 
 export default function Dashboard() {
-  const { data: doctor } = useDoctor();
+  const { data: doctor, isLoading: doctorLoading, isError: doctorError } = useDoctor();
   const { toast } = useToast();
 
   const { data: pageViews = [] } = useQuery({
@@ -104,7 +104,7 @@ export default function Dashboard() {
     return GROWTH_TIPS[weekNumber % GROWTH_TIPS.length];
   }, []);
 
-  if (!doctor) {
+  if (doctorLoading) {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
@@ -112,6 +112,10 @@ export default function Dashboard() {
         </div>
       </DashboardLayout>
     );
+  }
+
+  if (!doctor || doctorError) {
+    return <Navigate to="/onboarding" replace />;
   }
 
   if (!(doctor as any).onboarding_completed) {
