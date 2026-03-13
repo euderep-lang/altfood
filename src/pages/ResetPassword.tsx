@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Leaf } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
 
 export default function ResetPassword() {
