@@ -48,8 +48,8 @@ Deno.serve(async (req) => {
     }
 
     const isAnnual = plan === 'annual';
-    const price = isAnnual ? 290 : 29;
-    const title = isAnnual ? 'Altfood Pro — Anual' : 'Altfood Pro — Mensal';
+    const price = isAnnual ? 298.80 : 27.90;
+    const title = isAnnual ? 'Altfood Pro — Anual (12 meses)' : 'Altfood Pro — Mensal';
     const origin = req.headers.get('origin') || 'https://altfood.com';
 
     const preference = {
