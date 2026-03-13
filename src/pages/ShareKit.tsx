@@ -49,7 +49,7 @@ export default function ShareKit() {
       <div className="max-w-2xl mx-auto space-y-6">
         <motion.div initial="hidden" animate="visible" custom={0} variants={fadeUp}>
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">Kit de indicação</h1>
-          <p className="text-sm text-muted-foreground mt-1">Compartilhe com colegas e ganhe 1 mês de Pro por indicação.</p>
+          <p className="text-sm text-muted-foreground mt-1">Compartilhe com colegas e ganhe 1 mês de Pro quando eles assinarem.</p>
         </motion.div>
 
         {/* What is Altfood */}
@@ -120,7 +120,7 @@ export default function ShareKit() {
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-foreground">Seu link de indicação</h2>
-                  <p className="text-xs text-muted-foreground">Quem se cadastrar por aqui ganha 30 dias de trial</p>
+                  <p className="text-xs text-muted-foreground">Você ganha 1 mês grátis quando o indicado assinar um plano</p>
                 </div>
               </div>
 
@@ -180,8 +180,8 @@ export default function ShareKit() {
               <div className="space-y-3">
                 {[
                   { step: '1', text: 'Compartilhe seu link de indicação com colegas médicos ou nutricionistas.' },
-                  { step: '2', text: 'Quando eles se cadastrarem pelo seu link, ganham 30 dias de trial (ao invés de 14).' },
-                  { step: '3', text: 'Você ganha 1 mês de Pro grátis por cada indicação completada.' },
+                  { step: '2', text: 'Quando eles se cadastrarem pelo seu link, ganham 14 dias de trial gratuito.' },
+                  { step: '3', text: 'Quando o indicado comprar um plano Pro, você ganha 1 mês de Pro grátis automaticamente!' },
                 ].map(s => (
                   <div key={s.step} className="flex items-start gap-3">
                     <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
