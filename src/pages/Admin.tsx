@@ -386,6 +386,9 @@ export default function Admin() {
             <Button variant="outline" size="sm" className="rounded-xl gap-2" onClick={exportCSV}>
               <Download className="w-4 h-4" /> CSV
             </Button>
+            <Button variant="ghost" size="sm" className="rounded-xl gap-2 text-muted-foreground" onClick={handleAdminLogout}>
+              <LogOut className="w-4 h-4" /> Sair
+            </Button>
           </div>
         </div>
       </header>
