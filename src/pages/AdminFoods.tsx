@@ -29,7 +29,7 @@ const emptyFood = {
 };
 
 export default function AdminFoods() {
-  const { isAdmin, loading: authLoading } = useAdmin();
+  const { isAdmin, loading: authLoading, user } = useAdmin();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
