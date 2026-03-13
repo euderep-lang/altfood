@@ -285,9 +285,9 @@ export default function Admin() {
     setDoctorToUpgrade(null);
   };
 
-  const deleteDoctor = async (doctorId: string) => {
+  const deleteDoctor = async (doctor: { id: string; user_id: string; email: string }) => {
     const { data, error } = await supabase.functions.invoke<{ error?: string }>('admin-delete-professional', {
-      body: { doctor_id: doctorId },
+      body: { doctor_id: doctor.id, user_id: doctor.user_id, email: doctor.email },
     });
 
     if (error || data?.error) {
@@ -651,7 +651,7 @@ export default function Admin() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
-            <AlertDialogAction className="rounded-xl bg-destructive hover:bg-destructive/90" onClick={() => doctorToDelete && deleteDoctor(doctorToDelete.id)}>
+            <AlertDialogAction className="rounded-xl bg-destructive hover:bg-destructive/90" onClick={() => doctorToDelete && deleteDoctor(doctorToDelete)}>
               Excluir permanentemente
             </AlertDialogAction>
           </AlertDialogFooter>
