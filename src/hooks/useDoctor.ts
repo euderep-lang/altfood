@@ -9,14 +9,17 @@ export function useDoctor() {
     queryKey: ['doctor', user?.id],
     queryFn: async () => {
       if (!user) return null;
+
       const { data, error } = await supabase
         .from('doctors')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
+
       if (error) throw error;
       return data;
     },
     enabled: !!user,
+    retry: false,
   });
 }

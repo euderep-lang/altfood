@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { generateSlug } from '@/lib/helpers';
 import {
   ArrowRight, Copy, Check, Share2, Loader2, Upload, Palette,
   MessageCircle, ExternalLink, SkipForward,
@@ -50,6 +51,8 @@ export default function Onboarding() {
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [creatingDoctor, setCreatingDoctor] = useState(false);
+  const [creationError, setCreationError] = useState<string | null>(null);
 
   // Step 2 fields
   const [specialty, setSpecialty] = useState('');
@@ -59,6 +62,52 @@ export default function Onboarding() {
 
   // Step 3
   const [primaryColor, setPrimaryColor] = useState('#0F766E');
+
+  useEffect(() => {
+    if (!user || isLoading || doctor || creatingDoctor || creationError) return;
+
+    let cancelled = false;
+
+    const createDoctorProfile = async () => {
+      setCreatingDoctor(true);
+
+      const baseName = ((user.user_metadata?.name as string) || user.email?.split('@')[0] || 'Profissional').trim();
+      const doctorEmail = (user.email || `${user.id}@altfood.app`).toLowerCase();
+      let slug = generateSlug(baseName);
+      if (!slug) slug = `profissional-${user.id.slice(0, 8)}`;
+
+      const { data: existingSlugs } = await supabase.from('doctors').select('slug').like('slug', `${slug}%`);
+      if (existingSlugs?.some((row) => row.slug === slug)) {
+        let idx = 2;
+        while (existingSlugs.some((row) => row.slug === `${slug}-${idx}`)) idx += 1;
+        slug = `${slug}-${idx}`;
+      }
+
+      const { error } = await supabase.from('doctors').insert({
+        user_id: user.id,
+        name: baseName,
+        email: doctorEmail,
+        slug,
+      });
+
+      if (cancelled) return;
+
+      if (error) {
+        setCreationError(error.message);
+        setCreatingDoctor(false);
+        return;
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ['doctor', user.id] });
+      setCreatingDoctor(false);
+    };
+
+    createDoctorProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user, isLoading, doctor, creatingDoctor, creationError, queryClient]);
 
   useEffect(() => {
     if (doctor) {
@@ -76,10 +125,32 @@ export default function Onboarding() {
     }
   }, [doctor, navigate]);
 
-  if (isLoading || !doctor) {
+  if (isLoading || creatingDoctor || (!doctor && !creationError)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="animate-spin h-8 w-8 text-primary" />
+      </div>
+    );
+  }
+
+  if (creationError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="max-w-md w-full rounded-2xl border-border/50">
+          <CardContent className="p-6 text-center space-y-4">
+            <h1 className="text-lg font-bold text-foreground">Não conseguimos preparar seu cadastro</h1>
+            <p className="text-sm text-muted-foreground">{creationError}</p>
+            <Button
+              className="rounded-xl"
+              onClick={() => {
+                setCreationError(null);
+                queryClient.invalidateQueries({ queryKey: ['doctor', user?.id] });
+              }}
+            >
+              Tentar novamente
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
