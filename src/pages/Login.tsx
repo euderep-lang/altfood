@@ -34,7 +34,11 @@ export default function Login() {
     const { data: authData, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     if (error) {
       setLoading(false);
-      toast({ title: 'Erro ao entrar', description: 'E-mail ou senha incorretos.', variant: 'destructive' });
+      if (error.message?.includes('Email not confirmed')) {
+        toast({ title: 'E-mail não confirmado', description: 'Verifique sua caixa de entrada e confirme seu e-mail antes de entrar.', variant: 'destructive' });
+      } else {
+        toast({ title: 'Erro ao entrar', description: 'E-mail ou senha incorretos.', variant: 'destructive' });
+      }
       return;
     }
 
