@@ -211,20 +211,65 @@ export default function Landing() {
       </div>
 
       {/* Como Funciona */}
+      {/* Pain point section */}
+      <section className="py-16 md:py-24 px-4 bg-destructive/[0.03]">
+        <div className="max-w-3xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-10 space-y-3">
+            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-destructive/70">Isso te parece familiar?</motion.span>
+            <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-foreground">
+              Seu WhatsApp agora:
+            </motion.h2>
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} className="max-w-md mx-auto space-y-3 mb-10">
+            {[
+              { msg: 'Dra., não achei frango. Posso trocar por quê? 🤔', time: '14:32' },
+              { msg: 'E 100g de frango é quanto de patinho?', time: '14:33' },
+              { msg: 'Ah e o arroz? Posso usar quinoa?', time: '14:33' },
+              { msg: 'E a batata doce acabou tb kkkk', time: '14:34' },
+            ].map((bubble, i) => (
+              <motion.div key={i} variants={fadeUp} custom={i} className="flex justify-start">
+                <div className="bg-card border border-border rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] shadow-sm">
+                  <p className="text-sm text-foreground">{bubble.msg}</p>
+                  <p className="text-[10px] text-muted-foreground text-right mt-1">{bubble.time}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center space-y-4">
+            <motion.p variants={fadeUp} custom={0} className="text-base md:text-lg text-muted-foreground">
+              Multiplique isso por <strong className="text-foreground">20, 50, 100 pacientes.</strong>
+              <br />
+              Quanto do seu dia vai embora respondendo substituição?
+            </motion.p>
+            <motion.div variants={fadeUp} custom={1}>
+              <Link to="/register">
+                <Button variant="premium" size="xl" className="group">
+                  Resolver isso agora
+                  <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Como Funciona */}
       <section id="como-funciona" className="py-20 md:py-28 px-4">
         <div className="max-w-4xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-14 space-y-3">
             <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary">Como funciona</motion.span>
             <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-foreground">
-              Simples como deve ser
+              3 passos e nunca mais responda substituição
             </motion.h2>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid md:grid-cols-3 gap-5">
             {[
-              { step: '01', title: 'Crie sua página', desc: 'Cadastre-se em minutos. Personalize com sua marca, logo e cores. Sua página já fica online.', icon: UserPlus },
-              { step: '02', title: 'Compartilhe o link', desc: 'Envie seu link exclusivo via WhatsApp, Instagram ou QR Code para seus pacientes.', icon: Share2 },
-              { step: '03', title: 'Paciente busca na hora', desc: 'Pacientes encontram equivalentes nutricionais instantaneamente, sem criar conta.', icon: Search },
+              { step: '01', title: 'Crie sua página', desc: 'Cadastre-se em 2 minutos. Personalize com sua marca, logo e cores. Sua página já fica online.', icon: UserPlus },
+              { step: '02', title: 'Compartilhe o link', desc: 'Envie para seus pacientes via WhatsApp, Instagram ou QR Code. "Qualquer dúvida de troca, acessa aqui."', icon: Share2 },
+              { step: '03', title: 'Paciente se vira sozinho 😎', desc: '"Não tem frango?" O paciente abre o link, digita frango e descobre que pode usar patinho, em segundos.', icon: Search },
             ].map((s, i) => (
               <motion.div key={i} variants={scaleIn} custom={i}>
                 <Card className="rounded-3xl glass-card hover:glow-shadow transition-all duration-500 group h-full">
