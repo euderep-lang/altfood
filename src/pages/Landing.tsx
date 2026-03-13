@@ -119,10 +119,10 @@ export default function Landing() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const monthlyPrice = 27.9;
-  const annualPricePerMonth = 24.9;
-  const annualTotal = (annualPricePerMonth * 12);
-  const savingsPerYear = ((monthlyPrice - annualPricePerMonth) * 12).toFixed(0);
+  const monthlyPrice = 47.9;
+  const annualTotal = 358.8;
+  const annualPricePerMonth = (annualTotal / 12);
+  const savingsPerYear = ((monthlyPrice * 12) - annualTotal).toFixed(0);
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
