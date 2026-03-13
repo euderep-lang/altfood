@@ -72,64 +72,87 @@ export default function Onboarding() {
 
     const createDoctorProfile = async () => {
       setCreatingDoctor(true);
+      setCreationError(null);
 
-      const metadataName = typeof user.user_metadata?.name === 'string' ? user.user_metadata.name : '';
-      const metadataSpecialty = typeof user.user_metadata?.specialty === 'string' ? user.user_metadata.specialty : '';
-      const metadataDocument = typeof user.user_metadata?.document_number === 'string' ? user.user_metadata.document_number : '';
-      const metadataReferralCode = typeof user.user_metadata?.referral_code === 'string' ? user.user_metadata.referral_code : '';
+      try {
+        const metadataName = typeof user.user_metadata?.name === 'string' ? user.user_metadata.name : '';
+        const metadataSpecialty = typeof user.user_metadata?.specialty === 'string' ? user.user_metadata.specialty : '';
+        const metadataDocument = typeof user.user_metadata?.document_number === 'string' ? user.user_metadata.document_number : '';
+        const metadataReferralCode = typeof user.user_metadata?.referral_code === 'string' ? user.user_metadata.referral_code : '';
 
-      const baseName = (metadataName || user.email?.split('@')[0] || 'Profissional').trim();
-      const doctorEmail = (user.email || `${user.id}@altfood.app`).toLowerCase();
-      let slug = generateSlug(baseName);
-      if (!slug) slug = `profissional-${user.id.slice(0, 8)}`;
+        const baseName = (metadataName || user.email?.split('@')[0] || 'Profissional').trim();
+        const doctorEmail = (user.email || `${user.id}@altfood.app`).toLowerCase();
+        let slug = generateSlug(baseName);
+        if (!slug) slug = `profissional-${user.id.slice(0, 8)}`;
 
-      const { data: existingSlugs } = await supabase.from('doctors').select('slug').like('slug', `${slug}%`);
-      if (existingSlugs?.some((row) => row.slug === slug)) {
-        let idx = 2;
-        while (existingSlugs.some((row) => row.slug === `${slug}-${idx}`)) idx += 1;
-        slug = `${slug}-${idx}`;
-      }
+        const { data: existingSlugs, error: slugError } = await supabase
+          .from('doctors')
+          .select('slug')
+          .like('slug', `${slug}%`);
 
-      const referralCode = (metadataReferralCode || localStorage.getItem('altfood_referral_code') || '').trim().toLowerCase();
-      let referredBy: string | null = null;
+        if (slugError) throw slugError;
 
-      if (referralCode) {
-        const { data: referrerDoctor } = await supabase.from('doctors').select('id').eq('referral_code', referralCode).maybeSingle();
-        referredBy = referrerDoctor?.id || null;
-      }
+        if (existingSlugs?.some((row) => row.slug === slug)) {
+          let idx = 2;
+          while (existingSlugs.some((row) => row.slug === `${slug}-${idx}`)) idx += 1;
+          slug = `${slug}-${idx}`;
+        }
 
-      const { data: insertedDoctor, error } = await supabase.from('doctors').insert({
-        user_id: user.id,
-        name: baseName,
-        email: doctorEmail,
-        slug,
-        specialty: metadataSpecialty || 'Nutricionista',
-        document_number: metadataDocument || null,
-        referred_by: referredBy,
-      }).select('id').single();
+        let referralCode = metadataReferralCode;
+        if (!referralCode) {
+          try {
+            referralCode = localStorage.getItem('altfood_referral_code') || '';
+          } catch {
+            referralCode = '';
+          }
+        }
+        referralCode = referralCode.trim().toLowerCase();
 
-      if (cancelled) return;
+        let referredBy: string | null = null;
+        if (referralCode) {
+          const { data: referrerDoctor, error: referrerError } = await supabase
+            .from('doctors')
+            .select('id')
+            .eq('referral_code', referralCode)
+            .maybeSingle();
 
-      if (error) {
-        setCreationError(error.message);
-        setCreatingDoctor(false);
-        return;
-      }
+          if (referrerError) throw referrerError;
+          referredBy = referrerDoctor?.id || null;
+        }
 
-      if (referredBy && insertedDoctor?.id) {
-        const { error: referralError } = await supabase.from('referrals').insert({
-          referrer_id: referredBy,
-          referred_id: insertedDoctor.id,
-          status: 'pending',
+        const { data: createResult, error: createError } = await supabase.functions.invoke('create-doctor-profile', {
+          body: {
+            name: baseName,
+            email: doctorEmail,
+            specialty: metadataSpecialty || 'Nutricionista',
+            document_number: metadataDocument || null,
+            slug,
+            referred_by: referredBy,
+          },
         });
 
-        if (!referralError) {
-          localStorage.removeItem('altfood_referral_code');
+        if (createError) throw createError;
+        if (createResult?.error) throw new Error(createResult.error);
+
+        if (referralCode) {
+          try {
+            localStorage.removeItem('altfood_referral_code');
+          } catch {
+            // no-op
+          }
+        }
+
+        await queryClient.invalidateQueries({ queryKey: ['doctor', user.id] });
+        await queryClient.refetchQueries({ queryKey: ['doctor', user.id], type: 'active' });
+      } catch (error) {
+        if (cancelled) return;
+        console.error('[Onboarding] createDoctorProfile failed:', error);
+        setCreationError(error instanceof Error ? error.message : 'Erro inesperado ao concluir cadastro.');
+      } finally {
+        if (!cancelled) {
+          setCreatingDoctor(false);
         }
       }
-
-      await queryClient.invalidateQueries({ queryKey: ['doctor', user.id] });
-      setCreatingDoctor(false);
     };
 
     createDoctorProfile();

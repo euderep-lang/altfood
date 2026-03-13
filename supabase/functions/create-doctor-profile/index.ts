@@ -5,70 +5,173 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+type CreateDoctorPayload = {
+  name?: string;
+  email?: string;
+  document_number?: string | null;
+  specialty?: string;
+  slug?: string;
+  referred_by?: string | null;
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
-  try {
-    const { user_id, name, email, document_number, specialty, slug, referred_by } = await req.json();
+  const supabaseAdmin = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+  );
 
-    if (!user_id || !name || !email || !slug) {
+  try {
+    const authHeader = req.headers.get("Authorization");
+    const token = authHeader?.replace("Bearer ", "").trim();
+
+    if (!token) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { data: authData, error: authError } = await supabaseAdmin.auth.getUser(token);
+    if (authError || !authData.user) {
+      return new Response(
+        JSON.stringify({ error: "Invalid session" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const payload = (await req.json()) as CreateDoctorPayload;
+    const user = authData.user;
+    const metadata = (user.user_metadata ?? {}) as Record<string, unknown>;
+
+    const userId = user.id;
+    const email = (user.email || payload.email || "").trim().toLowerCase();
+    const name = (payload.name || (typeof metadata.name === "string" ? metadata.name : "") || email.split("@")[0] || "Profissional").trim();
+    const specialty = (payload.specialty || (typeof metadata.specialty === "string" ? metadata.specialty : "") || "Nutricionista").trim();
+    const documentNumber = payload.document_number ?? (typeof metadata.document_number === "string" ? metadata.document_number : null);
+    const slug = payload.slug?.trim() || "";
+    const referredBy = payload.referred_by ?? null;
+
+    if (!email || !name) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    const { data: existingByUser, error: existingByUserError } = await supabaseAdmin
+      .from("doctors")
+      .select("id")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (existingByUserError) {
+      return new Response(
+        JSON.stringify({ error: existingByUserError.message }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (existingByUser?.id) {
+      return new Response(
+        JSON.stringify({ success: true, id: existingByUser.id, source: "existing_user" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { data: existingByEmail, error: existingByEmailError } = await supabaseAdmin
+      .from("doctors")
+      .select("id, referred_by")
+      .ilike("email", email)
+      .maybeSingle();
+
+    if (existingByEmailError) {
+      return new Response(
+        JSON.stringify({ error: existingByEmailError.message }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (existingByEmail?.id) {
+      const { data: relinkedDoctor, error: relinkError } = await supabaseAdmin
+        .from("doctors")
+        .update({
+          user_id: userId,
+          name,
+          specialty,
+          document_number: documentNumber || null,
+          updated_at: new Date().toISOString(),
+          referred_by: existingByEmail.referred_by ?? referredBy,
+        })
+        .eq("id", existingByEmail.id)
+        .select("id")
+        .single();
+
+      if (relinkError) {
+        return new Response(
+          JSON.stringify({ error: relinkError.message }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({ success: true, id: relinkedDoctor.id, linked_existing: true }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (!slug) {
+      return new Response(
+        JSON.stringify({ error: "Missing required fields" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const insertData: Record<string, unknown> = {
-      user_id,
+      user_id: userId,
       name,
       email,
-      document_number: document_number || null,
-      specialty: specialty || "Nutricionista",
+      document_number: documentNumber || null,
+      specialty,
       slug,
     };
 
-    if (referred_by) {
-      insertData.referred_by = referred_by;
+    if (referredBy) {
+      insertData.referred_by = referredBy;
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data: insertedDoctor, error: insertError } = await supabaseAdmin
       .from("doctors")
       .insert(insertData)
       .select("id")
       .single();
 
-    if (error) {
-      console.error("Insert error:", error);
+    if (insertError) {
       return new Response(
-        JSON.stringify({ error: error.message }),
+        JSON.stringify({ error: insertError.message }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Create referral record if applicable
-    if (referred_by && data) {
+    if (referredBy && insertedDoctor) {
       await supabaseAdmin.from("referrals").insert({
-        referrer_id: referred_by,
-        referred_id: data.id,
+        referrer_id: referredBy,
+        referred_id: insertedDoctor.id,
         status: "pending",
       }).catch(() => {});
     }
 
     return new Response(
-      JSON.stringify({ success: true, id: data.id }),
+      JSON.stringify({ success: true, id: insertedDoctor.id, created: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("Error:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : "Unexpected error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
