@@ -571,6 +571,8 @@ export default function Profile() {
         </CardContent>
       </Card>
 
+      {/* Subscription Manager */}
+      <SubscriptionManager doctor={doctor as any} />
 
       <Card className="rounded-2xl shadow-sm">
         <CardContent className="p-5 space-y-4">
