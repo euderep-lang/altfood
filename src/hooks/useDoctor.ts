@@ -21,6 +21,8 @@ export function useDoctor() {
       return data?.[0] ?? null;
     },
     enabled: !!user,
-    retry: false,
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
+    staleTime: 1000 * 30,
   });
 }
