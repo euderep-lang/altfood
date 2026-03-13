@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useAdmin } from '@/hooks/useAdmin';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,8 +13,6 @@ import { useToast } from '@/hooks/use-toast';
 import { formatDate } from '@/lib/helpers';
 import { ArrowLeft, Loader2, CheckCircle, Clock, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const ADMIN_EMAIL = 'carine@dracarinecassol.com.br';
 
 interface Ticket {
   id: string;
