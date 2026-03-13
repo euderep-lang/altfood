@@ -3,7 +3,8 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Leaf, ArrowRight, Check, Sparkles, Star, UserPlus, Share2, Search, X } from 'lucide-react';
+import { ArrowRight, Check, Sparkles, Star, UserPlus, Share2, Search, X } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { useState, useEffect } from 'react';
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
