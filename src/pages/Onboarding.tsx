@@ -43,7 +43,7 @@ function ConfettiPiece({ delay, x }: { delay: number; x: number }) {
 
 export default function Onboarding() {
   const { user } = useAuth();
-  const { data: doctor, isLoading } = useDoctor();
+  const { data: doctor, isLoading, error: doctorError, refetch: refetchDoctor } = useDoctor();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { toast } = useToast();
