@@ -1,0 +1,1 @@
+ALTER TABLE public.doctors ALTER COLUMN trial_ends_at SET DEFAULT (now() + interval '3 days');
