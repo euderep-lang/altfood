@@ -20,7 +20,7 @@ import type { Database } from '@/integrations/supabase/types';
 type Food = Database['public']['Tables']['foods']['Row'];
 type FoodCategory = Database['public']['Tables']['food_categories']['Row'];
 
-const ADMIN_EMAIL = 'carine@dracarinecassol.com.br';
+const PER_PAGE = 20;
 const PER_PAGE = 20;
 
 const emptyFood = {

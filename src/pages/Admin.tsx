@@ -123,7 +123,7 @@ function pctChange(current: number, previous: number) {
 }
 
 export default function Admin() {
-  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading, user } = useAdmin();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -132,8 +132,6 @@ export default function Admin() {
   const [page, setPage] = useState(1);
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const isAdmin = !!user && user.email === ADMIN_EMAIL;
 
   // Fetch all doctors
   const { data: doctors = [], isLoading: doctorsLoading } = useQuery({

@@ -27,14 +27,12 @@ interface Ticket {
 }
 
 export default function AdminSupport() {
-  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading } = useAdmin();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [reply, setReply] = useState('');
-
-  const isAdmin = !!user && user.email === ADMIN_EMAIL;
 
   const { data: tickets = [], isLoading } = useQuery({
     queryKey: ['admin-tickets'],

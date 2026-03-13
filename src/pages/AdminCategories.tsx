@@ -18,7 +18,7 @@ import type { Database } from '@/integrations/supabase/types';
 
 type FoodCategory = Database['public']['Tables']['food_categories']['Row'];
 
-const ADMIN_EMAIL = 'carine@dracarinecassol.com.br';
+const emptyCategory = { name: '', icon: '🍽️', color: '#0F766E' };
 
 const emptyCategory = { name: '', icon: '🍽️', color: '#0F766E' };
 
