@@ -210,9 +210,7 @@ export default function Onboarding() {
               <motion.div key="step0" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.3 }}>
                 <Card className="rounded-2xl shadow-lg border-border/50">
                   <CardContent className="p-8 text-center space-y-6">
-                    <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
-                      <Leaf className="w-10 h-10 text-primary" />
-                    </div>
+                    <AltfoodIcon size="xl" className="mx-auto" />
                     <div>
                       <h1 className="text-2xl font-bold text-foreground">
                         Bem-vindo ao Altfood, {firstName}! 🎉
