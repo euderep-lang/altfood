@@ -4,7 +4,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Copy, MessageCircle, Leaf, Loader2, ExternalLink, Gift, Check } from 'lucide-react';
+import { Copy, MessageCircle, Loader2, ExternalLink, Gift, Check } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
