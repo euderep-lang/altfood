@@ -129,14 +129,18 @@ function pctChange(current: number, previous: number) {
 
 export default function Admin() {
   const { isAdmin, loading: authLoading, user } = useAdmin();
+  const { signOut } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState('');
   const [planFilter, setPlanFilter] = useState<string>('all');
   const [page, setPage] = useState(1);
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [doctorToDelete, setDoctorToDelete] = useState<any>(null);
 
   // Fetch all doctors
   const { data: doctors = [], isLoading: doctorsLoading } = useQuery({
