@@ -396,7 +396,7 @@ export default function Landing() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-2 gap-8 items-stretch">
             {/* Mensal */}
             <motion.div variants={scaleIn} custom={0} className="pt-5">
-              <Card className="rounded-3xl bg-primary-foreground/[0.05] backdrop-blur-xl border border-primary-foreground/10 relative h-full flex flex-col">
+              <Card className="rounded-3xl !bg-primary-foreground/[0.05] backdrop-blur-xl border border-primary-foreground/10 relative h-full flex flex-col !shadow-none overflow-hidden">
                 <CardContent className="p-8 flex flex-col flex-1">
                   <div className="text-center space-y-2 mb-6">
                     <p className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/40">Mensal</p>
@@ -440,7 +440,7 @@ export default function Landing() {
                   <Crown className="w-3.5 h-3.5" /> MAIS POPULAR
                 </span>
               </div>
-              <Card className="rounded-3xl bg-primary-foreground/[0.08] backdrop-blur-xl border-2 border-primary/40 shimmer relative h-full flex flex-col shadow-[0_0_60px_-10px_hsl(170_60%_30%/0.25)]">
+              <Card className="rounded-3xl !bg-primary-foreground/[0.08] backdrop-blur-xl border-2 border-primary/40 shimmer relative h-full flex flex-col shadow-[0_0_60px_-10px_hsl(170_60%_30%/0.25)] overflow-hidden">
                 <CardContent className="p-8 flex flex-col flex-1 pt-10">
                   <div className="text-center space-y-2 mb-6">
                     <p className="text-xs font-semibold tracking-widest uppercase text-primary/80">Anual</p>
