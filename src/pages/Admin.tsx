@@ -576,7 +576,7 @@ export default function Admin() {
               </div>
               <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
                 {selectedDoctor.subscription_status !== 'active' && selectedDoctor.subscription_status !== 'blocked' && (
-                  <Button size="sm" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'active')}>
+                  <Button size="sm" className="rounded-xl gap-1" onClick={() => { setDoctorToUpgrade(selectedDoctor); setUpgradeDialogOpen(true); }}>
                     <Crown className="w-3 h-3" /> Upgrade para Pro
                   </Button>
                 )}
