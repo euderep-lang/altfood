@@ -7,9 +7,32 @@ const corsHeaders = {
 
 type DeleteProfessionalPayload = {
   doctor_id?: string;
+  user_id?: string;
+  email?: string;
 };
 
 const AUTH_USER_NOT_FOUND_MESSAGES = ["User not found", "not found"];
+
+const normalize = (value?: string) => value?.trim() || undefined;
+
+async function findUserIdByEmail(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  email: string
+): Promise<string | null> {
+  let page = 1;
+  const perPage = 200;
+
+  while (true) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+    if (error) throw new Error(error.message);
+
+    const foundUser = data.users.find((user) => user.email?.toLowerCase() === email.toLowerCase());
+    if (foundUser) return foundUser.id;
+
+    if (data.users.length < perPage) return null;
+    page += 1;
+  }
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -67,36 +90,48 @@ Deno.serve(async (req) => {
     }
 
     const payload = (await req.json()) as DeleteProfessionalPayload;
-    const doctorId = payload?.doctor_id?.trim();
+    const doctorId = normalize(payload?.doctor_id);
+    const userIdFromPayload = normalize(payload?.user_id);
+    const emailFromPayload = normalize(payload?.email)?.toLowerCase();
 
-    if (!doctorId) {
-      return new Response(JSON.stringify({ error: "doctor_id is required" }), {
+    if (!doctorId && !userIdFromPayload && !emailFromPayload) {
+      return new Response(JSON.stringify({ error: "doctor_id, user_id or email is required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const { data: selectedDoctor, error: selectedDoctorError } = await supabaseAdmin
-      .from("doctors")
-      .select("id, user_id")
-      .eq("id", doctorId)
-      .maybeSingle();
+    let targetUserId = userIdFromPayload ?? null;
 
-    if (selectedDoctorError) {
-      return new Response(JSON.stringify({ error: selectedDoctorError.message }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (doctorId) {
+      const { data: selectedDoctor, error: selectedDoctorError } = await supabaseAdmin
+        .from("doctors")
+        .select("id, user_id")
+        .eq("id", doctorId)
+        .maybeSingle();
+
+      if (selectedDoctorError) {
+        return new Response(JSON.stringify({ error: selectedDoctorError.message }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      if (selectedDoctor) {
+        targetUserId = selectedDoctor.user_id;
+      }
     }
 
-    if (!selectedDoctor) {
-      return new Response(JSON.stringify({ error: "Professional not found" }), {
+    if (!targetUserId && emailFromPayload) {
+      targetUserId = await findUserIdByEmail(supabaseAdmin, emailFromPayload);
+    }
+
+    if (!targetUserId) {
+      return new Response(JSON.stringify({ error: "Professional/Auth user not found" }), {
         status: 404,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    const targetUserId = selectedDoctor.user_id;
 
     const { data: userDoctors, error: userDoctorsError } = await supabaseAdmin
       .from("doctors")
