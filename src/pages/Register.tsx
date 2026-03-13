@@ -72,11 +72,20 @@ export default function Register() {
     const cleanName = sanitize(form.name);
     const cleanEmail = form.email.trim().toLowerCase();
     const cleanDoc = sanitize(form.documentNumber);
+    const referralCode = localStorage.getItem('altfood_referral_code')?.trim().toLowerCase() || null;
 
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: cleanEmail,
       password: form.password,
-      options: { emailRedirectTo: window.location.origin }
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: {
+          name: cleanName,
+          specialty: form.specialty,
+          document_number: cleanDoc || null,
+          referral_code: referralCode,
+        },
+      },
     });
 
     if (authError || !authData.user) {
