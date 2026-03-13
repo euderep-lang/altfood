@@ -30,8 +30,11 @@ export default function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
+
     setLoading(true);
-    const { data: authData, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const { data: authData, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
     if (error) {
       setLoading(false);
       if (error.message?.includes('Email not confirmed')) {
@@ -43,13 +46,18 @@ export default function Login() {
     }
 
     // Check if doctor profile exists
-    const { data: doctor } = await supabase
+    const { data: doctor, error: doctorError } = await supabase
       .from('doctors')
       .select('subscription_status, trial_ends_at')
       .eq('user_id', authData.user.id)
       .maybeSingle();
 
     setLoading(false);
+
+    if (doctorError) {
+      toast({ title: 'Erro ao carregar perfil', description: 'Tente novamente em instantes.', variant: 'destructive' });
+      return;
+    }
 
     if (!doctor) {
       // No profile — sign out and send to register
