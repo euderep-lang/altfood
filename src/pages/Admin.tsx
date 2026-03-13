@@ -468,12 +468,13 @@ export default function Admin() {
                   <SelectTrigger className="w-32 rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
-                    <SelectItem value="active">Pro</SelectItem>
-                    <SelectItem value="trial">Trial</SelectItem>
-                    <SelectItem value="inactive">Inativo</SelectItem>
-                  </SelectContent>
+                    <SelectContent>
+                      <SelectItem value="all">Todos</SelectItem>
+                      <SelectItem value="active">Pro</SelectItem>
+                      <SelectItem value="trial">Trial</SelectItem>
+                      <SelectItem value="inactive">Inativo</SelectItem>
+                      <SelectItem value="blocked">Bloqueado</SelectItem>
+                    </SelectContent>
                 </Select>
               </div>
             </div>
