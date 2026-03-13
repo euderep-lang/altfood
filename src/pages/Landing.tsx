@@ -31,63 +31,63 @@ const allTestimonials = [
     specialty: 'Nutricionista Clínica',
     initials: 'CS',
     color: '#0F766E',
-    quote: 'O Altfood me poupa pelo menos 1h por dia respondendo dúvidas de pacientes sobre substituições. Agora eles consultam direto pelo celular!',
+    quote: 'Eu perdia pelo menos 1h por dia respondendo "Dra., posso trocar o frango por quê?". Agora meus pacientes resolvem sozinhos pelo Altfood.',
   },
   {
     name: 'Dr. Ricardo Mendes',
     specialty: 'Endocrinologista',
     initials: 'RM',
     color: '#2563EB',
-    quote: 'Meus pacientes adoram. É prático, confiável e com a minha marca. Recomendo para todos os colegas da área.',
+    quote: 'Toda hora chegava mensagem: "e o arroz, posso trocar?" "e a batata?". Mandei o link do Altfood e acabou. Simples assim.',
   },
   {
     name: 'Dra. Fernanda Lima',
     specialty: 'Clínica Geral',
     initials: 'FL',
     color: '#7C3AED',
-    quote: 'Uso com pacientes que precisam de reeducação alimentar. A base da TACO dá credibilidade e o layout é lindo no celular.',
+    quote: 'Meus pacientes adoram. Estão no mercado, não acham o alimento e já consultam a troca pelo celular. Não me ligam mais pra isso.',
   },
   {
     name: 'Dra. Juliana Rocha',
     specialty: 'Nutricionista Esportiva',
     initials: 'JR',
     color: '#DC2626',
-    quote: 'Meus atletas usam o Altfood diariamente para ajustar refeições fora de casa. Virou ferramenta essencial no meu consultório.',
+    quote: 'Meus atletas precisam trocar alimentos no dia a dia o tempo todo. O Altfood virou extensão do meu consultório.',
   },
   {
     name: 'Dr. André Tavares',
     specialty: 'Nutrólogo',
     initials: 'AT',
     color: '#0284C7',
-    quote: 'A facilidade de uso é absurda. Em 2 minutos configurei minha página e já enviei para mais de 50 pacientes.',
+    quote: 'Em 2 minutos configurei minha página. No mesmo dia, 3 pacientes já usaram sem me mandar mensagem. Melhor investimento do ano.',
   },
   {
     name: 'Dra. Patrícia Almeida',
     specialty: 'Nutricionista Materno-Infantil',
     initials: 'PA',
     color: '#D97706',
-    quote: 'As mães dos meus pacientes adoram! Conseguem fazer substituições rápidas no supermercado, sem me ligar toda hora.',
+    quote: 'As mães me mandavam áudio de 3 minutos perguntando substituição. Agora elas consultam no Altfood e me mandam "obrigada" 😂.',
   },
   {
     name: 'Dra. Marina Costa',
     specialty: 'Nutricionista Funcional',
     initials: 'MC',
     color: '#059669',
-    quote: 'Simplesmente o melhor investimento que fiz para o meu consultório. Os pacientes se sentem mais autônomos e engajados.',
+    quote: 'Antes eu ficava no WhatsApp calculando "100g de frango = Xg de patinho". Agora o paciente vê isso sozinho. Minha agenda agradece.',
   },
   {
     name: 'Dr. Felipe Barros',
     specialty: 'Gastroenterologista',
     initials: 'FB',
     color: '#4F46E5',
-    quote: 'Indico para todos os pacientes com restrições alimentares. A interface é tão simples que até meus pacientes idosos conseguem usar.',
+    quote: 'Pacientes com restrições alimentares me bombardeavam com dúvidas. O Altfood dá autonomia pra eles e tranquilidade pra mim.',
   },
   {
     name: 'Dra. Beatriz Nunes',
     specialty: 'Nutricionista Oncológica',
     initials: 'BN',
     color: '#BE185D',
-    quote: 'Ferramenta indispensável. Meus pacientes em tratamento conseguem encontrar alternativas de forma rápida e segura.',
+    quote: 'Ferramenta indispensável. Meus pacientes em tratamento conseguem trocar alimentos de forma rápida quando o paladar muda.',
   },
 ];
 
@@ -157,17 +157,19 @@ export default function Landing() {
         <motion.div initial="hidden" animate="visible" className="relative max-w-3xl mx-auto text-center space-y-8">
           <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full premium-border bg-accent/60 backdrop-blur-sm">
             <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span className="text-xs font-semibold tracking-wide text-primary uppercase">O app mais completo da categoria</span>
+            <span className="text-xs font-semibold tracking-wide text-primary uppercase">Chega de responder "posso trocar o frango?"</span>
           </motion.div>
 
           <motion.h1 variants={fadeUp} custom={1} className="text-4xl md:text-6xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-            Seus pacientes perguntam.
+            Quanto vale sua hora
             <br />
-            <span className="text-gradient">O Altfood responde.</span>
+            <span className="text-gradient">respondendo paciente?</span>
           </motion.h1>
 
           <motion.p variants={fadeUp} custom={2} className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-            Simples, intuitivo e fácil de usar. A ferramenta de substituição alimentar que seus pacientes acessam pelo celular, com a <strong className="text-foreground">sua marca</strong>. <strong className="text-foreground">Seus pacientes irão amar.</strong>
+            <em>"Dra., não tem frango. Posso trocar por quê?"</em> — <em>"E o arroz?"</em> — <em>"E a batata?"</em> 😅
+            <br className="hidden md:block" />
+            O <strong className="text-foreground">Altfood</strong> responde por você. Seu paciente consulta na hora, pelo celular, com a <strong className="text-foreground">sua marca</strong>.
           </motion.p>
 
           <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
@@ -209,20 +211,65 @@ export default function Landing() {
       </div>
 
       {/* Como Funciona */}
+      {/* Pain point section */}
+      <section className="py-16 md:py-24 px-4 bg-destructive/[0.03]">
+        <div className="max-w-3xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-10 space-y-3">
+            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-destructive/70">Isso te parece familiar?</motion.span>
+            <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-foreground">
+              Seu WhatsApp agora:
+            </motion.h2>
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} className="max-w-md mx-auto space-y-3 mb-10">
+            {[
+              { msg: 'Dra., não achei frango. Posso trocar por quê? 🤔', time: '14:32' },
+              { msg: 'E 100g de frango é quanto de patinho?', time: '14:33' },
+              { msg: 'Ah e o arroz? Posso usar quinoa?', time: '14:33' },
+              { msg: 'E a batata doce acabou tb kkkk', time: '14:34' },
+            ].map((bubble, i) => (
+              <motion.div key={i} variants={fadeUp} custom={i} className="flex justify-start">
+                <div className="bg-card border border-border rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] shadow-sm">
+                  <p className="text-sm text-foreground">{bubble.msg}</p>
+                  <p className="text-[10px] text-muted-foreground text-right mt-1">{bubble.time}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center space-y-4">
+            <motion.p variants={fadeUp} custom={0} className="text-base md:text-lg text-muted-foreground">
+              Multiplique isso por <strong className="text-foreground">20, 50, 100 pacientes.</strong>
+              <br />
+              Quanto do seu dia vai embora respondendo substituição?
+            </motion.p>
+            <motion.div variants={fadeUp} custom={1}>
+              <Link to="/register">
+                <Button variant="premium" size="xl" className="group">
+                  Resolver isso agora
+                  <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Como Funciona */}
       <section id="como-funciona" className="py-20 md:py-28 px-4">
         <div className="max-w-4xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-14 space-y-3">
             <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary">Como funciona</motion.span>
             <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-foreground">
-              Simples como deve ser
+              3 passos e nunca mais responda substituição
             </motion.h2>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid md:grid-cols-3 gap-5">
             {[
-              { step: '01', title: 'Crie sua página', desc: 'Cadastre-se em minutos. Personalize com sua marca, logo e cores. Sua página já fica online.', icon: UserPlus },
-              { step: '02', title: 'Compartilhe o link', desc: 'Envie seu link exclusivo via WhatsApp, Instagram ou QR Code para seus pacientes.', icon: Share2 },
-              { step: '03', title: 'Paciente busca na hora', desc: 'Pacientes encontram equivalentes nutricionais instantaneamente, sem criar conta.', icon: Search },
+              { step: '01', title: 'Crie sua página', desc: 'Cadastre-se em 2 minutos. Personalize com sua marca, logo e cores. Sua página já fica online.', icon: UserPlus },
+              { step: '02', title: 'Compartilhe o link', desc: 'Envie para seus pacientes via WhatsApp, Instagram ou QR Code. "Qualquer dúvida de troca, acessa aqui."', icon: Share2 },
+              { step: '03', title: 'Paciente se vira sozinho 😎', desc: '"Não tem frango?" O paciente abre o link, digita frango e descobre que pode usar patinho, em segundos.', icon: Search },
             ].map((s, i) => (
               <motion.div key={i} variants={scaleIn} custom={i}>
                 <Card className="rounded-3xl glass-card hover:glow-shadow transition-all duration-500 group h-full">
@@ -242,27 +289,28 @@ export default function Landing() {
       </section>
 
       {/* Features */}
+      {/* Features */}
       <section className="py-20 md:py-28 px-4 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-accent/30 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-14 space-y-3">
-            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary">Recursos</motion.span>
+            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary">Por que funciona</motion.span>
             <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-foreground">
-              Tudo que você precisa — e mais
+              Seu tempo de volta. Seu paciente autônomo.
             </motion.h2>
             <motion.p variants={fadeUp} custom={2} className="text-sm text-muted-foreground max-w-md mx-auto">
-              O app de substituição alimentar mais completo do Brasil. Desenvolvido por e para profissionais de saúde.
+              Em vez de responder "100g de frango = Xg de patinho" no WhatsApp, seu paciente descobre sozinho — com dados confiáveis da TACO.
             </motion.p>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid sm:grid-cols-2 gap-4">
             {[
-              { icon: '🧬', title: 'Base TACO completa', desc: 'Dados nutricionais da Tabela TACO 4ª edição — referência nacional com 463+ alimentos.' },
-              { icon: '🎨', title: 'Sua marca, sua identidade', desc: 'Seu logo, suas cores, seu link personalizado. Profissionalismo que impressiona.' },
-              { icon: '📊', title: 'Analytics em tempo real', desc: 'Acompanhe acessos, alimentos mais buscados e engajamento dos pacientes.' },
-              { icon: '📱', title: 'Mobile-first', desc: 'Interface pensada para o celular. Seus pacientes usam na feira, no mercado, em qualquer lugar.' },
-              { icon: '⚡', title: 'Zero fricção', desc: 'Pacientes acessam sem criar conta, sem instalar nada. Abriu o link, já está usando.' },
-              { icon: '🔒', title: 'Dados seguros', desc: 'Infraestrutura profissional com criptografia e backups automáticos.' },
+              { icon: '⏱️', title: 'Recupere 1h+ por dia', desc: 'Chega de pausar consulta para responder "posso trocar frango por quê?" no WhatsApp. O app responde por você.' },
+              { icon: '🧬', title: 'Base TACO completa', desc: '463+ alimentos com dados da Tabela TACO 4ª edição. Equivalência nutricional precisa e confiável.' },
+              { icon: '🎨', title: 'Sua marca, sua identidade', desc: 'Seu logo, suas cores, seu link. O paciente vê a SUA página, não um app genérico.' },
+              { icon: '📱', title: 'Funciona na feira e no mercado', desc: 'O paciente está no mercado sem frango? Abre o link no celular e descobre a troca na hora.' },
+              { icon: '⚡', title: 'Zero fricção pro paciente', desc: 'Sem criar conta, sem instalar app. Abriu o link, digitou o alimento, pronto.' },
+              { icon: '📊', title: 'Saiba o que perguntam', desc: 'Veja quais alimentos seus pacientes mais buscam. Dados que guiam seu atendimento.' },
             ].map((feat, i) => (
               <motion.div key={i} variants={scaleIn} custom={i}>
                 <Card className="rounded-2xl glass-card hover:premium-shadow transition-all duration-300 group h-full">
@@ -455,22 +503,23 @@ export default function Landing() {
       </section>
 
       {/* CTA */}
+      {/* CTA */}
       <section className="py-16 md:py-20 px-4">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="max-w-2xl mx-auto text-center">
           <motion.div variants={scaleIn} custom={0}>
             <Card className="rounded-3xl glass-card premium-border overflow-hidden relative">
               <div className="absolute inset-0 gradient-glow pointer-events-none" />
               <CardContent className="relative p-8 md:p-12 space-y-5">
-                <span className="text-3xl">🥗</span>
+                <span className="text-3xl">📱</span>
                 <h2 className="text-xl md:text-3xl font-display font-bold text-foreground">
-                  Seus pacientes merecem o melhor
+                  Quanto tempo você perdeu hoje respondendo substituição?
                 </h2>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  Junte-se a centenas de profissionais que já usam o app de substituição alimentar mais completo do Brasil. Teste grátis por 3 dias.
+                  Pare de calcular "100g de frango = Xg de patinho" no WhatsApp. Deixa o Altfood fazer isso por você. Teste grátis por 3 dias.
                 </p>
                 <Link to="/register">
                   <Button variant="premium" size="xl" className="group">
-                    Começar Agora
+                    Quero meu tempo de volta
                     <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>

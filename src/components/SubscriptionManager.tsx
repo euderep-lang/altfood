@@ -263,26 +263,40 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
               >
                 <DialogHeader>
                   <DialogTitle className="text-xl flex items-center gap-2">
-                    <span className="text-2xl">😢</span> Tem certeza que quer sair?
+                    <span className="text-2xl">📱</span> Voltar a responder no WhatsApp?
                   </DialogTitle>
                   <DialogDescription className="text-sm pt-2">
-                    Sentiremos sua falta! Antes de cancelar, veja o que você vai perder:
+                    Lembra como era antes? Paciente mandando mensagem atrás de mensagem...
                   </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-3">
+                <div className="bg-muted/50 rounded-xl p-4 space-y-2.5">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Seu WhatsApp sem o Altfood:</p>
                   {[
-                    { emoji: '📊', text: 'Analytics em tempo real da sua página' },
-                    { emoji: '🎨', text: 'Personalização completa (logo, cores, bio)' },
-                    { emoji: '🔗', text: 'Links de WhatsApp e Instagram integrados' },
-                    { emoji: '📧', text: 'Resumo semanal por e-mail' },
-                    { emoji: '🥗', text: 'Acesso à base completa com 463+ alimentos' },
-                    { emoji: '⚡', text: 'Substituições ilimitadas para seus pacientes' },
+                    { msg: '"Dra., não tem frango. Posso trocar por quê?"', time: '14:32' },
+                    { msg: '"E 100g de frango é quanto de patinho?"', time: '14:33' },
+                    { msg: '"Ah e o arroz, posso usar quinoa?"', time: '14:34' },
+                    { msg: '"E a batata doce acabou tb kkkk"', time: '14:35' },
+                  ].map((bubble) => (
+                    <div key={bubble.msg} className="bg-card border border-border rounded-xl rounded-tl-sm px-3 py-2">
+                      <p className="text-xs text-foreground">{bubble.msg}</p>
+                      <p className="text-[9px] text-muted-foreground text-right">{bubble.time}</p>
+                    </div>
+                  ))}
+                  <p className="text-xs text-muted-foreground italic pt-1">× 20, 50, 100 pacientes... todo dia.</p>
+                </div>
+
+                <div className="bg-destructive/5 border border-destructive/20 rounded-xl p-4 space-y-2">
+                  <p className="text-sm font-medium text-foreground">Ao cancelar, você perde:</p>
+                  {[
+                    '⏱️ 1h+ por dia que o Altfood economiza respondendo pacientes',
+                    '📱 Pacientes resolvendo substituições sozinhos, sem te incomodar',
+                    '📊 Analytics de quais alimentos seus pacientes mais buscam',
+                    '🎨 Sua página personalizada com sua marca',
                   ].map((item) => (
-                    <div key={item.text} className="flex items-center gap-3 bg-destructive/5 rounded-xl px-4 py-2.5">
-                      <span className="text-lg">{item.emoji}</span>
-                      <span className="text-sm text-foreground">{item.text}</span>
-                      <X className="w-4 h-4 text-destructive ml-auto shrink-0" />
+                    <div key={item} className="flex items-start gap-2">
+                      <X className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
+                      <span className="text-xs text-foreground">{item}</span>
                     </div>
                   ))}
                 </div>
@@ -290,7 +304,7 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
                 <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
                   <p className="text-sm font-medium text-foreground">💡 Que tal trocar para o plano anual?</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Economize 11% pagando anualmente — por apenas R$ 24,90/mês.
+                    Por apenas R$ 24,90/mês você continua livre de responder substituição no WhatsApp. Economize 11%.
                   </p>
                   <Link to="/planos">
                     <Button size="sm" className="mt-3 rounded-lg text-xs bg-primary hover:bg-primary/90 w-full">
@@ -305,7 +319,7 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
                     className="flex-1 rounded-xl h-11"
                     onClick={() => setShowCancelModal(false)}
                   >
-                    Quero continuar Pro! 🎉
+                    Quero meu tempo de volta! 🎉
                   </Button>
                   <Button
                     variant="ghost"
