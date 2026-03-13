@@ -9,11 +9,15 @@ export function useAdmin() {
     queryKey: ['user-role-admin', user?.id],
     queryFn: async () => {
       if (!user) return false;
-      const { data, error } = await supabase.rpc('has_role', {
+      // Use raw rpc call with type assertion since has_role isn't in generated types
+      const { data, error } = await (supabase.rpc as any)('has_role', {
         _user_id: user.id,
         _role: 'admin',
       });
-      if (error) return false;
+      if (error) {
+        console.error('Admin role check failed:', error.message);
+        return false;
+      }
       return !!data;
     },
     enabled: !!user,
