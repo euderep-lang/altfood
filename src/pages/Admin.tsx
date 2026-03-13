@@ -23,7 +23,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useAuth } from '@/hooks/useAuth';
 
 const PER_PAGE = 20;
-const PRO_PRICE = 47.90; // monthly price
+const PRO_PRICE_MONTHLY = 47.90;
+const PRO_PRICE_ANNUAL = 358.80; // R$ 29,90/mês × 12
 
 function MaintenanceToggle() {
   const { toast } = useToast();
