@@ -44,9 +44,7 @@ export default function Landing() {
       <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-card shadow-md border-b border-border' : 'glass-nav'}`}>
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-md group-hover:glow-shadow transition-shadow duration-300">
-              <Leaf className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <AltfoodIcon size="xs" className="shadow-md group-hover:glow-shadow transition-shadow duration-300" />
             <span className="font-bold text-lg text-foreground tracking-tight">Altfood</span>
           </Link>
           <div className="hidden md:flex items-center gap-6 text-sm">
