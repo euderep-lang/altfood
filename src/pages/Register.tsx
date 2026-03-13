@@ -157,17 +157,12 @@ export default function Register() {
                 <h1 className="text-xl font-bold text-foreground">Verifique seu e-mail 📩</h1>
                 <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
                   Enviamos um link de confirmação para <strong className="text-foreground">{form.email}</strong>. 
-                  Clique no link para ativar sua conta.
+                  Clique no link do e-mail para ativar sua conta e acessar o painel automaticamente.
                 </p>
               </div>
               <div className="bg-muted/50 rounded-xl p-3 text-xs text-muted-foreground">
                 Não encontrou? Verifique a pasta de spam ou lixo eletrônico.
               </div>
-              <Link to="/login">
-                <Button variant="outline" className="w-full rounded-xl h-11">
-                  Já confirmei, fazer login
-                </Button>
-              </Link>
             </CardContent>
           </Card>
         </motion.div>
