@@ -14,8 +14,9 @@ import { useToast } from '@/hooks/use-toast';
 import { generateSlug } from '@/lib/helpers';
 import {
   ArrowRight, Copy, Check, Share2, Loader2, Upload, Palette,
-  MessageCircle, ExternalLink, SkipForward,
+  MessageCircle, ExternalLink, SkipForward, Crown, Sparkles, Clock,
 } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 
