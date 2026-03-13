@@ -23,7 +23,7 @@ function buildNudgeHtml(name: string, viewCount: number): string {
           Olá, ${firstName}! Sua página já teve <strong style="color:#0F766E;font-size:18px;">${viewCount} visitas</strong> neste mês. Isso mostra que seus pacientes estão usando a ferramenta!
         </p>
 
-        <h3 style="color:#1a1a1a;font-size:15px;margin:0 0 12px;">Com o plano Pro (R$29/mês) você desbloqueia:</h3>
+        <h3 style="color:#1a1a1a;font-size:15px;margin:0 0 12px;">Com o plano Pro (R$ 47,90/mês ou R$ 29,90/mês no anual) você para de responder substituição no WhatsApp:</h3>
         <div style="margin:0 0 24px;">
           <p style="color:#555;font-size:13px;line-height:1.8;margin:0;">
             ✅ Estatísticas detalhadas de acesso<br>
