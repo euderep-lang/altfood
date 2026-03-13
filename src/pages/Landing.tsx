@@ -429,8 +429,8 @@ export default function Landing() {
                       Começar teste grátis
                     </Button>
                   </Link>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </motion.div>
 
             {/* Anual — destaque */}
