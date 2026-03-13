@@ -2,7 +2,7 @@ import { ReactNode, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useDoctor } from '@/hooks/useDoctor';
-import { LayoutDashboard, User, HelpCircle, LogOut, Loader2, BarChart3, ExternalLink, X } from 'lucide-react';
+import { LayoutDashboard, User, HelpCircle, LogOut, Loader2, BarChart3, ExternalLink, X, Wallet } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { cn } from '@/lib/utils';
 import { daysRemaining } from '@/lib/helpers';
