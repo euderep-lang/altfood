@@ -120,7 +120,7 @@ export default function ShareKit() {
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-foreground">Seu link de indicação</h2>
-                  <p className="text-xs text-muted-foreground">Quem se cadastrar por aqui ganha 30 dias de trial</p>
+                  <p className="text-xs text-muted-foreground">Você ganha 1 mês grátis quando o indicado assinar um plano</p>
                 </div>
               </div>
 
