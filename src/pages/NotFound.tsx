@@ -22,7 +22,7 @@ const NotFound = () => {
       >
         <div className="flex items-center justify-center gap-2.5 mb-2">
           <AltfoodIcon size="md" className="shadow-sm" />
-          <span className="text-2xl font-bold text-foreground tracking-tight">Altfood</span>
+          <span className="text-2xl font-logo font-bold text-foreground tracking-tight">Altfood</span>
         </div>
         <div>
           <h1 className="text-6xl font-bold text-foreground">404</h1>

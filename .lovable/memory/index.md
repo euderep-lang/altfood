@@ -1,4 +1,5 @@
 Design system: Teal primary #0F766E, Inter font, mobile-first, rounded-2xl cards
+Logo font: Raleway bold (font-logo class)
 Database: food_categories, foods, doctors, page_views, substitution_queries, referrals, rate_limits, hidden_foods, site_settings
 Categories seeded with TACO data (463 foods across 10 categories)
 Doctors table has: referral_code (auto-generated), referred_by columns
