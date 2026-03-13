@@ -393,6 +393,19 @@ export default function Landing() {
             </motion.p>
           </motion.div>
 
+          {/* Patient-free callout */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} className="mb-10">
+            <motion.div variants={fadeUp} custom={0} className="rounded-2xl bg-primary/10 border border-primary/20 backdrop-blur-sm px-6 py-5 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+              <span className="text-3xl shrink-0">🎉</span>
+              <div>
+                <p className="text-sm font-bold text-primary-foreground">Seu paciente não paga nada!</p>
+                <p className="text-xs text-primary-foreground/60 mt-1 leading-relaxed">
+                  Só você investe — menos de <strong className="text-primary-foreground/80">R$ 1 por dia</strong>. Seus pacientes acessam sua página personalizada de graça, sem criar conta, sem instalar nada.
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-2 gap-8 items-stretch">
             {/* Mensal */}
             <motion.div variants={scaleIn} custom={0} className="pt-5">
