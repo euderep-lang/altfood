@@ -93,7 +93,7 @@ Deno.serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Altfood <noreply@altfood.app>",
+        from: "Altfood <onboarding@resend.dev>",
         to: [doctor_email],
         subject,
         html: html_body,
