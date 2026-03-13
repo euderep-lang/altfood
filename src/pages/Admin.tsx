@@ -141,6 +141,8 @@ export default function Admin() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [doctorToDelete, setDoctorToDelete] = useState<any>(null);
+  const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
+  const [doctorToUpgrade, setDoctorToUpgrade] = useState<any>(null);
 
   // Fetch all doctors
   const { data: doctors = [], isLoading: doctorsLoading } = useQuery({
@@ -254,7 +256,7 @@ export default function Admin() {
     URL.revokeObjectURL(url);
   };
 
-  const changePlan = async (doctorId: string, newStatus: string) => {
+  const changePlan = async (doctorId: string, newStatus: string, insertPayment = false) => {
     const updates: any = { subscription_status: newStatus };
     if (newStatus === 'active') {
       updates.subscription_end_date = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
@@ -262,11 +264,25 @@ export default function Admin() {
     const { error } = await supabase.from('doctors').update(updates).eq('id', doctorId);
     if (error) {
       toast({ title: 'Erro ao alterar plano', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: '✅ Plano atualizado' });
-      queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
-      setDialogOpen(false);
+      return;
     }
+    if (insertPayment && newStatus === 'active') {
+      const doctor = doctors.find((d: any) => d.id === doctorId);
+      await supabase.from('payments').insert({
+        doctor_id: doctorId,
+        amount: PRO_PRICE,
+        plan: 'monthly',
+        mp_payment_id: `manual-${Date.now()}`,
+        payer_email: doctor?.email || null,
+        status: 'approved',
+        paid_at: new Date().toISOString(),
+      });
+    }
+    toast({ title: '✅ Plano atualizado' });
+    queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
+    setDialogOpen(false);
+    setUpgradeDialogOpen(false);
+    setDoctorToUpgrade(null);
   };
 
   const deleteDoctor = async (doctorId: string) => {
@@ -378,6 +394,11 @@ export default function Admin() {
             <Link to="/admin/suporte">
               <Button variant="outline" size="sm" className="rounded-xl gap-2">
                 <MessageSquare className="w-4 h-4" /> Suporte
+              </Button>
+            </Link>
+            <Link to="/admin/financeiro">
+              <Button variant="outline" size="sm" className="rounded-xl gap-2">
+                <DollarSign className="w-4 h-4" /> Financeiro
               </Button>
             </Link>
             <Button variant="outline" size="sm" className="rounded-xl gap-2" onClick={refreshAll}>
@@ -560,7 +581,7 @@ export default function Admin() {
               </div>
               <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
                 {selectedDoctor.subscription_status !== 'active' && selectedDoctor.subscription_status !== 'blocked' && (
-                  <Button size="sm" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'active')}>
+                  <Button size="sm" className="rounded-xl gap-1" onClick={() => { setDoctorToUpgrade(selectedDoctor); setUpgradeDialogOpen(true); }}>
                     <Crown className="w-3 h-3" /> Upgrade para Pro
                   </Button>
                 )}
@@ -589,6 +610,27 @@ export default function Admin() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Upgrade confirmation */}
+      <AlertDialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen}>
+        <AlertDialogContent className="rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Upgrade para Pro</AlertDialogTitle>
+            <AlertDialogDescription>
+              Deseja registrar o pagamento de <strong>R$ {PRO_PRICE.toFixed(2).replace('.', ',')}</strong> para <strong>{doctorToUpgrade?.name}</strong> no financeiro?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+            <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
+            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', false)}>
+              Não, upgrade gratuito
+            </Button>
+            <Button size="sm" className="rounded-xl gap-1" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', true)}>
+              <DollarSign className="w-3 h-3" /> Sim, registrar pagamento
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Delete confirmation */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
