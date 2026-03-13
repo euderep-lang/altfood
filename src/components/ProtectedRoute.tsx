@@ -158,7 +158,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                   <Link to="/planos">
                     <Button className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-base font-bold gap-2 shadow-lg shadow-primary/20">
                       <Zap className="w-5 h-5" />
-                      Assinar agora — R$ 27,90/mês
+                      Assinar agora — R$ 47,90/mês
                     </Button>
                   </Link>
                   <p className="text-center text-[11px] text-muted-foreground">

@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
     await supabase.from('payments').insert({
       doctor_id: doctorId,
       mp_payment_id: String(paymentId),
-      amount: payment.transaction_amount || (isAnnual ? 298.80 : 27.90),
+      amount: payment.transaction_amount || (isAnnual ? 358.80 : 47.90),
       currency: payment.currency_id || 'BRL',
       plan: plan,
       status: 'approved',

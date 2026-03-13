@@ -304,7 +304,7 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
                 <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
                   <p className="text-sm font-medium text-foreground">💡 Que tal trocar para o plano anual?</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Por apenas R$ 24,90/mês você continua livre de responder substituição no WhatsApp. Economize 11%.
+                    Por apenas R$ 29,90/mês (menos de R$ 1 por dia) você continua livre de responder substituição no WhatsApp. Economize 38%.
                   </p>
                   <Link to="/planos">
                     <Button size="sm" className="mt-3 rounded-lg text-xs bg-primary hover:bg-primary/90 w-full">
