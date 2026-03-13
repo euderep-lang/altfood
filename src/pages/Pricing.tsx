@@ -7,7 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useDoctor } from '@/hooks/useDoctor';
 import { supabase } from '@/integrations/supabase/client';
-import { Check, Leaf, Loader2, Lock, Crown } from 'lucide-react';
+import { Check, Loader2, Lock, Crown } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
 
 const FREE_FEATURES = [
