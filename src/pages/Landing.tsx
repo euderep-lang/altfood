@@ -289,27 +289,28 @@ export default function Landing() {
       </section>
 
       {/* Features */}
+      {/* Features */}
       <section className="py-20 md:py-28 px-4 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-accent/30 to-transparent pointer-events-none" />
         <div className="relative max-w-4xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-14 space-y-3">
-            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary">Recursos</motion.span>
+            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary">Por que funciona</motion.span>
             <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-foreground">
-              Tudo que você precisa — e mais
+              Seu tempo de volta. Seu paciente autônomo.
             </motion.h2>
             <motion.p variants={fadeUp} custom={2} className="text-sm text-muted-foreground max-w-md mx-auto">
-              O app de substituição alimentar mais completo do Brasil. Desenvolvido por e para profissionais de saúde.
+              Em vez de responder "100g de frango = Xg de patinho" no WhatsApp, seu paciente descobre sozinho — com dados confiáveis da TACO.
             </motion.p>
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid sm:grid-cols-2 gap-4">
             {[
-              { icon: '🧬', title: 'Base TACO completa', desc: 'Dados nutricionais da Tabela TACO 4ª edição — referência nacional com 463+ alimentos.' },
-              { icon: '🎨', title: 'Sua marca, sua identidade', desc: 'Seu logo, suas cores, seu link personalizado. Profissionalismo que impressiona.' },
-              { icon: '📊', title: 'Analytics em tempo real', desc: 'Acompanhe acessos, alimentos mais buscados e engajamento dos pacientes.' },
-              { icon: '📱', title: 'Mobile-first', desc: 'Interface pensada para o celular. Seus pacientes usam na feira, no mercado, em qualquer lugar.' },
-              { icon: '⚡', title: 'Zero fricção', desc: 'Pacientes acessam sem criar conta, sem instalar nada. Abriu o link, já está usando.' },
-              { icon: '🔒', title: 'Dados seguros', desc: 'Infraestrutura profissional com criptografia e backups automáticos.' },
+              { icon: '⏱️', title: 'Recupere 1h+ por dia', desc: 'Chega de pausar consulta para responder "posso trocar frango por quê?" no WhatsApp. O app responde por você.' },
+              { icon: '🧬', title: 'Base TACO completa', desc: '463+ alimentos com dados da Tabela TACO 4ª edição. Equivalência nutricional precisa e confiável.' },
+              { icon: '🎨', title: 'Sua marca, sua identidade', desc: 'Seu logo, suas cores, seu link. O paciente vê a SUA página, não um app genérico.' },
+              { icon: '📱', title: 'Funciona na feira e no mercado', desc: 'O paciente está no mercado sem frango? Abre o link no celular e descobre a troca na hora.' },
+              { icon: '⚡', title: 'Zero fricção pro paciente', desc: 'Sem criar conta, sem instalar app. Abriu o link, digitou o alimento, pronto.' },
+              { icon: '📊', title: 'Saiba o que perguntam', desc: 'Veja quais alimentos seus pacientes mais buscam. Dados que guiam seu atendimento.' },
             ].map((feat, i) => (
               <motion.div key={i} variants={scaleIn} custom={i}>
                 <Card className="rounded-2xl glass-card hover:premium-shadow transition-all duration-300 group h-full">
