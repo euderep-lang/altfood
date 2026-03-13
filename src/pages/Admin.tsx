@@ -179,7 +179,7 @@ export default function Admin() {
   const totalDoctors = doctors.length;
   const proDoctors = doctors.filter((d: any) => d.subscription_status === 'active');
   const totalPro = proDoctors.length;
-  const mrr = totalPro * PRO_PRICE;
+  const mrr = totalPro * PRO_PRICE_MONTHLY;
 
   const activeThisMonth = doctors.filter((d: any) => new Date(d.updated_at) >= thisMonthStart).length;
   const activeLastMonth = doctors.filter((d: any) => {
