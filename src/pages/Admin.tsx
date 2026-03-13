@@ -286,7 +286,7 @@ export default function Admin() {
   };
 
   const deleteDoctor = async (doctorId: string) => {
-    const { data, error } = await supabase.functions.invoke('admin-delete-professional', {
+    const { data, error } = await supabase.functions.invoke<{ error?: string }>('admin-delete-professional', {
       body: { doctor_id: doctorId },
     });
 
