@@ -439,7 +439,7 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2.5">
               <AltfoodIcon size="xs" />
-              <span className="font-bold text-foreground tracking-tight">Altfood</span>
+              <span className="font-logo font-bold text-foreground tracking-tight">Altfood</span>
             </div>
             <div className="flex items-center gap-6 text-sm">
               <a href="#planos" className="text-muted-foreground hover:text-foreground transition-colors">Planos</a>

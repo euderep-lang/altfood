@@ -163,7 +163,7 @@ export default function Onboarding() {
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AltfoodIcon size="sm" />
-            <span className="font-bold text-foreground">Altfood</span>
+            <span className="font-logo font-bold text-foreground">Altfood</span>
           </div>
           <button onClick={skipStep} className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
             <SkipForward className="w-3 h-3" /> Pular por agora

@@ -72,7 +72,7 @@ export default function Pricing() {
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <AltfoodIcon size="sm" />
-            <span className="font-bold text-lg text-foreground">Altfood</span>
+            <span className="font-logo font-bold text-lg text-foreground">Altfood</span>
           </Link>
           {user ? (
             <Link to="/dashboard">

@@ -59,7 +59,7 @@ export default function ResetPassword() {
       >
         <div className="flex items-center justify-center gap-2.5 mb-6">
           <AltfoodIcon size="md" className="shadow-sm" />
-          <span className="text-2xl font-bold text-foreground tracking-tight">Altfood</span>
+          <span className="text-2xl font-logo font-bold text-foreground tracking-tight">Altfood</span>
         </div>
 
         <Card className="rounded-2xl shadow-lg border-border/50">

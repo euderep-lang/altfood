@@ -110,7 +110,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <div className="p-4 border-b border-border">
           <Link to="/dashboard" className="flex items-center gap-2">
             <AltfoodIcon size="sm" />
-            <span className="font-bold text-lg text-foreground">Altfood</span>
+            <span className="font-logo font-bold text-lg text-foreground">Altfood</span>
           </Link>
         </div>
         <nav className="flex-1 p-3 space-y-1">
