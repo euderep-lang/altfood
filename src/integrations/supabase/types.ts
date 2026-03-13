@@ -600,6 +600,7 @@ export type Database = {
         Returns: undefined
       }
       cleanup_rate_limits: { Args: never; Returns: undefined }
+      ensure_owner_admin_role: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
