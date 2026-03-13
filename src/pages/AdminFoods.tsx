@@ -2,7 +2,7 @@ import { useState, useMemo, useRef } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useAdmin } from '@/hooks/useAdmin';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,7 +20,6 @@ import type { Database } from '@/integrations/supabase/types';
 type Food = Database['public']['Tables']['foods']['Row'];
 type FoodCategory = Database['public']['Tables']['food_categories']['Row'];
 
-const ADMIN_EMAIL = 'carine@dracarinecassol.com.br';
 const PER_PAGE = 20;
 
 const emptyFood = {
@@ -30,7 +29,7 @@ const emptyFood = {
 };
 
 export default function AdminFoods() {
-  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading, user } = useAdmin();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -45,8 +44,6 @@ export default function AdminFoods() {
   const [deleteFood, setDeleteFood] = useState<Food | null>(null);
   const [saving, setSaving] = useState(false);
   const [featuredFoodId, setFeaturedFoodId] = useState<string | null>(null);
-
-  const isAdmin = !!user && user.email === ADMIN_EMAIL;
 
   const { data: foods = [], isLoading } = useQuery({
     queryKey: ['admin-foods'],

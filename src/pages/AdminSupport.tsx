@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useAdmin } from '@/hooks/useAdmin';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,8 +13,6 @@ import { useToast } from '@/hooks/use-toast';
 import { formatDate } from '@/lib/helpers';
 import { ArrowLeft, Loader2, CheckCircle, Clock, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const ADMIN_EMAIL = 'carine@dracarinecassol.com.br';
 
 interface Ticket {
   id: string;
@@ -29,14 +27,12 @@ interface Ticket {
 }
 
 export default function AdminSupport() {
-  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading } = useAdmin();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [reply, setReply] = useState('');
-
-  const isAdmin = !!user && user.email === ADMIN_EMAIL;
 
   const { data: tickets = [], isLoading } = useQuery({
     queryKey: ['admin-tickets'],
