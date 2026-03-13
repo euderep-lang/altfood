@@ -606,6 +606,27 @@ export default function Admin() {
         </DialogContent>
       </Dialog>
 
+      {/* Upgrade confirmation */}
+      <AlertDialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen}>
+        <AlertDialogContent className="rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Upgrade para Pro</AlertDialogTitle>
+            <AlertDialogDescription>
+              Deseja registrar o pagamento de <strong>R$ {PRO_PRICE.toFixed(2).replace('.', ',')}</strong> para <strong>{doctorToUpgrade?.name}</strong> no financeiro?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+            <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
+            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', false)}>
+              Não, upgrade gratuito
+            </Button>
+            <Button size="sm" className="rounded-xl gap-1" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', true)}>
+              <DollarSign className="w-3 h-3" /> Sim, registrar pagamento
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Delete confirmation */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <AlertDialogContent className="rounded-2xl">
