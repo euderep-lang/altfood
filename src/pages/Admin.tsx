@@ -256,7 +256,7 @@ export default function Admin() {
     URL.revokeObjectURL(url);
   };
 
-  const changePlan = async (doctorId: string, newStatus: string) => {
+  const changePlan = async (doctorId: string, newStatus: string, insertPayment = false) => {
     const updates: any = { subscription_status: newStatus };
     if (newStatus === 'active') {
       updates.subscription_end_date = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
@@ -264,11 +264,25 @@ export default function Admin() {
     const { error } = await supabase.from('doctors').update(updates).eq('id', doctorId);
     if (error) {
       toast({ title: 'Erro ao alterar plano', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: '✅ Plano atualizado' });
-      queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
-      setDialogOpen(false);
+      return;
     }
+    if (insertPayment && newStatus === 'active') {
+      const doctor = doctors.find((d: any) => d.id === doctorId);
+      await supabase.from('payments').insert({
+        doctor_id: doctorId,
+        amount: PRO_PRICE,
+        plan: 'monthly',
+        mp_payment_id: `manual-${Date.now()}`,
+        payer_email: doctor?.email || null,
+        status: 'approved',
+        paid_at: new Date().toISOString(),
+      });
+    }
+    toast({ title: '✅ Plano atualizado' });
+    queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
+    setDialogOpen(false);
+    setUpgradeDialogOpen(false);
+    setDoctorToUpgrade(null);
   };
 
   const deleteDoctor = async (doctorId: string) => {
