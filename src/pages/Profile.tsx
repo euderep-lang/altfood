@@ -646,10 +646,10 @@ export default function Profile() {
                 <TabsTrigger value="preview" className="rounded-lg text-sm">Preview</TabsTrigger>
               </TabsList>
               <TabsContent value="edit" className="mt-4">
-                <EditorPanel />
+                {editorPanel}
               </TabsContent>
               <TabsContent value="preview" className="mt-4">
-                <PreviewPanel />
+                {previewPanel}
               </TabsContent>
             </Tabs>
           </>
