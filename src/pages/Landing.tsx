@@ -508,6 +508,7 @@ export default function Landing() {
                 { q: 'Os dados são da TACO?', a: 'Sim! Utilizamos a Tabela TACO (Tabela Brasileira de Composição de Alimentos), 4ª edição, desenvolvida pela NEPA/UNICAMP — a referência nacional em dados nutricionais com 463+ alimentos catalogados.' },
                 { q: 'Posso cancelar a qualquer momento?', a: 'Sim, sem multas ou burocracia. Você pode cancelar pelo dashboard e continua tendo acesso até o final do período pago.' },
                 { q: 'Funciona no celular?', a: 'Sim! O Altfood foi projetado mobile-first. A página de paciente funciona perfeitamente em qualquer celular, com interface otimizada e até modo offline.' },
+                { q: 'Meu paciente precisa pagar para usar?', a: 'Não! O paciente acessa 100% de graça. Ele não precisa criar conta, não precisa instalar nada e não paga nenhum centavo. Você é o único que investe — menos de R$ 1 por dia no plano anual — e disponibiliza o link personalizado para quantos pacientes quiser, sem custo adicional.' },
                 { q: 'Qual a diferença entre mensal e anual?', a: `No plano mensal você paga R$ 47,90/mês. No anual, o valor cai para R$ 29,90/mês (12× = R$ 358,80/ano) — menos de R$ 1 por dia. Você economiza R$ ${savingsPerYear} por ano.` },
               ].map((faq, i) => (
                 <motion.div key={i} variants={fadeUp} custom={i}>
