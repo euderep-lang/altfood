@@ -49,7 +49,7 @@ export default function ShareKit() {
       <div className="max-w-2xl mx-auto space-y-6">
         <motion.div initial="hidden" animate="visible" custom={0} variants={fadeUp}>
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">Kit de indicação</h1>
-          <p className="text-sm text-muted-foreground mt-1">Compartilhe com colegas e ganhe 1 mês de Pro por indicação.</p>
+          <p className="text-sm text-muted-foreground mt-1">Compartilhe com colegas e ganhe 1 mês de Pro quando eles assinarem.</p>
         </motion.div>
 
         {/* What is Altfood */}
