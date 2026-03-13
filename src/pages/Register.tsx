@@ -177,9 +177,7 @@ export default function Register() {
         className="w-full max-w-[400px]"
       >
         <div className="flex items-center justify-center gap-2.5 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-sm">
-            <Leaf className="w-5 h-5 text-primary-foreground" />
-          </div>
+          <AltfoodIcon size="md" className="shadow-sm" />
           <span className="text-2xl font-bold text-foreground tracking-tight">Altfood</span>
         </div>
 

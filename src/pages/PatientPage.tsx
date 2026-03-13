@@ -491,9 +491,7 @@ export default function PatientPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <div className="max-w-sm w-full text-center space-y-6">
-          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto">
-            <Leaf className="w-8 h-8 text-muted-foreground" />
-          </div>
+          <AltfoodIcon size="lg" className="mx-auto opacity-50" />
           <div>
             <h1 className="text-xl font-bold text-foreground">Esta página não existe</h1>
             <p className="text-sm text-muted-foreground mt-2">O link que você acessou não foi encontrado ou foi removido.</p>

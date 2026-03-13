@@ -49,9 +49,7 @@ export default function Changelog() {
             </Button>
           </Link>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <Leaf className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <AltfoodIcon size="md" />
             <div>
               <h1 className="text-xl font-bold text-foreground">Novidades</h1>
               <p className="text-xs text-muted-foreground">Últimas atualizações do Altfood</p>

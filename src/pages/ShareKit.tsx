@@ -57,9 +57,7 @@ export default function ShareKit() {
           <Card className="rounded-2xl shadow-sm border-border/50">
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Leaf className="w-5 h-5 text-primary" />
-                </div>
+                <AltfoodIcon size="md" />
                 <h2 className="text-sm font-bold text-foreground">O que é o Altfood?</h2>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">

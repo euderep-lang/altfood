@@ -438,9 +438,7 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg gradient-hero flex items-center justify-center">
-                <Leaf className="w-4 h-4 text-primary-foreground" />
-              </div>
+              <AltfoodIcon size="xs" />
               <span className="font-bold text-foreground tracking-tight">Altfood</span>
             </div>
             <div className="flex items-center gap-6 text-sm">
