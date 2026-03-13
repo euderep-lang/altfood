@@ -123,36 +123,15 @@ export default function Register() {
       return;
     }
 
-    // Create referral record
+    // Create referral record as pending — reward only given after referred user pays
     if (referrerDoctor && newDoc) {
       try {
         await supabase.from('referrals').insert({
           referrer_id: referrerDoctor.id,
           referred_id: newDoc.id,
-          status: 'completed',
-          reward_given_at: new Date().toISOString(),
+          status: 'pending',
         } as any);
       } catch { /* ignore duplicate */ }
-
-      // Extend referrer's subscription by 30 days
-      const { data: referrer } = await supabase.from('doctors').select('subscription_end_date, subscription_status, trial_ends_at').eq('id', referrerDoctor.id).single();
-      if (referrer) {
-        const baseDate = referrer.subscription_status === 'active' && referrer.subscription_end_date
-          ? new Date(referrer.subscription_end_date)
-          : referrer.subscription_status === 'trial'
-          ? new Date(referrer.trial_ends_at)
-          : new Date();
-        const newEnd = new Date(Math.max(baseDate.getTime(), Date.now()) + 30 * 24 * 60 * 60 * 1000);
-
-        if (referrer.subscription_status === 'active') {
-          await supabase.from('doctors').update({ subscription_end_date: newEnd.toISOString() }).eq('id', referrerDoctor.id);
-        } else {
-          await supabase.from('doctors').update({
-            subscription_status: 'active',
-            subscription_end_date: newEnd.toISOString(),
-          }).eq('id', referrerDoctor.id);
-        }
-      }
 
       localStorage.removeItem('altfood_referral_code');
     }
