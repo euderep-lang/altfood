@@ -46,19 +46,23 @@ export default function Login() {
       .maybeSingle();
 
     setLoading(false);
-    toast({ title: '✅ Login realizado!' });
 
     if (!doctor) {
-      // No profile — send to register/onboarding
-      toast({ title: 'Cadastro não encontrado', description: 'Complete seu cadastro para continuar.', variant: 'destructive' });
-      navigate('/onboarding');
+      // No profile — sign out and send to register
+      await supabase.auth.signOut();
+      toast({ title: 'Cadastro não encontrado', description: 'Crie sua conta para começar a usar o Altfood.', variant: 'destructive' });
+      navigate('/register');
     } else if (doctor.subscription_status === 'blocked') {
+      toast({ title: 'Conta bloqueada', description: 'Entre em contato com o suporte.', variant: 'destructive' });
       navigate('/planos');
     } else if (doctor.subscription_status === 'inactive') {
+      toast({ title: 'Assinatura inativa', description: 'Renove sua assinatura para continuar.', variant: 'destructive' });
       navigate('/planos');
     } else if (doctor.subscription_status === 'trial' && new Date(doctor.trial_ends_at) <= new Date()) {
+      toast({ title: 'Trial expirado', description: 'Assine para continuar usando o Altfood.' });
       navigate('/planos');
     } else {
+      toast({ title: '✅ Login realizado!' });
       navigate('/dashboard');
     }
   };
