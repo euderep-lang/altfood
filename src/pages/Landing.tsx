@@ -45,7 +45,7 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
             <AltfoodIcon size="xs" className="shadow-md group-hover:glow-shadow transition-shadow duration-300" />
-            <span className="font-bold text-lg text-foreground tracking-tight">Altfood</span>
+            <span className="font-logo font-bold text-lg text-foreground tracking-tight">Altfood</span>
           </Link>
           <div className="hidden md:flex items-center gap-6 text-sm">
             <a href="#como-funciona" className="text-muted-foreground hover:text-foreground transition-colors">Como funciona</a>
