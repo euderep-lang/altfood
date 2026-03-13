@@ -440,8 +440,8 @@ export default function Landing() {
                   <Crown className="w-3.5 h-3.5" /> MAIS POPULAR
                 </span>
               </div>
-              <Card className="rounded-3xl !bg-primary-foreground/[0.08] backdrop-blur-xl border-2 border-primary/40 shimmer relative h-full flex flex-col shadow-[0_0_60px_-10px_hsl(170_60%_30%/0.25)] overflow-hidden">
-                <CardContent className="p-8 flex flex-col flex-1 pt-10">
+              <div className="rounded-3xl bg-white/[0.08] backdrop-blur-xl border-2 border-primary/40 shimmer relative h-full flex flex-col shadow-[0_0_60px_-10px_hsl(170_60%_30%/0.25)] overflow-hidden">
+                <div className="p-8 flex flex-col flex-1 pt-10">
                   <div className="text-center space-y-2 mb-6">
                     <p className="text-xs font-semibold tracking-widest uppercase text-primary/80">Anual</p>
                     <div>
