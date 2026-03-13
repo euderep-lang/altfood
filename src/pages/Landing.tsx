@@ -503,22 +503,23 @@ export default function Landing() {
       </section>
 
       {/* CTA */}
+      {/* CTA */}
       <section className="py-16 md:py-20 px-4">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="max-w-2xl mx-auto text-center">
           <motion.div variants={scaleIn} custom={0}>
             <Card className="rounded-3xl glass-card premium-border overflow-hidden relative">
               <div className="absolute inset-0 gradient-glow pointer-events-none" />
               <CardContent className="relative p-8 md:p-12 space-y-5">
-                <span className="text-3xl">🥗</span>
+                <span className="text-3xl">📱</span>
                 <h2 className="text-xl md:text-3xl font-display font-bold text-foreground">
-                  Seus pacientes merecem o melhor
+                  Quanto tempo você perdeu hoje respondendo substituição?
                 </h2>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  Junte-se a centenas de profissionais que já usam o app de substituição alimentar mais completo do Brasil. Teste grátis por 3 dias.
+                  Pare de calcular "100g de frango = Xg de patinho" no WhatsApp. Deixa o Altfood fazer isso por você. Teste grátis por 3 dias.
                 </p>
                 <Link to="/register">
                   <Button variant="premium" size="xl" className="group">
-                    Começar Agora
+                    Quero meu tempo de volta
                     <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
