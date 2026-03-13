@@ -322,9 +322,16 @@ export default function Admin() {
       active: { label: 'Pro', variant: 'default' },
       trial: { label: 'Trial', variant: 'secondary' },
       inactive: { label: 'Inativo', variant: 'destructive' },
+      blocked: { label: 'Bloqueado', variant: 'destructive' },
     };
     const conf = map[status] || { label: status, variant: 'outline' as const };
     return <Badge variant={conf.variant}>{conf.label}</Badge>;
+  };
+
+  const paymentBadge = (d: any) => {
+    if (d.subscription_status === 'blocked') return <Badge variant="destructive">Bloqueado</Badge>;
+    if (isPaymentOk(d)) return <Badge variant="default" className="bg-green-600">Em dia</Badge>;
+    return <Badge variant="destructive">Pendente</Badge>;
   };
 
   const TrendArrow = ({ value }: { value: number }) => (
