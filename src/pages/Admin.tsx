@@ -651,7 +651,7 @@ export default function Admin() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
-            <AlertDialogAction className="rounded-xl bg-destructive hover:bg-destructive/90" onClick={() => doctorToDelete && deleteDoctor(doctorToDelete.id)}>
+            <AlertDialogAction className="rounded-xl bg-destructive hover:bg-destructive/90" onClick={() => doctorToDelete && deleteDoctor(doctorToDelete)}>
               Excluir permanentemente
             </AlertDialogAction>
           </AlertDialogFooter>
