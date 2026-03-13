@@ -396,6 +396,11 @@ export default function Admin() {
                 <MessageSquare className="w-4 h-4" /> Suporte
               </Button>
             </Link>
+            <Link to="/admin/financeiro">
+              <Button variant="outline" size="sm" className="rounded-xl gap-2">
+                <DollarSign className="w-4 h-4" /> Financeiro
+              </Button>
+            </Link>
             <Button variant="outline" size="sm" className="rounded-xl gap-2" onClick={refreshAll}>
               <RefreshCw className="w-4 h-4" /> Atualizar
             </Button>
