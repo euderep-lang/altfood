@@ -110,7 +110,7 @@ function useRotatingTestimonials(count: number, intervalMs: number) {
 
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
-  const [billingAnnual, setBillingAnnual] = useState(true);
+  const [billingAnnual] = useState(true);
   const testimonials = useRotatingTestimonials(3, 6000);
 
   useEffect(() => {
@@ -119,10 +119,10 @@ export default function Landing() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const monthlyPrice = 27.9;
-  const annualPricePerMonth = 24.9;
-  const annualTotal = (annualPricePerMonth * 12);
-  const savingsPerYear = ((monthlyPrice - annualPricePerMonth) * 12).toFixed(0);
+  const monthlyPrice = 47.9;
+  const annualTotal = 358.8;
+  const annualPricePerMonth = (annualTotal / 12);
+  const savingsPerYear = ((monthlyPrice * 12) - annualTotal).toFixed(0);
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -377,78 +377,98 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Pricing — single Pro plan */}
+      {/* Pricing — Two plans */}
       <section id="planos" className="py-20 md:py-28 px-4 gradient-dark relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full opacity-20 blur-3xl gradient-hero pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full opacity-15 blur-3xl gradient-hero pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full opacity-10 blur-3xl gradient-gold pointer-events-none" />
 
-        <div className="relative max-w-xl mx-auto">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-10 space-y-3">
-            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/60">Investimento</motion.span>
+        <div className="relative max-w-3xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-12 space-y-3">
+            <motion.span variants={fadeUp} custom={0} className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/50">Investimento</motion.span>
             <motion.h2 variants={fadeUp} custom={1} className="text-2xl md:text-4xl font-display font-bold text-primary-foreground">
-              Um único plano. Tudo incluso.
+              Escolha o plano ideal para você
             </motion.h2>
-            <motion.p variants={fadeUp} custom={2} className="text-sm text-primary-foreground/50 max-w-md mx-auto">
-              Teste grátis por 3 dias. Depois escolha como quer pagar.
+            <motion.p variants={fadeUp} custom={2} className="text-sm text-primary-foreground/40 max-w-md mx-auto">
+              Teste grátis por 3 dias. Sem compromisso — cancele quando quiser.
             </motion.p>
-            {/* Billing toggle */}
-            <motion.div variants={fadeUp} custom={3} className="flex items-center justify-center gap-3 pt-4">
-              <span className={`text-sm font-medium ${!billingAnnual ? 'text-primary-foreground' : 'text-primary-foreground/40'}`}>Mensal</span>
-              <button
-                onClick={() => setBillingAnnual(!billingAnnual)}
-                className={`relative w-12 h-6 rounded-full transition-colors ${billingAnnual ? 'bg-primary' : 'bg-primary-foreground/20'}`}
-              >
-                <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform ${billingAnnual ? 'translate-x-6' : 'translate-x-0.5'}`} />
-              </button>
-              <span className={`text-sm font-medium ${billingAnnual ? 'text-primary-foreground' : 'text-primary-foreground/40'}`}>
-                Anual <span className="text-xs text-primary font-bold">Economize R${savingsPerYear}</span>
-              </span>
-            </motion.div>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-2 gap-6 items-start">
+            {/* Mensal */}
             <motion.div variants={scaleIn} custom={0}>
-              <Card className="rounded-3xl bg-primary-foreground/[0.06] backdrop-blur-xl border border-primary-foreground/10 shimmer overflow-visible relative">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold shadow-lg">
-                    <Crown className="w-3 h-3" /> Altfood Pro
-                  </span>
-                </div>
-                <CardContent className="p-7 space-y-6 pt-8">
-                  <div className="text-center">
-                    <div className="mb-2">
-                      <span className="text-5xl font-display font-bold text-primary-foreground">
-                        R$ {billingAnnual ? annualPricePerMonth.toFixed(2).replace('.', ',') : monthlyPrice.toFixed(2).replace('.', ',')}
-                      </span>
+              <Card className="rounded-3xl bg-primary-foreground/[0.05] backdrop-blur-xl border border-primary-foreground/10 overflow-visible relative h-full">
+                <CardContent className="p-7 space-y-5 pt-8">
+                  <div className="text-center space-y-1">
+                    <p className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/40">Mensal</p>
+                    <div>
+                      <span className="text-4xl font-display font-bold text-primary-foreground">R$ 47<span className="text-2xl">,90</span></span>
                       <span className="text-sm text-primary-foreground/40 font-medium">/mês</span>
                     </div>
-                    {billingAnnual && (
-                      <p className="text-xs text-primary/80">
-                        R$ {annualTotal.toFixed(2).replace('.', ',')} cobrados anualmente (12 meses)
-                      </p>
-                    )}
-                    {!billingAnnual && (
-                      <p className="text-xs text-primary-foreground/40">
-                        Cobrado mensalmente. Cancele quando quiser.
-                      </p>
-                    )}
+                    <p className="text-xs text-primary-foreground/30">Cobrado mensalmente. Cancele quando quiser.</p>
                   </div>
 
-                  <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
+                  <div className="space-y-2.5">
                     {[
                       'Substituições ilimitadas',
                       'Base TACO completa (463+ alimentos)',
                       'Página personalizada com sua marca',
                       'Analytics em tempo real',
-                      'Logo e bio personalizados',
-                      'Cores e identidade visual',
-                      'Links WhatsApp e Instagram',
-                      'Relatório CSV exportável',
-                      'Resumo semanal por e-mail',
                       'Suporte prioritário',
                     ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2.5 text-sm text-primary-foreground/70">
+                        <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                          <Check className="w-3 h-3 text-primary" />
+                        </div>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+
+                  <Link to="/register" className="block pt-2">
+                    <Button size="xl" className="w-full bg-primary-foreground/10 text-primary-foreground border border-primary-foreground/20 hover:bg-primary-foreground/15 rounded-xl">
+                      Começar teste grátis
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Anual — destaque */}
+            <motion.div variants={scaleIn} custom={1}>
+              <Card className="rounded-3xl bg-primary-foreground/[0.08] backdrop-blur-xl border-2 border-primary/40 shimmer overflow-visible relative h-full shadow-[0_0_60px_-10px_hsl(170_60%_30%/0.25)]">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                  <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full gradient-gold text-primary-foreground text-xs font-bold shadow-lg tracking-wide">
+                    <Crown className="w-3.5 h-3.5" /> MAIS POPULAR
+                  </span>
+                </div>
+                <CardContent className="p-7 space-y-5 pt-10">
+                  <div className="text-center space-y-1">
+                    <p className="text-xs font-semibold tracking-widest uppercase text-primary/80">Anual</p>
+                    <div>
+                      <span className="text-5xl font-display font-bold text-primary-foreground">R$ 29<span className="text-3xl">,90</span></span>
+                      <span className="text-sm text-primary-foreground/40 font-medium">/mês</span>
+                    </div>
+                    <p className="text-xs text-primary/70 font-medium">
+                      12× de R$ 29,90 = R$ 358,80/ano
+                    </p>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 mt-2">
+                      <Sparkles className="w-3 h-3 text-primary" />
+                      <span className="text-xs font-bold text-primary">Menos de R$ 1 por dia</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {[
+                      'Tudo do plano Mensal',
+                      'Economia de R$ ' + savingsPerYear + '/ano',
+                      'Base TACO completa (463+ alimentos)',
+                      'Cores e identidade visual',
+                      'Links WhatsApp e Instagram',
+                      'Resumo semanal por e-mail',
+                    ].map((item, i) => (
                       <div key={i} className="flex items-center gap-2.5 text-sm text-primary-foreground/80">
-                        <div className="w-5 h-5 rounded-full bg-secondary/20 flex items-center justify-center shrink-0">
-                          <Check className="w-3 h-3 text-secondary" />
+                        <div className="w-5 h-5 rounded-full bg-primary/25 flex items-center justify-center shrink-0">
+                          <Check className="w-3 h-3 text-primary" />
                         </div>
                         {item}
                       </div>
@@ -457,11 +477,11 @@ export default function Landing() {
 
                   <Link to="/register" className="block pt-2">
                     <Button variant="premium" size="xl" className="w-full group">
-                      Testar 3 dias grátis
+                      Começar teste grátis
                       <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
-                  <p className="text-[10px] text-primary-foreground/30 text-center">3 dias grátis para testar como quiser • Cancele a qualquer momento</p>
+                  <p className="text-[10px] text-primary-foreground/25 text-center">3 dias grátis • Cancele a qualquer momento</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -488,7 +508,7 @@ export default function Landing() {
                 { q: 'Os dados são da TACO?', a: 'Sim! Utilizamos a Tabela TACO (Tabela Brasileira de Composição de Alimentos), 4ª edição, desenvolvida pela NEPA/UNICAMP — a referência nacional em dados nutricionais com 463+ alimentos catalogados.' },
                 { q: 'Posso cancelar a qualquer momento?', a: 'Sim, sem multas ou burocracia. Você pode cancelar pelo dashboard e continua tendo acesso até o final do período pago.' },
                 { q: 'Funciona no celular?', a: 'Sim! O Altfood foi projetado mobile-first. A página de paciente funciona perfeitamente em qualquer celular, com interface otimizada e até modo offline.' },
-                { q: 'Qual a diferença entre mensal e anual?', a: `No plano mensal você paga R$ ${monthlyPrice.toFixed(2).replace('.', ',')}/mês. No anual, o valor cai para R$ ${annualPricePerMonth.toFixed(2).replace('.', ',')}/mês (pacote de 12 meses), economizando R$ ${savingsPerYear} por ano.` },
+                { q: 'Qual a diferença entre mensal e anual?', a: `No plano mensal você paga R$ 47,90/mês. No anual, o valor cai para R$ 29,90/mês (12× = R$ 358,80/ano) — menos de R$ 1 por dia. Você economiza R$ ${savingsPerYear} por ano.` },
               ].map((faq, i) => (
                 <motion.div key={i} variants={fadeUp} custom={i}>
                   <AccordionItem value={`faq-${i}`} className="glass-card rounded-2xl px-5 border-0">

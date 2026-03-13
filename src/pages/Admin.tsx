@@ -23,7 +23,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useAuth } from '@/hooks/useAuth';
 
 const PER_PAGE = 20;
-const PRO_PRICE = 27.90;
+const PRO_PRICE = 47.90;
 
 function MaintenanceToggle() {
   const { toast } = useToast();
