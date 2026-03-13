@@ -482,8 +482,8 @@ export default function Landing() {
                     </Button>
                   </Link>
                   <p className="text-[10px] text-primary-foreground/25 text-center mt-3">3 dias grátis • Cancele a qualquer momento</p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </div>
