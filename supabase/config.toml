@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.check-rate-limit]
 verify_jwt = false
+
+[functions.create-doctor-profile]
+verify_jwt = false
