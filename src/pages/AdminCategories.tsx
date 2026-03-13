@@ -20,10 +20,8 @@ type FoodCategory = Database['public']['Tables']['food_categories']['Row'];
 
 const emptyCategory = { name: '', icon: '🍽️', color: '#0F766E' };
 
-const emptyCategory = { name: '', icon: '🍽️', color: '#0F766E' };
-
 export default function AdminCategories() {
-  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading } = useAdmin();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -33,8 +31,6 @@ export default function AdminCategories() {
   const [deleteCat, setDeleteCat] = useState<FoodCategory | null>(null);
   const [saving, setSaving] = useState(false);
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
-
-  const isAdmin = !!user && user.email === ADMIN_EMAIL;
 
   const { data: categories = [], isLoading } = useQuery({
     queryKey: ['admin-categories'],

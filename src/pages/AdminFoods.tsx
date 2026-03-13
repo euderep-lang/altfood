@@ -21,7 +21,6 @@ type Food = Database['public']['Tables']['foods']['Row'];
 type FoodCategory = Database['public']['Tables']['food_categories']['Row'];
 
 const PER_PAGE = 20;
-const PER_PAGE = 20;
 
 const emptyFood = {
   name: '', name_short: '', preparation: '', calories: 0, protein: 0,
@@ -30,7 +29,7 @@ const emptyFood = {
 };
 
 export default function AdminFoods() {
-  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: authLoading } = useAdmin();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -45,8 +44,6 @@ export default function AdminFoods() {
   const [deleteFood, setDeleteFood] = useState<Food | null>(null);
   const [saving, setSaving] = useState(false);
   const [featuredFoodId, setFeaturedFoodId] = useState<string | null>(null);
-
-  const isAdmin = !!user && user.email === ADMIN_EMAIL;
 
   const { data: foods = [], isLoading } = useQuery({
     queryKey: ['admin-foods'],
