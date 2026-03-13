@@ -269,6 +269,54 @@ export default function Admin() {
     }
   };
 
+  const deleteDoctor = async (doctorId: string) => {
+    const { error } = await supabase.from('doctors').delete().eq('id', doctorId);
+    if (error) {
+      toast({ title: 'Erro ao excluir', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: '✅ Cadastro excluído' });
+      queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
+      setDialogOpen(false);
+      setDeleteConfirmOpen(false);
+      setDoctorToDelete(null);
+    }
+  };
+
+  const blockDoctor = async (doctorId: string) => {
+    const { error } = await supabase.from('doctors').update({ subscription_status: 'blocked' }).eq('id', doctorId);
+    if (error) {
+      toast({ title: 'Erro ao bloquear', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: '🚫 Usuário bloqueado' });
+      queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
+      setDialogOpen(false);
+    }
+  };
+
+  const unblockDoctor = async (doctorId: string) => {
+    const { error } = await supabase.from('doctors').update({ subscription_status: 'trial' }).eq('id', doctorId);
+    if (error) {
+      toast({ title: 'Erro ao desbloquear', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: '✅ Usuário desbloqueado' });
+      queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
+      setDialogOpen(false);
+    }
+  };
+
+  const handleAdminLogout = async () => {
+    await signOut();
+    navigate('/login');
+  };
+
+  const isPaymentOk = (d: any) => {
+    if (d.subscription_status === 'active') return true;
+    if (d.subscription_status === 'trial') {
+      return new Date(d.trial_ends_at) > new Date();
+    }
+    return false;
+  };
+
   const planBadge = (status: string) => {
     const map: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
       active: { label: 'Pro', variant: 'default' },
