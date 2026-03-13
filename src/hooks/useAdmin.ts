@@ -9,7 +9,10 @@ export function useAdmin() {
     queryKey: ['user-role-admin', user?.id],
     queryFn: async () => {
       if (!user) return false;
-      // Use raw rpc call with type assertion since has_role isn't in generated types
+
+      // Keep owner admin access across separate test/live environments
+      await (supabase.rpc as any)('ensure_owner_admin_role');
+
       const { data, error } = await (supabase.rpc as any)('has_role', {
         _user_id: user.id,
         _role: 'admin',
