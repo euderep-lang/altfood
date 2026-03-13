@@ -543,7 +543,7 @@ export default function Landing() {
           <motion.div variants={scaleIn} custom={0}>
             <Card className="rounded-3xl glass-card premium-border overflow-hidden relative">
               <div className="absolute inset-0 gradient-glow pointer-events-none" />
-              <CardContent className="relative p-8 md:p-12 space-y-5">
+              <CardContent className="relative p-8 md:p-12 space-y-8">
                 <span className="text-3xl">📱</span>
                 <h2 className="text-xl md:text-3xl font-display font-bold text-foreground">
                   Quanto tempo você perdeu hoje respondendo substituição?
