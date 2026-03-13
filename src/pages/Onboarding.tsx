@@ -14,8 +14,9 @@ import { useToast } from '@/hooks/use-toast';
 import { generateSlug } from '@/lib/helpers';
 import {
   ArrowRight, Copy, Check, Share2, Loader2, Upload, Palette,
-  MessageCircle, ExternalLink, SkipForward,
+  MessageCircle, ExternalLink, SkipForward, Crown, Sparkles, Clock,
 } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -62,6 +63,7 @@ export default function Onboarding() {
 
   // Step 3
   const [primaryColor, setPrimaryColor] = useState('#0F766E');
+  const [showSubscribePopup, setShowSubscribePopup] = useState(false);
 
   useEffect(() => {
     if (!user || isLoading || doctor || creatingDoctor || creationError) return;
@@ -194,6 +196,18 @@ export default function Onboarding() {
   const completeOnboarding = async () => {
     await supabase.from('doctors').update({ onboarding_completed: true } as any).eq('id', doctor.id);
     queryClient.invalidateQueries({ queryKey: ['doctor'] });
+    setShowSubscribePopup(true);
+  };
+
+  const startTrial = async () => {
+    // Set trial to 3 days from now
+    const trialEnd = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+    await supabase.from('doctors').update({
+      subscription_status: 'trial',
+      trial_ends_at: trialEnd,
+    } as any).eq('id', doctor.id);
+    queryClient.invalidateQueries({ queryKey: ['doctor'] });
+    setShowSubscribePopup(false);
     navigate('/dashboard', { replace: true });
   };
 
@@ -515,6 +529,85 @@ export default function Onboarding() {
           </div>
         </div>
       </div>
+
+      {/* Persuasive Subscribe Popup */}
+      <Dialog open={showSubscribePopup} onOpenChange={(open) => { if (!open) startTrial(); }}>
+        <DialogContent className="max-w-md rounded-2xl p-0 border-none overflow-hidden [&>button]:hidden">
+          {/* Gradient Header */}
+          <div className="bg-gradient-to-br from-primary to-primary/80 p-8 text-center">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', delay: 0.2 }}
+              className="w-20 h-20 rounded-full bg-white/20 backdrop-blur flex items-center justify-center mx-auto mb-4"
+            >
+              <Crown className="w-10 h-10 text-white" />
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-2xl font-bold text-white"
+            >
+              Sua página está pronta! 🎉
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-white/80 text-sm mt-2"
+            >
+              Falta só um passo para transformar seu atendimento
+            </motion.p>
+          </div>
+
+          <div className="p-6 space-y-5">
+            <div className="space-y-3">
+              <p className="text-sm text-foreground leading-relaxed">
+                <strong>Seus pacientes merecem praticidade.</strong> Com o Altfood Pro, eles acessam substituições alimentares
+                personalizadas direto pelo celular — sem instalar nada, sem papel, sem perder tempo.
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Enquanto outros profissionais ainda usam tabelas em PDF, você oferece uma experiência moderna
+                que <strong className="text-foreground">fideliza pacientes</strong> e mostra autoridade.
+              </p>
+            </div>
+
+            <div className="bg-primary/5 rounded-xl p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-sm font-semibold text-foreground">Altfood Pro inclui:</span>
+              </div>
+              <ul className="text-xs text-muted-foreground space-y-1.5 ml-6">
+                {['Substituições ilimitadas', 'Página com sua marca e cores', 'Analytics de acessos', 'Suporte prioritário'].map(f => (
+                  <li key={f} className="flex items-center gap-2">
+                    <Check className="w-3 h-3 text-primary shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="space-y-2.5">
+              <Button
+                onClick={() => { setShowSubscribePopup(false); navigate('/planos'); }}
+                className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-base font-bold gap-2"
+              >
+                <Crown className="w-5 h-5" />
+                Assinar por R$ 27,90/mês
+              </Button>
+              <Button
+                onClick={startTrial}
+                variant="outline"
+                className="w-full rounded-xl h-11 text-sm gap-2 border-primary/20 hover:bg-primary/5"
+              >
+                <Clock className="w-4 h-4" />
+                Testar grátis por 3 dias
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

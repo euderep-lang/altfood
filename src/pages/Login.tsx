@@ -31,12 +31,34 @@ export default function Login() {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-    setLoading(false);
+    const { data: authData, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     if (error) {
+      setLoading(false);
       toast({ title: 'Erro ao entrar', description: 'E-mail ou senha incorretos.', variant: 'destructive' });
+      return;
+    }
+
+    // Check if doctor profile exists
+    const { data: doctor } = await supabase
+      .from('doctors')
+      .select('subscription_status, trial_ends_at')
+      .eq('user_id', authData.user.id)
+      .maybeSingle();
+
+    setLoading(false);
+    toast({ title: '✅ Login realizado!' });
+
+    if (!doctor) {
+      // No profile — send to register/onboarding
+      toast({ title: 'Cadastro não encontrado', description: 'Complete seu cadastro para continuar.', variant: 'destructive' });
+      navigate('/onboarding');
+    } else if (doctor.subscription_status === 'blocked') {
+      navigate('/planos');
+    } else if (doctor.subscription_status === 'inactive') {
+      navigate('/planos');
+    } else if (doctor.subscription_status === 'trial' && new Date(doctor.trial_ends_at) <= new Date()) {
+      navigate('/planos');
     } else {
-      toast({ title: '✅ Login realizado!' });
       navigate('/dashboard');
     }
   };
