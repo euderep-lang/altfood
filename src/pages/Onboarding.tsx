@@ -195,18 +195,21 @@ export default function Onboarding() {
     );
   }
 
-  if (creationError) {
+  if (doctorError || creationError) {
+    const message = creationError || (doctorError instanceof Error ? doctorError.message : 'Erro ao carregar seu perfil.');
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="max-w-md w-full rounded-2xl border-border/50">
           <CardContent className="p-6 text-center space-y-4">
             <h1 className="text-lg font-bold text-foreground">Não conseguimos preparar seu cadastro</h1>
-            <p className="text-sm text-muted-foreground">{creationError}</p>
+            <p className="text-sm text-muted-foreground">{message}</p>
             <Button
               className="rounded-xl"
-              onClick={() => {
+              onClick={async () => {
                 setCreationError(null);
-                queryClient.invalidateQueries({ queryKey: ['doctor', user?.id] });
+                await queryClient.invalidateQueries({ queryKey: ['doctor', user?.id] });
+                await refetchDoctor();
               }}
             >
               Tentar novamente
