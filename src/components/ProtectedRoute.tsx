@@ -158,11 +158,11 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                   <Link to="/planos">
                     <Button className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-base font-bold gap-2 shadow-lg shadow-primary/20">
                       <Zap className="w-5 h-5" />
-                      Assinar agora — R$ 47,90/mês
+                      Parar de responder no WhatsApp — R$ 47,90/mês
                     </Button>
                   </Link>
                   <p className="text-center text-[11px] text-muted-foreground">
-                    Menos de R$ 1 por dia para transformar seu atendimento
+                    Ou R$ 29,90/mês no plano anual — menos de R$ 1 por dia
                   </p>
                 </motion.div>
 

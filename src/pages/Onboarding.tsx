@@ -654,7 +654,7 @@ export default function Onboarding() {
                 className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-base font-bold gap-2"
               >
                 <Crown className="w-5 h-5" />
-                Assinar por R$ 47,90/mês
+                Assinar Pro — R$ 47,90/mês
               </Button>
               <Button
                 onClick={startTrial}
