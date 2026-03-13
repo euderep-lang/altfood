@@ -157,17 +157,19 @@ export default function Landing() {
         <motion.div initial="hidden" animate="visible" className="relative max-w-3xl mx-auto text-center space-y-8">
           <motion.div variants={fadeUp} custom={0} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full premium-border bg-accent/60 backdrop-blur-sm">
             <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span className="text-xs font-semibold tracking-wide text-primary uppercase">O app mais completo da categoria</span>
+            <span className="text-xs font-semibold tracking-wide text-primary uppercase">Chega de responder "posso trocar o frango?"</span>
           </motion.div>
 
           <motion.h1 variants={fadeUp} custom={1} className="text-4xl md:text-6xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-            Seus pacientes perguntam.
+            Quanto vale sua hora
             <br />
-            <span className="text-gradient">O Altfood responde.</span>
+            <span className="text-gradient">respondendo paciente?</span>
           </motion.h1>
 
           <motion.p variants={fadeUp} custom={2} className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-            Simples, intuitivo e fácil de usar. A ferramenta de substituição alimentar que seus pacientes acessam pelo celular, com a <strong className="text-foreground">sua marca</strong>. <strong className="text-foreground">Seus pacientes irão amar.</strong>
+            <em>"Dra., não tem frango. Posso trocar por quê?"</em> — <em>"E o arroz?"</em> — <em>"E a batata?"</em> 😅
+            <br className="hidden md:block" />
+            O <strong className="text-foreground">Altfood</strong> responde por você. Seu paciente consulta na hora, pelo celular, com a <strong className="text-foreground">sua marca</strong>.
           </motion.p>
 
           <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
