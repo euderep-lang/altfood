@@ -202,7 +202,7 @@ export default function Profile() {
     navigate('/');
   };
 
-  const PreviewPanel = () => (
+  const previewPanel = (
     <div className="border border-border rounded-2xl overflow-hidden bg-background">
       {/* Preview header */}
       <div className="bg-card border-b border-border p-4">
