@@ -554,20 +554,33 @@ export default function Admin() {
                   <div><span className="text-muted-foreground">Slug:</span><p className="font-medium text-foreground">/p/{selectedDoctor.slug}</p></div>
                   <div><span className="text-muted-foreground">Cadastro:</span><p className="font-medium text-foreground">{formatDate(selectedDoctor.created_at)}</p></div>
                   <div><span className="text-muted-foreground">Plano:</span><p className="font-medium">{planBadge(selectedDoctor.subscription_status)}</p></div>
+                  <div><span className="text-muted-foreground">Pagamento:</span><p className="font-medium">{paymentBadge(selectedDoctor)}</p></div>
                   <div><span className="text-muted-foreground">Trial até:</span><p className="font-medium text-foreground">{formatDate(selectedDoctor.trial_ends_at)}</p></div>
                 </div>
               </div>
               <DialogFooter className="flex-col sm:flex-row gap-2 pt-4">
-                {selectedDoctor.subscription_status !== 'active' && (
+                {selectedDoctor.subscription_status !== 'active' && selectedDoctor.subscription_status !== 'blocked' && (
                   <Button size="sm" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'active')}>
                     <Crown className="w-3 h-3" /> Upgrade para Pro
                   </Button>
                 )}
                 {selectedDoctor.subscription_status === 'active' && (
-                  <Button size="sm" variant="destructive" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'inactive')}>
-                    Downgrade para Free
+                  <Button size="sm" variant="outline" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'inactive')}>
+                    Remover Pro
                   </Button>
                 )}
+                {selectedDoctor.subscription_status !== 'blocked' ? (
+                  <Button size="sm" variant="outline" className="rounded-xl gap-1 text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => blockDoctor(selectedDoctor.id)}>
+                    <Ban className="w-3 h-3" /> Bloquear
+                  </Button>
+                ) : (
+                  <Button size="sm" variant="outline" className="rounded-xl gap-1" onClick={() => unblockDoctor(selectedDoctor.id)}>
+                    Desbloquear
+                  </Button>
+                )}
+                <Button size="sm" variant="destructive" className="rounded-xl gap-1" onClick={() => { setDoctorToDelete(selectedDoctor); setDeleteConfirmOpen(true); }}>
+                  <Trash2 className="w-3 h-3" /> Excluir
+                </Button>
                 <Button size="sm" variant="outline" className="rounded-xl" onClick={() => setDialogOpen(false)}>
                   Fechar
                 </Button>
@@ -576,6 +589,24 @@ export default function Admin() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Delete confirmation */}
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent className="rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir cadastro</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir <strong>{doctorToDelete?.name}</strong>? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
+            <AlertDialogAction className="rounded-xl bg-destructive hover:bg-destructive/90" onClick={() => doctorToDelete && deleteDoctor(doctorToDelete.id)}>
+              Excluir permanentemente
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
