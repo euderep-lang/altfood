@@ -180,8 +180,8 @@ export default function ShareKit() {
               <div className="space-y-3">
                 {[
                   { step: '1', text: 'Compartilhe seu link de indicação com colegas médicos ou nutricionistas.' },
-                  { step: '2', text: 'Quando eles se cadastrarem pelo seu link, ganham 30 dias de trial (ao invés de 14).' },
-                  { step: '3', text: 'Você ganha 1 mês de Pro grátis por cada indicação completada.' },
+                  { step: '2', text: 'Quando eles se cadastrarem pelo seu link, ganham 14 dias de trial gratuito.' },
+                  { step: '3', text: 'Quando o indicado comprar um plano Pro, você ganha 1 mês de Pro grátis automaticamente!' },
                 ].map(s => (
                   <div key={s.step} className="flex items-start gap-3">
                     <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
