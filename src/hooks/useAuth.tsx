@@ -22,10 +22,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // When user confirms email via link, redirect to dashboard
+      if (event === 'SIGNED_IN' && session?.user) {
+        // Small delay to let React Router mount
+        setTimeout(() => {
+          const path = window.location.pathname;
+          if (path === '/' || path === '/login' || path === '/register' || path === '/signup') {
+            window.location.href = '/dashboard';
+          }
+        }, 100);
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
