@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useAdmin } from '@/hooks/useAdmin';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,9 +20,8 @@ import {
   Globe, Wrench, Database, AlertTriangle
 } from 'lucide-react';
 
-const ADMIN_EMAIL = 'carine@dracarinecassol.com.br';
 const PER_PAGE = 20;
-const PRO_PRICE = 49.90;
+const PRO_PRICE = 27.90;
 
 function MaintenanceToggle() {
   const { toast } = useToast();
