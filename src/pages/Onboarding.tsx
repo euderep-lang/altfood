@@ -186,15 +186,6 @@ export default function Onboarding() {
     );
   }
 
-  // Still waiting for doctor to be created (effect hasn't fired yet)
-  if (!doctor && !creationError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="animate-spin h-8 w-8 text-primary" />
-      </div>
-    );
-  }
-
   if (doctorError || creationError) {
     const message = creationError || (doctorError instanceof Error ? doctorError.message : 'Erro ao carregar seu perfil.');
 
@@ -216,6 +207,15 @@ export default function Onboarding() {
             </Button>
           </CardContent>
         </Card>
+      </div>
+    );
+  }
+
+  // Still waiting for doctor to be created (effect hasn't fired yet)
+  if (!doctor) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="animate-spin h-8 w-8 text-primary" />
       </div>
     );
   }
