@@ -12,9 +12,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import {
-  Leaf, ArrowRight, Copy, Check, Share2, Loader2, Upload, Palette,
+  ArrowRight, Copy, Check, Share2, Loader2, Upload, Palette,
   MessageCircle, ExternalLink, SkipForward,
 } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const STEPS = ['Boas-vindas', 'Perfil', 'Personalizar', 'Compartilhar'];
