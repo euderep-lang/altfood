@@ -202,7 +202,7 @@ export default function Profile() {
     navigate('/');
   };
 
-  const PreviewPanel = () => (
+  const previewPanel = (
     <div className="border border-border rounded-2xl overflow-hidden bg-background">
       {/* Preview header */}
       <div className="bg-card border-b border-border p-4">
@@ -289,7 +289,7 @@ export default function Profile() {
     );
   };
 
-  const EditorPanel = () => (
+  const editorPanel = (
     <div className="space-y-5">
       {/* Photo */}
       <ProLock>
@@ -646,21 +646,21 @@ export default function Profile() {
                 <TabsTrigger value="preview" className="rounded-lg text-sm">Preview</TabsTrigger>
               </TabsList>
               <TabsContent value="edit" className="mt-4">
-                <EditorPanel />
+                {editorPanel}
               </TabsContent>
               <TabsContent value="preview" className="mt-4">
-                <PreviewPanel />
+                {previewPanel}
               </TabsContent>
             </Tabs>
           </>
         ) : (
           <div className="grid grid-cols-5 gap-6">
             <div className="col-span-3">
-              <EditorPanel />
+              {editorPanel}
             </div>
             <div className="col-span-2 sticky top-6 self-start">
               <p className="text-xs font-medium text-muted-foreground mb-2">Prévia da página do paciente</p>
-              <PreviewPanel />
+              {previewPanel}
             </div>
           </div>
         )}
