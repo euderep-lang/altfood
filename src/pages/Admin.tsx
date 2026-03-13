@@ -598,8 +598,8 @@ export default function Admin() {
                     <Crown className="w-3 h-3" /> Upgrade para Pro
                   </Button>
                 )}
-                {selectedDoctor.subscription_status === 'active' && (
-                  <Button size="sm" variant="outline" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'inactive')}>
+                 {selectedDoctor.subscription_status === 'active' && (
+                  <Button size="sm" variant="outline" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'inactive', 'monthly', false)}>
                     Remover Pro
                   </Button>
                 )}
