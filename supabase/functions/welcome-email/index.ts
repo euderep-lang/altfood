@@ -1,10 +1,20 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+function isSenderDomainRestriction(details: unknown) {
+  if (!details || typeof details !== "object") return false;
+
+  const payload = details as { statusCode?: number; message?: string };
+  const message = (payload.message ?? "").toLowerCase();
+
+  return payload.statusCode === 403 && (
+    message.includes("domain is not verified") ||
+    message.includes("only send testing emails")
+  );
+}
 
 function buildWelcomeHtml(name: string, patientUrl: string): string {
   const firstName = name.split(" ")[0];
@@ -26,7 +36,7 @@ function buildWelcomeHtml(name: string, patientUrl: string): string {
         <p style="color:#555;font-size:14px;line-height:1.6;margin:0 0 20px;">
           Sua página de pacientes já está no ar e pronta para ser compartilhada. Seus pacientes agora podem acessar substituições alimentares de forma prática e personalizada.
         </p>
-        
+
         <!-- Patient URL -->
         <div style="background:#f0fdf9;border:1px solid #d1fae5;border-radius:12px;padding:16px;margin:0 0 24px;">
           <p style="color:#0F766E;font-size:12px;font-weight:600;margin:0 0 4px;text-transform:uppercase;letter-spacing:0.5px;">Sua página de paciente</p>
@@ -80,12 +90,18 @@ Deno.serve(async (req) => {
       );
     }
 
+    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+    if (!RESEND_API_KEY) {
+      return new Response(
+        JSON.stringify({ success: false, skipped: true, reason: "missing_email_provider_key" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const firstName = doctor_name.split(" ")[0];
     const subject = `Bem-vindo ao Altfood, ${firstName}! 🌿`;
     const html_body = buildWelcomeHtml(doctor_name, patient_url);
 
-    // Call send-email function
-    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -101,10 +117,20 @@ Deno.serve(async (req) => {
     });
 
     const data = await res.json();
+
     if (!res.ok) {
       console.error("Resend error:", data);
+
+      if (isSenderDomainRestriction(data)) {
+        return new Response(
+          JSON.stringify({ success: false, skipped: true, reason: "sender_domain_not_verified", details: data.message }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       return new Response(JSON.stringify({ error: "Failed to send", details: data }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -113,8 +139,9 @@ Deno.serve(async (req) => {
     });
   } catch (error) {
     console.error("Error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: error instanceof Error ? error.message : "Unexpected error" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 });

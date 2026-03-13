@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +18,10 @@ function sanitize(str: string) {
   return str.replace(/<[^>]*>/g, '').trim();
 }
 
+function isExistingAuthUser(authUser: { identities?: Array<unknown> } | null) {
+  return Array.isArray(authUser?.identities) && authUser.identities.length === 0;
+}
+
 export default function Register() {
   const [form, setForm] = useState({
     name: '', email: '', documentNumber: '', specialty: 'Nutricionista', password: '', confirmPassword: ''
@@ -25,7 +29,6 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showEmailSent, setShowEmailSent] = useState(false);
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   const update = (field: string, value: string) => {
@@ -79,6 +82,32 @@ export default function Register() {
     if (authError || !authData.user) {
       setLoading(false);
       toast({ title: 'Erro ao criar conta', description: authError?.message || 'Tente novamente.', variant: 'destructive' });
+      return;
+    }
+
+    if (isExistingAuthUser(authData.user)) {
+      const { error: resendError } = await supabase.auth.resend({
+        type: 'signup',
+        email: cleanEmail,
+        options: { emailRedirectTo: window.location.origin },
+      });
+
+      setLoading(false);
+
+      if (resendError) {
+        toast({
+          title: 'Conta já existente',
+          description: 'Este e-mail já está cadastrado. Tente entrar ou recuperar sua senha.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      toast({
+        title: 'E-mail reenviado',
+        description: 'Já existe uma conta para este e-mail. Enviamos um novo link de confirmação.',
+      });
+      setShowEmailSent(true);
       return;
     }
 
