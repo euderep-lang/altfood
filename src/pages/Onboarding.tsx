@@ -73,7 +73,12 @@ export default function Onboarding() {
     const createDoctorProfile = async () => {
       setCreatingDoctor(true);
 
-      const baseName = ((user.user_metadata?.name as string) || user.email?.split('@')[0] || 'Profissional').trim();
+      const metadataName = typeof user.user_metadata?.name === 'string' ? user.user_metadata.name : '';
+      const metadataSpecialty = typeof user.user_metadata?.specialty === 'string' ? user.user_metadata.specialty : '';
+      const metadataDocument = typeof user.user_metadata?.document_number === 'string' ? user.user_metadata.document_number : '';
+      const metadataReferralCode = typeof user.user_metadata?.referral_code === 'string' ? user.user_metadata.referral_code : '';
+
+      const baseName = (metadataName || user.email?.split('@')[0] || 'Profissional').trim();
       const doctorEmail = (user.email || `${user.id}@altfood.app`).toLowerCase();
       let slug = generateSlug(baseName);
       if (!slug) slug = `profissional-${user.id.slice(0, 8)}`;
@@ -85,12 +90,23 @@ export default function Onboarding() {
         slug = `${slug}-${idx}`;
       }
 
-      const { error } = await supabase.from('doctors').insert({
+      const referralCode = (metadataReferralCode || localStorage.getItem('altfood_referral_code') || '').trim().toLowerCase();
+      let referredBy: string | null = null;
+
+      if (referralCode) {
+        const { data: referrerDoctor } = await supabase.from('doctors').select('id').eq('referral_code', referralCode).maybeSingle();
+        referredBy = referrerDoctor?.id || null;
+      }
+
+      const { data: insertedDoctor, error } = await supabase.from('doctors').insert({
         user_id: user.id,
         name: baseName,
         email: doctorEmail,
         slug,
-      });
+        specialty: metadataSpecialty || 'Nutricionista',
+        document_number: metadataDocument || null,
+        referred_by: referredBy,
+      }).select('id').single();
 
       if (cancelled) return;
 
@@ -98,6 +114,18 @@ export default function Onboarding() {
         setCreationError(error.message);
         setCreatingDoctor(false);
         return;
+      }
+
+      if (referredBy && insertedDoctor?.id) {
+        const { error: referralError } = await supabase.from('referrals').insert({
+          referrer_id: referredBy,
+          referred_id: insertedDoctor.id,
+          status: 'pending',
+        });
+
+        if (!referralError) {
+          localStorage.removeItem('altfood_referral_code');
+        }
       }
 
       await queryClient.invalidateQueries({ queryKey: ['doctor', user.id] });

@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
-import { generateSlug } from '@/lib/helpers';
+
 import { motion } from 'framer-motion';
 
 const specialties = ['Nutricionista', 'Endocrinologista', 'Clínico Geral', 'Nutrólogo', 'Outro'];
@@ -72,11 +72,20 @@ export default function Register() {
     const cleanName = sanitize(form.name);
     const cleanEmail = form.email.trim().toLowerCase();
     const cleanDoc = sanitize(form.documentNumber);
+    const referralCode = localStorage.getItem('altfood_referral_code')?.trim().toLowerCase() || null;
 
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: cleanEmail,
       password: form.password,
-      options: { emailRedirectTo: window.location.origin }
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: {
+          name: cleanName,
+          specialty: form.specialty,
+          document_number: cleanDoc || null,
+          referral_code: referralCode,
+        },
+      },
     });
 
     if (authError || !authData.user) {
@@ -111,60 +120,10 @@ export default function Register() {
       return;
     }
 
-    let slug = generateSlug(cleanName);
-    const { data: existing } = await supabase.from('doctors').select('slug').like('slug', `${slug}%`);
-    if (existing && existing.length > 0) {
-      const slugs = existing.map(e => e.slug);
-      if (slugs.includes(slug)) {
-        let i = 2;
-        while (slugs.includes(`${slug}-${i}`)) i++;
-        slug = `${slug}-${i}`;
-      }
-    }
-
-    // Check for referral code
-    const referralCode = localStorage.getItem('altfood_referral_code');
-    let referrerDoctor: any = null;
-    if (referralCode) {
-      const { data: refDoc } = await supabase.from('doctors').select('id').eq('referral_code', referralCode).maybeSingle();
-      referrerDoctor = refDoc;
-    }
-
-    const { data: profileData, error: profileError } = await supabase.functions.invoke('create-doctor-profile', {
-      body: {
-        user_id: authData.user.id,
-        name: cleanName,
-        email: cleanEmail,
-        document_number: cleanDoc || null,
-        specialty: form.specialty,
-        slug,
-        referred_by: referrerDoctor?.id || null,
-      },
-    });
-
     setLoading(false);
-    if (profileError || (profileData && profileData.error)) {
-      toast({ title: 'Erro ao criar perfil', description: profileData?.error || profileError?.message || 'Tente novamente.', variant: 'destructive' });
-      return;
-    }
 
-    if (referrerDoctor) {
-      localStorage.removeItem('altfood_referral_code');
-    }
-
-    // Sign out so user must verify email first
+    // Exige confirmação de e-mail antes de criar o perfil profissional
     await supabase.auth.signOut();
-
-    // Send welcome email (fire and forget - don't block or crash on failure)
-    const patientUrl = `${window.location.origin}/p/${slug}`;
-    try {
-      supabase.functions.invoke('welcome-email', {
-        body: { doctor_name: cleanName, doctor_email: cleanEmail, patient_url: patientUrl },
-      }).catch(() => {});
-    } catch {
-      // Silently ignore welcome email errors
-    }
-
     setShowEmailSent(true);
   };
 
