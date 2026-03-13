@@ -117,13 +117,15 @@ export default function Onboarding() {
       }
 
       if (referredBy && insertedDoctor?.id) {
-        await supabase.from('referrals').insert({
+        const { error: referralError } = await supabase.from('referrals').insert({
           referrer_id: referredBy,
           referred_id: insertedDoctor.id,
           status: 'pending',
-        }).then(() => {
+        });
+
+        if (!referralError) {
           localStorage.removeItem('altfood_referral_code');
-        }).catch(() => {});
+        }
       }
 
       await queryClient.invalidateQueries({ queryKey: ['doctor', user.id] });
