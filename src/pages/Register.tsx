@@ -24,6 +24,7 @@ export default function Register() {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showEmailSent, setShowEmailSent] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
