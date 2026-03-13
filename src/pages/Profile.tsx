@@ -289,7 +289,7 @@ export default function Profile() {
     );
   };
 
-  const EditorPanel = () => (
+  const editorPanel = (
     <div className="space-y-5">
       {/* Photo */}
       <ProLock>
