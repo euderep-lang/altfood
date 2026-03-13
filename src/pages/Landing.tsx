@@ -3,7 +3,8 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Leaf, ArrowRight, Check, Sparkles, Star, UserPlus, Share2, Search, X } from 'lucide-react';
+import { ArrowRight, Check, Sparkles, Star, UserPlus, Share2, Search, X } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { useState, useEffect } from 'react';
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
@@ -43,9 +44,7 @@ export default function Landing() {
       <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-card shadow-md border-b border-border' : 'glass-nav'}`}>
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl gradient-hero flex items-center justify-center shadow-md group-hover:glow-shadow transition-shadow duration-300">
-              <Leaf className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <AltfoodIcon size="xs" className="shadow-md group-hover:glow-shadow transition-shadow duration-300" />
             <span className="font-bold text-lg text-foreground tracking-tight">Altfood</span>
           </Link>
           <div className="hidden md:flex items-center gap-6 text-sm">
@@ -439,9 +438,7 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg gradient-hero flex items-center justify-center">
-                <Leaf className="w-4 h-4 text-primary-foreground" />
-              </div>
+              <AltfoodIcon size="xs" />
               <span className="font-bold text-foreground tracking-tight">Altfood</span>
             </div>
             <div className="flex items-center gap-6 text-sm">

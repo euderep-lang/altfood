@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, Loader2, X, Clock, AlertTriangle, ChevronDown, ChevronUp, Leaf, MessageCircle, Star, History, Heart, WifiOff, Download, Trash2, GitCompare, Info } from 'lucide-react';
+import { Search, Loader2, X, Clock, AlertTriangle, ChevronDown, ChevronUp, MessageCircle, Star, History, Heart, WifiOff, Download, Trash2, GitCompare, Info } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import { calculateSubstitutions, getSimilarityLabel, type SubstitutionResult } from '@/lib/substitutionAlgorithm';
 import FoodDetailModal from '@/components/FoodDetailModal';
@@ -490,9 +491,7 @@ export default function PatientPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <div className="max-w-sm w-full text-center space-y-6">
-          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto">
-            <Leaf className="w-8 h-8 text-muted-foreground" />
-          </div>
+          <AltfoodIcon size="lg" className="mx-auto opacity-50" />
           <div>
             <h1 className="text-xl font-bold text-foreground">Esta página não existe</h1>
             <p className="text-sm text-muted-foreground mt-2">O link que você acessou não foi encontrado ou foi removido.</p>

@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Leaf, Home } from "lucide-react";
+import { Home } from "lucide-react";
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from "framer-motion";
 
 const NotFound = () => {
@@ -20,9 +21,7 @@ const NotFound = () => {
         className="text-center max-w-sm space-y-6"
       >
         <div className="flex items-center justify-center gap-2.5 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-sm">
-            <Leaf className="w-5 h-5 text-primary-foreground" />
-          </div>
+          <AltfoodIcon size="md" className="shadow-sm" />
           <span className="text-2xl font-bold text-foreground tracking-tight">Altfood</span>
         </div>
         <div>

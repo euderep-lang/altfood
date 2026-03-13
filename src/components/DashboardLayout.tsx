@@ -2,7 +2,8 @@ import { ReactNode, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useDoctor } from '@/hooks/useDoctor';
-import { LayoutDashboard, User, HelpCircle, LogOut, Leaf, Loader2, BarChart3, ExternalLink, X } from 'lucide-react';
+import { LayoutDashboard, User, HelpCircle, LogOut, Loader2, BarChart3, ExternalLink, X } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { cn } from '@/lib/utils';
 import { daysRemaining } from '@/lib/helpers';
 import SupportWidget from '@/components/SupportWidget';
@@ -108,9 +109,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <aside className="hidden md:flex w-60 flex-col border-r border-border bg-card">
         <div className="p-4 border-b border-border">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Leaf className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <AltfoodIcon size="sm" />
             <span className="font-bold text-lg text-foreground">Altfood</span>
           </Link>
         </div>

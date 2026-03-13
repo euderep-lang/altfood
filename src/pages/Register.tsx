@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Leaf } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { generateSlug } from '@/lib/helpers';
 import { motion } from 'framer-motion';
 
@@ -176,9 +177,7 @@ export default function Register() {
         className="w-full max-w-[400px]"
       >
         <div className="flex items-center justify-center gap-2.5 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-sm">
-            <Leaf className="w-5 h-5 text-primary-foreground" />
-          </div>
+          <AltfoodIcon size="md" className="shadow-sm" />
           <span className="text-2xl font-bold text-foreground tracking-tight">Altfood</span>
         </div>
 

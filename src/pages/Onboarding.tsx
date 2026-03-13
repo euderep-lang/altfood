@@ -12,9 +12,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import {
-  Leaf, ArrowRight, Copy, Check, Share2, Loader2, Upload, Palette,
+  ArrowRight, Copy, Check, Share2, Loader2, Upload, Palette,
   MessageCircle, ExternalLink, SkipForward,
 } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const STEPS = ['Boas-vindas', 'Perfil', 'Personalizar', 'Compartilhar'];
@@ -161,9 +162,7 @@ export default function Onboarding() {
       <header className="border-b border-border bg-card px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Leaf className="w-4 h-4 text-primary-foreground" />
-            </div>
+            <AltfoodIcon size="sm" />
             <span className="font-bold text-foreground">Altfood</span>
           </div>
           <button onClick={skipStep} className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
@@ -211,9 +210,7 @@ export default function Onboarding() {
               <motion.div key="step0" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.3 }}>
                 <Card className="rounded-2xl shadow-lg border-border/50">
                   <CardContent className="p-8 text-center space-y-6">
-                    <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
-                      <Leaf className="w-10 h-10 text-primary" />
-                    </div>
+                    <AltfoodIcon size="xl" className="mx-auto" />
                     <div>
                       <h1 className="text-2xl font-bold text-foreground">
                         Bem-vindo ao Altfood, {firstName}! 🎉

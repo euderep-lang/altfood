@@ -7,7 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useDoctor } from '@/hooks/useDoctor';
 import { supabase } from '@/integrations/supabase/client';
-import { Check, Leaf, Loader2, Lock, Crown } from 'lucide-react';
+import { Check, Loader2, Lock, Crown } from 'lucide-react';
+import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
 
 const FREE_FEATURES = [
@@ -70,9 +71,7 @@ export default function Pricing() {
       <header className="border-b border-border bg-card">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Leaf className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <AltfoodIcon size="sm" />
             <span className="font-bold text-lg text-foreground">Altfood</span>
           </Link>
           {user ? (
