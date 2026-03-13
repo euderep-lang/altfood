@@ -135,16 +135,52 @@ export default function Register() {
       localStorage.removeItem('altfood_referral_code');
     }
 
-    toast({ title: '✅ Conta criada com sucesso!' });
-
     // Send welcome email (fire and forget)
     const patientUrl = `${window.location.origin}/p/${slug}`;
     supabase.functions.invoke('welcome-email', {
       body: { doctor_name: cleanName, doctor_email: cleanEmail, patient_url: patientUrl },
     }).catch(console.error);
 
-    navigate('/onboarding', { replace: true });
+    // Sign out so user must verify email first
+    await supabase.auth.signOut();
+    setShowEmailSent(true);
   };
+
+  if (showEmailSent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-[400px]"
+        >
+          <Card className="rounded-2xl shadow-lg border-border/50">
+            <CardContent className="p-8 text-center space-y-5">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
+                <Mail className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-foreground">Verifique seu e-mail 📩</h1>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                  Enviamos um link de confirmação para <strong className="text-foreground">{form.email}</strong>. 
+                  Clique no link para ativar sua conta.
+                </p>
+              </div>
+              <div className="bg-muted/50 rounded-xl p-3 text-xs text-muted-foreground">
+                Não encontrou? Verifique a pasta de spam ou lixo eletrônico.
+              </div>
+              <Link to="/login">
+                <Button variant="outline" className="w-full rounded-xl h-11">
+                  Já confirmei, fazer login
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
