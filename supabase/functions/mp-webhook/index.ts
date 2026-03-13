@@ -111,6 +111,59 @@ Deno.serve(async (req) => {
 
     console.log(`Doctor ${doctorId} upgraded to Pro (${plan}) until ${endDate.toISOString()}`);
 
+    // === Referral reward: grant 1 month to whoever referred this doctor ===
+    const { data: doctor } = await supabase
+      .from('doctors')
+      .select('referred_by')
+      .eq('id', doctorId)
+      .single();
+
+    if (doctor?.referred_by) {
+      // Check for pending referral
+      const { data: referral } = await supabase
+        .from('referrals')
+        .select('id, status')
+        .eq('referred_id', doctorId)
+        .eq('referrer_id', doctor.referred_by)
+        .eq('status', 'pending')
+        .maybeSingle();
+
+      if (referral) {
+        // Get referrer's current subscription info
+        const { data: referrer } = await supabase
+          .from('doctors')
+          .select('subscription_end_date, subscription_status, trial_ends_at')
+          .eq('id', doctor.referred_by)
+          .single();
+
+        if (referrer) {
+          const baseDate = referrer.subscription_status === 'active' && referrer.subscription_end_date
+            ? new Date(referrer.subscription_end_date)
+            : referrer.subscription_status === 'trial'
+            ? new Date(referrer.trial_ends_at)
+            : new Date();
+          const newEnd = new Date(Math.max(baseDate.getTime(), Date.now()) + 30 * 24 * 60 * 60 * 1000);
+
+          if (referrer.subscription_status === 'active') {
+            await supabase.from('doctors').update({ subscription_end_date: newEnd.toISOString() }).eq('id', doctor.referred_by);
+          } else {
+            await supabase.from('doctors').update({
+              subscription_status: 'active',
+              subscription_end_date: newEnd.toISOString(),
+            }).eq('id', doctor.referred_by);
+          }
+
+          // Mark referral as completed
+          await supabase.from('referrals').update({
+            status: 'completed',
+            reward_given_at: new Date().toISOString(),
+          }).eq('id', referral.id);
+
+          console.log(`Referral reward granted to doctor ${doctor.referred_by} for referring ${doctorId}`);
+        }
+      }
+    }
+
     return new Response(JSON.stringify({ ok: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
