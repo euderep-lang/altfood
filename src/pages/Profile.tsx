@@ -656,11 +656,11 @@ export default function Profile() {
         ) : (
           <div className="grid grid-cols-5 gap-6">
             <div className="col-span-3">
-              <EditorPanel />
+              {editorPanel}
             </div>
             <div className="col-span-2 sticky top-6 self-start">
               <p className="text-xs font-medium text-muted-foreground mb-2">Prévia da página do paciente</p>
-              <PreviewPanel />
+              {previewPanel}
             </div>
           </div>
         )}
