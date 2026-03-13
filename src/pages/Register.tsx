@@ -123,14 +123,19 @@ export default function Register() {
       localStorage.removeItem('altfood_referral_code');
     }
 
-    // Send welcome email (fire and forget)
-    const patientUrl = `${window.location.origin}/p/${slug}`;
-    supabase.functions.invoke('welcome-email', {
-      body: { doctor_name: cleanName, doctor_email: cleanEmail, patient_url: patientUrl },
-    }).catch(console.error);
-
     // Sign out so user must verify email first
     await supabase.auth.signOut();
+
+    // Send welcome email (fire and forget - don't block or crash on failure)
+    const patientUrl = `${window.location.origin}/p/${slug}`;
+    try {
+      supabase.functions.invoke('welcome-email', {
+        body: { doctor_name: cleanName, doctor_email: cleanEmail, patient_url: patientUrl },
+      }).catch(() => {});
+    } catch {
+      // Silently ignore welcome email errors
+    }
+
     setShowEmailSent(true);
   };
 
