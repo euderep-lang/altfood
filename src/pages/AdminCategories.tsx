@@ -57,7 +57,7 @@ export default function AdminCategories() {
   if (authLoading) {
     return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
   }
-  if (!isAdmin) return <Navigate to="/dashboard" replace />;
+  if (!isAdmin) return <Navigate to="/admin/login" replace />;
 
   const openNew = () => {
     setEditCat({ ...emptyCategory, _isNew: true });

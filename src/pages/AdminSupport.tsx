@@ -62,7 +62,7 @@ export default function AdminSupport() {
   });
 
   if (authLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
-  if (!isAdmin) return <Navigate to="/dashboard" replace />;
+  if (!isAdmin) return <Navigate to="/admin/login" replace />;
 
   const filtered = statusFilter === 'all' ? tickets : tickets.filter(t => t.status === statusFilter);
   const openCount = tickets.filter(t => t.status === 'open').length;
