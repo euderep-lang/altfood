@@ -434,10 +434,10 @@ export default function Landing() {
             </motion.div>
 
             {/* Anual — destaque */}
-            <motion.div variants={scaleIn} custom={1}>
+            <motion.div variants={scaleIn} custom={1} className="overflow-visible pt-4">
               <Card className="rounded-3xl bg-primary-foreground/[0.08] backdrop-blur-xl border-2 border-primary/40 shimmer overflow-visible relative h-full shadow-[0_0_60px_-10px_hsl(170_60%_30%/0.25)]">
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full gradient-gold text-primary-foreground text-xs font-bold shadow-lg tracking-wide">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                  <span className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full gradient-gold text-primary-foreground text-xs font-bold shadow-lg tracking-wide whitespace-nowrap">
                     <Crown className="w-3.5 h-3.5" /> MAIS POPULAR
                   </span>
                 </div>
