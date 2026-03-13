@@ -35,6 +35,7 @@ const AdminCategories = lazy(() => import("./pages/AdminCategories"));
 const ReferralRedirect = lazy(() => import("./pages/ReferralRedirect"));
 const ShareKit = lazy(() => import("./pages/ShareKit"));
 const Changelog = lazy(() => import("./pages/Changelog"));
+const Billing = lazy(() => import("./pages/Billing"));
 
 const queryClient = new QueryClient();
 
