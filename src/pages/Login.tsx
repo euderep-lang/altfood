@@ -60,10 +60,8 @@ export default function Login() {
     }
 
     if (!doctor) {
-      // No profile — sign out and send to register
-      await supabase.auth.signOut();
-      toast({ title: 'Cadastro não encontrado', description: 'Crie sua conta para começar a usar o Altfood.', variant: 'destructive' });
-      navigate('/register');
+      toast({ title: 'Vamos finalizar seu cadastro', description: 'Complete seu perfil para acessar o painel.' });
+      navigate('/onboarding');
     } else if (doctor.subscription_status === 'blocked') {
       toast({ title: 'Conta bloqueada', description: 'Entre em contato com o suporte.', variant: 'destructive' });
       navigate('/planos');
