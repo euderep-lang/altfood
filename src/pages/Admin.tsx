@@ -286,16 +286,24 @@ export default function Admin() {
   };
 
   const deleteDoctor = async (doctorId: string) => {
-    const { error } = await supabase.from('doctors').delete().eq('id', doctorId);
-    if (error) {
-      toast({ title: 'Erro ao excluir', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: '✅ Cadastro excluído' });
-      queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
-      setDialogOpen(false);
-      setDeleteConfirmOpen(false);
-      setDoctorToDelete(null);
+    const { data, error } = await supabase.functions.invoke('admin-delete-professional', {
+      body: { doctor_id: doctorId },
+    });
+
+    if (error || data?.error) {
+      toast({
+        title: 'Erro ao excluir',
+        description: error?.message || data?.error || 'Não foi possível excluir o profissional.',
+        variant: 'destructive',
+      });
+      return;
     }
+
+    toast({ title: '✅ Profissional excluído por completo' });
+    queryClient.invalidateQueries({ queryKey: ['admin-doctors'] });
+    setDialogOpen(false);
+    setDeleteConfirmOpen(false);
+    setDoctorToDelete(null);
   };
 
   const blockDoctor = async (doctorId: string) => {
