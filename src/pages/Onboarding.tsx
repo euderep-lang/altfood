@@ -62,6 +62,7 @@ export default function Onboarding() {
 
   // Step 3
   const [primaryColor, setPrimaryColor] = useState('#0F766E');
+  const [showSubscribePopup, setShowSubscribePopup] = useState(false);
 
   useEffect(() => {
     if (!user || isLoading || doctor || creatingDoctor || creationError) return;
