@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
-import { generateSlug } from '@/lib/helpers';
+
 import { motion } from 'framer-motion';
 
 const specialties = ['Nutricionista', 'Endocrinologista', 'Clínico Geral', 'Nutrólogo', 'Outro'];
