@@ -110,7 +110,7 @@ function useRotatingTestimonials(count: number, intervalMs: number) {
 
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
-  const [billingAnnual, setBillingAnnual] = useState(true);
+  const [billingAnnual] = useState(true);
   const testimonials = useRotatingTestimonials(3, 6000);
 
   useEffect(() => {
