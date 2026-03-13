@@ -109,10 +109,9 @@ export default function Register() {
       slug,
     };
 
-    // Extended trial for referred doctors
+    // Track referral origin (reward only after payment)
     if (referrerDoctor) {
       insertData.referred_by = referrerDoctor.id;
-      insertData.trial_ends_at = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     }
 
     const { error: docError, data: newDoc } = await supabase.from('doctors').insert(insertData).select('id').single();
