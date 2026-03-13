@@ -259,10 +259,11 @@ export default function Admin() {
     URL.revokeObjectURL(url);
   };
 
-  const changePlan = async (doctorId: string, newStatus: string, insertPayment = false) => {
+  const changePlan = async (doctorId: string, newStatus: string, plan: 'monthly' | 'annual' = 'monthly', insertPayment = false) => {
     const updates: any = { subscription_status: newStatus };
     if (newStatus === 'active') {
-      updates.subscription_end_date = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+      const durationMs = plan === 'annual' ? 365 * 24 * 60 * 60 * 1000 : 30 * 24 * 60 * 60 * 1000;
+      updates.subscription_end_date = new Date(Date.now() + durationMs).toISOString();
     }
     const { error } = await supabase.from('doctors').update(updates).eq('id', doctorId);
     if (error) {
@@ -271,10 +272,11 @@ export default function Admin() {
     }
     if (insertPayment && newStatus === 'active') {
       const doctor = doctors.find((d: any) => d.id === doctorId);
+      const amount = plan === 'annual' ? PRO_PRICE_ANNUAL : PRO_PRICE_MONTHLY;
       await supabase.from('payments').insert({
         doctor_id: doctorId,
-        amount: PRO_PRICE,
-        plan: 'monthly',
+        amount,
+        plan,
         mp_payment_id: `manual-${Date.now()}`,
         payer_email: doctor?.email || null,
         status: 'approved',
