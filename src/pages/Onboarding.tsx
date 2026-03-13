@@ -54,6 +54,7 @@ export default function Onboarding() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [creatingDoctor, setCreatingDoctor] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
+  const [popupAnnual, setPopupAnnual] = useState(true);
 
   // Step 2 fields
   const [specialty, setSpecialty] = useState('');
