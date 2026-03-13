@@ -197,7 +197,7 @@ export default function Admin() {
     const c = new Date(d.created_at);
     return d.subscription_status === 'active' && c <= lastMonthEnd;
   }).length;
-  const mrrLastMonth = proLastMonth * PRO_PRICE;
+  const mrrLastMonth = proLastMonth * PRO_PRICE_MONTHLY;
 
   const viewsToday = allPageViews.filter((v: any) => new Date(v.viewed_at) >= todayStart).length;
   const viewsThisMonth = allPageViews.filter((v: any) => new Date(v.viewed_at) >= thisMonthStart).length;
