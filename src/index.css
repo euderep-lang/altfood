@@ -190,6 +190,32 @@
     background-size: 24px 24px;
   }
 
+  .gradient-gold {
+    background: var(--gradient-gold);
+  }
+
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .luxury-shadow {
+    box-shadow: var(--shadow-luxury);
+  }
+
+  .luxury-card {
+    @apply bg-card/80 backdrop-blur-xl border border-border/30;
+    box-shadow: var(--shadow-premium);
+  }
+
+  .luxury-card-gold {
+    background: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(42 40% 98%) 100%);
+    border: 1.5px solid hsl(42 60% 70% / 0.3);
+    box-shadow: var(--shadow-luxury), inset 0 1px 0 hsl(42 60% 80% / 0.3);
+  }
+
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom, 8px);
   }
