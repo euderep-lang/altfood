@@ -54,6 +54,7 @@ export default function Onboarding() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [creatingDoctor, setCreatingDoctor] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
+  const [popupAnnual, setPopupAnnual] = useState(true);
 
   // Step 2 fields
   const [specialty, setSpecialty] = useState('');
@@ -593,9 +594,14 @@ export default function Onboarding() {
         </div>
       </div>
 
-      {/* Persuasive Subscribe Popup */}
-      <Dialog open={showSubscribePopup} onOpenChange={(open) => { if (!open) startTrial(); }}>
-        <DialogContent className="max-w-md rounded-2xl p-0 border-none overflow-hidden [&>button]:hidden">
+      {/* Persuasive Subscribe Popup — only closes via explicit action */}
+      <Dialog open={showSubscribePopup} onOpenChange={() => {}}>
+        <DialogContent
+          className="max-w-md rounded-2xl p-0 border-none overflow-hidden [&>button]:hidden"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           {/* Gradient Header */}
           <div className="bg-gradient-to-br from-primary to-primary/80 p-8 text-center">
             <motion.div
@@ -651,14 +657,43 @@ export default function Onboarding() {
               </ul>
             </div>
 
+            {/* Plan toggle */}
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={() => setPopupAnnual(false)}
+                className={`text-sm font-medium transition-colors ${!popupAnnual ? 'text-foreground' : 'text-muted-foreground'}`}
+              >
+                Mensal
+              </button>
+              <button
+                onClick={() => setPopupAnnual(!popupAnnual)}
+                className={`relative w-12 h-6 rounded-full transition-colors ${popupAnnual ? 'bg-primary' : 'bg-muted'}`}
+              >
+                <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${popupAnnual ? 'translate-x-6' : 'translate-x-0.5'}`} />
+              </button>
+              <button
+                onClick={() => setPopupAnnual(true)}
+                className={`text-sm font-medium transition-colors ${popupAnnual ? 'text-foreground' : 'text-muted-foreground'}`}
+              >
+                Anual <span className="text-xs text-primary font-bold ml-1">-37%</span>
+              </button>
+            </div>
+
             <div className="space-y-2.5">
               <Button
                 onClick={() => { setShowSubscribePopup(false); navigate('/planos'); }}
                 className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-base font-bold gap-2"
               >
                 <Crown className="w-5 h-5" />
-                Assinar Pro — R$ 47,90/mês
+                {popupAnnual
+                  ? 'Assinar Pro — R$ 29,90/mês'
+                  : 'Assinar Pro — R$ 47,90/mês'}
               </Button>
+              {popupAnnual && (
+                <p className="text-xs text-center text-muted-foreground">
+                  Cobrado anualmente R$ 358,80 · Economia de R$ 216/ano
+                </p>
+              )}
               <Button
                 onClick={startTrial}
                 variant="outline"

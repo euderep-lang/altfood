@@ -23,7 +23,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useAuth } from '@/hooks/useAuth';
 
 const PER_PAGE = 20;
-const PRO_PRICE = 47.90; // monthly price
+const PRO_PRICE_MONTHLY = 47.90;
+const PRO_PRICE_ANNUAL = 358.80; // R$ 29,90/mês × 12
 
 function MaintenanceToggle() {
   const { toast } = useToast();
@@ -143,6 +144,8 @@ export default function Admin() {
   const [doctorToDelete, setDoctorToDelete] = useState<any>(null);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [doctorToUpgrade, setDoctorToUpgrade] = useState<any>(null);
+  const [upgradePlan, setUpgradePlan] = useState<'monthly' | 'annual'>('monthly');
+  const [upgradeRegisterPayment, setUpgradeRegisterPayment] = useState(true);
 
   // Fetch all doctors
   const { data: doctors = [], isLoading: doctorsLoading } = useQuery({
@@ -176,7 +179,7 @@ export default function Admin() {
   const totalDoctors = doctors.length;
   const proDoctors = doctors.filter((d: any) => d.subscription_status === 'active');
   const totalPro = proDoctors.length;
-  const mrr = totalPro * PRO_PRICE;
+  const mrr = totalPro * PRO_PRICE_MONTHLY;
 
   const activeThisMonth = doctors.filter((d: any) => new Date(d.updated_at) >= thisMonthStart).length;
   const activeLastMonth = doctors.filter((d: any) => {
@@ -194,7 +197,7 @@ export default function Admin() {
     const c = new Date(d.created_at);
     return d.subscription_status === 'active' && c <= lastMonthEnd;
   }).length;
-  const mrrLastMonth = proLastMonth * PRO_PRICE;
+  const mrrLastMonth = proLastMonth * PRO_PRICE_MONTHLY;
 
   const viewsToday = allPageViews.filter((v: any) => new Date(v.viewed_at) >= todayStart).length;
   const viewsThisMonth = allPageViews.filter((v: any) => new Date(v.viewed_at) >= thisMonthStart).length;
@@ -256,10 +259,11 @@ export default function Admin() {
     URL.revokeObjectURL(url);
   };
 
-  const changePlan = async (doctorId: string, newStatus: string, insertPayment = false) => {
+  const changePlan = async (doctorId: string, newStatus: string, plan: 'monthly' | 'annual' = 'monthly', insertPayment = false) => {
     const updates: any = { subscription_status: newStatus };
     if (newStatus === 'active') {
-      updates.subscription_end_date = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+      const durationMs = plan === 'annual' ? 365 * 24 * 60 * 60 * 1000 : 30 * 24 * 60 * 60 * 1000;
+      updates.subscription_end_date = new Date(Date.now() + durationMs).toISOString();
     }
     const { error } = await supabase.from('doctors').update(updates).eq('id', doctorId);
     if (error) {
@@ -268,10 +272,11 @@ export default function Admin() {
     }
     if (insertPayment && newStatus === 'active') {
       const doctor = doctors.find((d: any) => d.id === doctorId);
+      const amount = plan === 'annual' ? PRO_PRICE_ANNUAL : PRO_PRICE_MONTHLY;
       await supabase.from('payments').insert({
         doctor_id: doctorId,
-        amount: PRO_PRICE,
-        plan: 'monthly',
+        amount,
+        plan,
         mp_payment_id: `manual-${Date.now()}`,
         payer_email: doctor?.email || null,
         status: 'approved',
@@ -593,8 +598,8 @@ export default function Admin() {
                     <Crown className="w-3 h-3" /> Upgrade para Pro
                   </Button>
                 )}
-                {selectedDoctor.subscription_status === 'active' && (
-                  <Button size="sm" variant="outline" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'inactive')}>
+                 {selectedDoctor.subscription_status === 'active' && (
+                  <Button size="sm" variant="outline" className="rounded-xl gap-1" onClick={() => changePlan(selectedDoctor.id, 'inactive', 'monthly', false)}>
                     Remover Pro
                   </Button>
                 )}
@@ -619,22 +624,58 @@ export default function Admin() {
         </DialogContent>
       </Dialog>
 
-      {/* Upgrade confirmation */}
+      {/* Upgrade dialog with plan choice */}
       <AlertDialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen}>
         <AlertDialogContent className="rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Upgrade para Pro</AlertDialogTitle>
-            <AlertDialogDescription>
-              Deseja registrar o pagamento de <strong>R$ {PRO_PRICE.toFixed(2).replace('.', ',')}</strong> para <strong>{doctorToUpgrade?.name}</strong> no financeiro?
+            <AlertDialogDescription asChild>
+              <div className="space-y-4">
+                <p>Escolha o plano para <strong>{doctorToUpgrade?.name}</strong>:</p>
+                
+                {/* Plan selection */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setUpgradePlan('monthly')}
+                    className={`p-3 rounded-xl border-2 text-left transition-colors ${
+                      upgradePlan === 'monthly' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground'
+                    }`}
+                  >
+                    <p className="text-sm font-semibold text-foreground">Mensal</p>
+                    <p className="text-lg font-bold text-foreground">R$ {PRO_PRICE_MONTHLY.toFixed(2).replace('.', ',')}</p>
+                    <p className="text-xs text-muted-foreground">/mês</p>
+                  </button>
+                  <button
+                    onClick={() => setUpgradePlan('annual')}
+                    className={`p-3 rounded-xl border-2 text-left transition-colors ${
+                      upgradePlan === 'annual' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground'
+                    }`}
+                  >
+                    <p className="text-sm font-semibold text-foreground">Anual</p>
+                    <p className="text-lg font-bold text-foreground">R$ {PRO_PRICE_ANNUAL.toFixed(2).replace('.', ',')}</p>
+                    <p className="text-xs text-muted-foreground">R$ {(PRO_PRICE_ANNUAL / 12).toFixed(2).replace('.', ',')}/mês</p>
+                  </button>
+                </div>
+
+                {/* Register payment toggle */}
+                <div className="flex items-center justify-between p-3 rounded-xl bg-muted/50">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Registrar no financeiro?</p>
+                    <p className="text-xs text-muted-foreground">
+                      {upgradeRegisterPayment
+                        ? `Será registrado R$ ${(upgradePlan === 'annual' ? PRO_PRICE_ANNUAL : PRO_PRICE_MONTHLY).toFixed(2).replace('.', ',')}`
+                        : 'Nenhum valor será registrado'}
+                    </p>
+                  </div>
+                  <Switch checked={upgradeRegisterPayment} onCheckedChange={setUpgradeRegisterPayment} />
+                </div>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col sm:flex-row gap-2">
             <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
-            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', false)}>
-              Não, upgrade gratuito
-            </Button>
-            <Button size="sm" className="rounded-xl gap-1" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', true)}>
-              <DollarSign className="w-3 h-3" /> Sim, registrar pagamento
+            <Button size="sm" className="rounded-xl gap-1" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', upgradePlan, upgradeRegisterPayment)}>
+              <Crown className="w-3 h-3" /> Confirmar Upgrade
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
