@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +30,7 @@ export default function Register() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showEmailSent, setShowEmailSent] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const update = (field: string, value: string) => {
     setForm(f => ({ ...f, [field]: value }));
@@ -122,8 +123,14 @@ export default function Register() {
 
     setLoading(false);
 
-    // Exige confirmação de e-mail antes de criar o perfil profissional
-    await supabase.auth.signOut();
+    // Quando auto-confirm está ativo, a sessão vem no signUp e seguimos direto
+    if (authData.session) {
+      toast({ title: 'Conta criada com sucesso', description: 'Vamos finalizar seu perfil.' });
+      navigate('/onboarding', { replace: true });
+      return;
+    }
+
+    // Fallback para ambientes com confirmação por e-mail
     setShowEmailSent(true);
   };
 

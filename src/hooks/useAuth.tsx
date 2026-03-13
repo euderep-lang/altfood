@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Small delay to let React Router mount
         setTimeout(() => {
           const path = window.location.pathname;
-          if (path === '/' || path === '/login' || path === '/register' || path === '/signup') {
+          if (path === '/') {
             window.location.href = '/dashboard';
           }
         }, 100);
