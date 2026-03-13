@@ -393,6 +393,19 @@ export default function Landing() {
             </motion.p>
           </motion.div>
 
+          {/* Patient-free callout */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} className="mb-10">
+            <motion.div variants={fadeUp} custom={0} className="rounded-2xl bg-primary/10 border border-primary/20 backdrop-blur-sm px-6 py-5 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+              <span className="text-3xl shrink-0">🎉</span>
+              <div>
+                <p className="text-sm font-bold text-primary-foreground">Seu paciente não paga nada!</p>
+                <p className="text-xs text-primary-foreground/60 mt-1 leading-relaxed">
+                  Só você investe — menos de <strong className="text-primary-foreground/80">R$ 1 por dia</strong>. Seus pacientes acessam sua página personalizada de graça, sem criar conta, sem instalar nada.
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-2 gap-8 items-stretch">
             {/* Mensal */}
             <motion.div variants={scaleIn} custom={0} className="pt-5">
@@ -508,6 +521,7 @@ export default function Landing() {
                 { q: 'Os dados são da TACO?', a: 'Sim! Utilizamos a Tabela TACO (Tabela Brasileira de Composição de Alimentos), 4ª edição, desenvolvida pela NEPA/UNICAMP — a referência nacional em dados nutricionais com 463+ alimentos catalogados.' },
                 { q: 'Posso cancelar a qualquer momento?', a: 'Sim, sem multas ou burocracia. Você pode cancelar pelo dashboard e continua tendo acesso até o final do período pago.' },
                 { q: 'Funciona no celular?', a: 'Sim! O Altfood foi projetado mobile-first. A página de paciente funciona perfeitamente em qualquer celular, com interface otimizada e até modo offline.' },
+                { q: 'Meu paciente precisa pagar para usar?', a: 'Não! O paciente acessa 100% de graça. Ele não precisa criar conta, não precisa instalar nada e não paga nenhum centavo. Você é o único que investe — menos de R$ 1 por dia no plano anual — e disponibiliza o link personalizado para quantos pacientes quiser, sem custo adicional.' },
                 { q: 'Qual a diferença entre mensal e anual?', a: `No plano mensal você paga R$ 47,90/mês. No anual, o valor cai para R$ 29,90/mês (12× = R$ 358,80/ano) — menos de R$ 1 por dia. Você economiza R$ ${savingsPerYear} por ano.` },
               ].map((faq, i) => (
                 <motion.div key={i} variants={fadeUp} custom={i}>
