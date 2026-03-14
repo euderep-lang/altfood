@@ -64,11 +64,11 @@ export default function Profile() {
         email_tips: (doctor as any).email_tips ?? true,
       });
       // Load sections
-      supabase.from('doctor_sections').select('*').eq('doctor_id', doctor.id).order('sort_order').then(({ data }) => {
+      supabase.from('doctor_sections').select('id, title, content, sort_order').eq('doctor_id', doctor.id).order('sort_order').then(({ data }) => {
         if (data && data.length > 0) setSections(data.map(s => ({ id: s.id, title: s.title, content: s.content, sort_order: s.sort_order })));
       });
       // Check domain interest
-      supabase.from('domain_interests').select('id').eq('doctor_id', doctor.id).then(({ data }) => {
+      supabase.from('domain_interests').select('id').eq('doctor_id', doctor.id).limit(1).then(({ data }) => {
         if (data && data.length > 0) setDomainInterestSaved(true);
       });
     }
@@ -133,47 +133,57 @@ export default function Profile() {
       return;
     }
 
-    setSaving(true);
-    let logoUrl = getField('logo_url') === '' ? null : doctor.logo_url;
+    // Validate required fields
+    const nameValue = getField('name')?.trim();
+    if (!nameValue) {
+      toast({ title: 'Nome obrigatório', description: 'Preencha seu nome antes de salvar.', variant: 'destructive' });
+      return;
+    }
 
-    if (logoFile && user) {
-      const ext = logoFile.name.split('.').pop();
-      const path = `${user.id}/logo.${ext}`;
-      const { error: uploadErr } = await supabase.storage.from('doctor-logos').upload(path, logoFile, { upsert: true });
-      if (uploadErr) {
-        toast({ title: 'Erro ao enviar foto', description: uploadErr.message, variant: 'destructive' });
-        setSaving(false);
+    setSaving(true);
+    try {
+      let logoUrl = getField('logo_url') === '' ? null : doctor.logo_url;
+
+      if (logoFile && user) {
+        const ext = logoFile.name.split('.').pop();
+        const path = `${user.id}/logo.${ext}`;
+        const { error: uploadErr } = await supabase.storage.from('doctor-logos').upload(path, logoFile, { upsert: true });
+        if (uploadErr) {
+          toast({ title: 'Erro ao enviar foto', description: uploadErr.message, variant: 'destructive' });
+          return;
+        }
+        const { data: urlData } = supabase.storage.from('doctor-logos').getPublicUrl(path);
+        logoUrl = urlData.publicUrl;
+      }
+
+      const updateData: Record<string, any> = {
+        name: nameValue,
+        specialty: getField('specialty') || doctor.specialty,
+        document_number: getField('document_number'),
+        primary_color: primaryColor,
+        secondary_color: getField('secondary_color') || doctor.secondary_color,
+        logo_url: logoUrl,
+        bio: getField('bio') || null,
+        whatsapp_link: getField('whatsapp_link') || null,
+        instagram_link: getField('instagram_link') || null,
+        welcome_message: getField('welcome_message') || null,
+        email_weekly_summary: emailPrefs.email_weekly_summary,
+        email_tips: emailPrefs.email_tips,
+        theme_layout: themeLayout,
+      };
+
+      if (slugValue && slugValue !== doctor.slug && slugAvailable !== false) {
+        updateData.slug = slugValue;
+      }
+
+      const { error } = await supabase.from('doctors').update(updateData).eq('id', doctor.id);
+
+      if (error) {
+        toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
         return;
       }
-      const { data: urlData } = supabase.storage.from('doctor-logos').getPublicUrl(path);
-      logoUrl = urlData.publicUrl;
-    }
 
-    const updateData: Record<string, any> = {
-      name: getField('name') || doctor.name,
-      specialty: getField('specialty') || doctor.specialty,
-      document_number: getField('document_number'),
-      primary_color: primaryColor,
-      secondary_color: getField('secondary_color') || doctor.secondary_color,
-      logo_url: logoUrl,
-      bio: getField('bio') || null,
-      whatsapp_link: getField('whatsapp_link') || null,
-      instagram_link: getField('instagram_link') || null,
-      welcome_message: getField('welcome_message') || null,
-      email_weekly_summary: emailPrefs.email_weekly_summary,
-      email_tips: emailPrefs.email_tips,
-      theme_layout: themeLayout,
-    };
-
-    if (slugValue && slugValue !== doctor.slug && slugAvailable !== false) {
-      updateData.slug = slugValue;
-    }
-
-    const { error } = await supabase.from('doctors').update(updateData).eq('id', doctor.id);
-
-    // Save sections
-    if (!error) {
-      // Delete existing sections and re-insert
+      // Save sections
       await supabase.from('doctor_sections').delete().eq('doctor_id', doctor.id);
       const validSections = sections.filter(s => s.title.trim() && s.content.trim());
       if (validSections.length > 0) {
@@ -181,17 +191,16 @@ export default function Profile() {
           validSections.map((s, i) => ({ doctor_id: doctor.id, title: s.title.trim(), content: s.content.trim(), sort_order: i }))
         );
       }
-    }
 
-    setSaving(false);
-
-    if (error) {
-      toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
-    } else {
       setSaved(true);
       toast({ title: 'Salvo! ✓' });
       queryClient.invalidateQueries({ queryKey: ['doctor'] });
       setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error('[Profile] handleSave error:', err);
+      toast({ title: 'Erro ao salvar', description: err instanceof Error ? err.message : 'Erro inesperado. Tente novamente.', variant: 'destructive' });
+    } finally {
+      setSaving(false);
     }
   };
 

@@ -50,15 +50,18 @@ export default function Dashboard() {
     queryFn: async () => {
       if (!doctor) return [];
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('page_views')
-        .select('*')
+        .select('viewed_at, ip_hash')
         .eq('doctor_id', doctor.id)
         .gte('viewed_at', thirtyDaysAgo)
-        .order('viewed_at', { ascending: true });
+        .order('viewed_at', { ascending: true })
+        .limit(1000);
+      if (error) throw error;
       return data || [];
     },
     enabled: !!doctor,
+    staleTime: 60000,
   });
 
   const { data: queries = [] } = useQuery({
@@ -66,36 +69,44 @@ export default function Dashboard() {
     queryFn: async () => {
       if (!doctor) return [];
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('substitution_queries')
-        .select('*')
+        .select('id, food_name, weight_grams, queried_at')
         .eq('doctor_id', doctor.id)
         .gte('queried_at', thirtyDaysAgo)
-        .order('queried_at', { ascending: false });
+        .order('queried_at', { ascending: false })
+        .limit(50);
+      if (error) throw error;
       return data || [];
     },
     enabled: !!doctor,
+    staleTime: 60000,
   });
 
   const { data: foodCount = 0 } = useQuery({
     queryKey: ['foodCount'],
     queryFn: async () => {
-      const { count } = await supabase.from('foods').select('*', { count: 'exact', head: true }).eq('is_active', true);
+      const { count, error } = await supabase.from('foods').select('id', { count: 'exact', head: true }).eq('is_active', true);
+      if (error) throw error;
       return count || 0;
     },
+    staleTime: 300000,
   });
 
   const { data: referrals = [] } = useQuery({
     queryKey: ['referrals', doctor?.id],
     queryFn: async () => {
       if (!doctor) return [];
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('referrals')
-        .select('*')
-        .eq('referrer_id', doctor.id);
+        .select('id, status, reward_given_at, created_at')
+        .eq('referrer_id', doctor.id)
+        .limit(50);
+      if (error) throw error;
       return data || [];
     },
     enabled: !!doctor,
+    staleTime: 60000,
   });
 
   // Weekly tip based on current week

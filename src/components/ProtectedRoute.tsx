@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 function isSubscriptionValid(doctor: any): boolean {
   if (!doctor) return false;
@@ -24,8 +25,18 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   const { user, loading } = useAuth();
   const { data: doctor, isLoading: doctorLoading } = useDoctor();
   const location = useLocation();
+  const [timedOut, setTimedOut] = useState(false);
 
-  if (loading || doctorLoading) {
+  // Timeout: if loading takes more than 10s, stop waiting
+  useEffect(() => {
+    if (loading || doctorLoading) {
+      const timer = setTimeout(() => setTimedOut(true), 10000);
+      return () => clearTimeout(timer);
+    }
+    setTimedOut(false);
+  }, [loading, doctorLoading]);
+
+  if ((loading || doctorLoading) && !timedOut) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="animate-spin h-8 w-8 text-primary" />
@@ -33,6 +44,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     );
   }
 
+  // If timed out or not logged in, redirect
   if (!user) return <Navigate to="/login" replace />;
 
   // Don't block onboarding, pricing, or admin pages
