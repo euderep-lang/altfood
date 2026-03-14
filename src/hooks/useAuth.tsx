@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
@@ -27,9 +28,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       setLoading(false);
 
+      // Handle session expiry
+      if (event === 'TOKEN_REFRESHED' && !session) {
+        toast({
+          title: 'Sessão expirada',
+          description: 'Sua sessão expirou. Faça login novamente.',
+          variant: 'destructive',
+        });
+        window.location.href = '/login';
+        return;
+      }
+
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setSession(null);
+      }
+
       // When user confirms email via link, redirect to dashboard
       if (event === 'SIGNED_IN' && session?.user) {
-        // Small delay to let React Router mount
         setTimeout(() => {
           const path = window.location.pathname;
           if (path === '/') {
@@ -39,7 +55,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error('[Auth] getSession error:', error);
+        toast({
+          title: 'Sessão expirada',
+          description: 'Sua sessão expirou. Faça login novamente.',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -48,9 +74,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut();
-  };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, session, loading, signOut }}>
