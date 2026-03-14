@@ -72,10 +72,10 @@ export function calculateSubstitutions(
     if (food.id === selectedFood.id) continue;
     if (!food.is_active) continue;
 
-    // Filter: exclude foods whose name contains the original's first word
+    // Filter: exclude foods whose name starts with the original's first word
     const normalizedName = food.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    if (normalizedName.startsWith(originalFirstWord)) continue;
     const nameWords = normalizedName.split(/\s+/);
-    if (nameWords.some(w => w === originalFirstWord)) continue;
 
     // Filter: exclude raw foods
     if (nameWords.some(w => RAW_KEYWORDS.includes(w))) continue;
@@ -111,11 +111,11 @@ export function calculateSubstitutions(
     });
   }
 
-  // Sort: different categories first (more interesting substitutions), then by similarity
+  // Sort: same category first, then by similarity
   results.sort((a, b) => {
-    const aSameCategory = a.food.category_id === selectedFood.category_id ? 1 : 0;
-    const bSameCategory = b.food.category_id === selectedFood.category_id ? 1 : 0;
-    if (aSameCategory !== bSameCategory) return aSameCategory - bSameCategory;
+    const aCategory = a.food.category_id === selectedFood.category_id ? 0 : 1;
+    const bCategory = b.food.category_id === selectedFood.category_id ? 0 : 1;
+    if (aCategory !== bCategory) return aCategory - bCategory;
     return b.similarityScore - a.similarityScore;
   });
 
