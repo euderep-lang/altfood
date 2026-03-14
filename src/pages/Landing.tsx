@@ -342,7 +342,7 @@ export default function Landing() {
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-5 min-h-[280px]">
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode="wait">
               {testimonials.map((t) => (
                 <motion.div
                   key={t.name}
