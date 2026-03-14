@@ -829,10 +829,10 @@ export default function PatientPage() {
                       </div>
                       <div className="flex gap-2 mt-3 flex-wrap">
                         {[
-                          { label: 'Prot', value: `${selectedFood.protein}g`, bg: '#3B82F620', text: '#3B82F6' },
-                          { label: 'Carb', value: `${selectedFood.carbohydrates}g`, bg: '#F59E0B20', text: '#F59E0B' },
-                          { label: 'Gord', value: `${selectedFood.fat}g`, bg: '#EF444420', text: '#EF4444' },
-                          { label: 'Kcal', value: `${selectedFood.calories}`, bg: '#8B5CF620', text: '#8B5CF6' },
+                          { label: 'Prot', value: `${Math.round(Number(selectedFood.protein) * weight / 100 * 10) / 10}g`, bg: '#3B82F620', text: '#3B82F6' },
+                          { label: 'Carb', value: `${Math.round(Number(selectedFood.carbohydrates) * weight / 100 * 10) / 10}g`, bg: '#F59E0B20', text: '#F59E0B' },
+                          { label: 'Gord', value: `${Math.round(Number(selectedFood.fat) * weight / 100 * 10) / 10}g`, bg: '#EF444420', text: '#EF4444' },
+                          { label: 'Kcal', value: `${Math.round(Number(selectedFood.calories) * weight / 100)}`, bg: '#8B5CF620', text: '#8B5CF6' },
                         ].map(m => (
                           <span key={m.label} className="text-[11px] px-2.5 py-1 rounded-full font-semibold" style={{ backgroundColor: m.bg, color: m.text }}>
                             {m.label}: {m.value}
