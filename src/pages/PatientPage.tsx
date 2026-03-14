@@ -945,7 +945,7 @@ export default function PatientPage() {
                         </Card>
                       )}
 
-                      {filteredResults.filter(r => !dismissedCards.has(r.food.id)).map((result, idx) => {
+                      {filteredResults.filter(r => !dismissedCards.has(r.food.id)).slice(0, 20).map((result, idx) => {
                         const sim = getSimilarityPill(result.similarityScore, lang);
                         const borderColor = getSimilarityBorderColor(result.similarityScore);
                         const isExpanded = expandedCards.has(result.food.id);
