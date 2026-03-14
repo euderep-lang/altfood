@@ -121,7 +121,7 @@ export default function Onboarding() {
           referredBy = referrerDoctor?.id || null;
         }
 
-        const { data: createResult, error: createError } = await supabase.functions.invoke('create-doctor-profile', {
+        const invokePromise = supabase.functions.invoke('create-doctor-profile', {
           body: {
             name: baseName,
             email: doctorEmail,
@@ -131,6 +131,10 @@ export default function Onboarding() {
             referred_by: referredBy,
           },
         });
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('O servidor demorou demais. Tente novamente.')), 15000)
+        );
+        const { data: createResult, error: createError } = await Promise.race([invokePromise, timeoutPromise]) as any;
 
         if (createError) throw createError;
         if (createResult?.error) throw new Error(createResult.error);
