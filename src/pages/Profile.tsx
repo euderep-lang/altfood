@@ -147,7 +147,11 @@ export default function Profile() {
       if (logoFile && user) {
         const ext = logoFile.name.split('.').pop();
         const path = `${user.id}/logo.${ext}`;
-        const { error: uploadErr } = await supabase.storage.from('doctor-logos').upload(path, logoFile, { upsert: true });
+        const uploadPromise = supabase.storage.from('doctor-logos').upload(path, logoFile, { upsert: true });
+        const uploadTimeout = new Promise<{error: Error}>((_, reject) =>
+          setTimeout(() => reject(new Error('Upload demorou demais. Verifique sua conexão.')), 15000)
+        );
+        const { error: uploadErr } = await Promise.race([uploadPromise, uploadTimeout]) as any;
         if (uploadErr) {
           toast({ title: 'Erro ao enviar foto', description: uploadErr.message, variant: 'destructive' });
           return;
