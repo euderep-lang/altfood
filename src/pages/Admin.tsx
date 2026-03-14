@@ -585,7 +585,7 @@ export default function Admin() {
                   <div><span className="text-muted-foreground">Telefone:</span><p className="font-medium text-foreground">{selectedDoctor.phone || '—'}</p></div>
                   <div><span className="text-muted-foreground">Especialidade:</span><p className="font-medium text-foreground">{selectedDoctor.specialty}</p></div>
                   <div><span className="text-muted-foreground">Documento:</span><p className="font-medium text-foreground">{selectedDoctor.document_type} {selectedDoctor.document_number || '—'}</p></div>
-                  <div><span className="text-muted-foreground">Slug:</span><p className="font-medium text-foreground">/p/{selectedDoctor.slug}</p></div>
+                  <div><span className="text-muted-foreground">Slug:</span><p className="font-medium text-foreground">/{selectedDoctor.slug}</p></div>
                   <div><span className="text-muted-foreground">Cadastro:</span><p className="font-medium text-foreground">{formatDate(selectedDoctor.created_at)}</p></div>
                   <div><span className="text-muted-foreground">Plano:</span><p className="font-medium">{planBadge(selectedDoctor.subscription_status)}</p></div>
                   <div><span className="text-muted-foreground">Pagamento:</span><p className="font-medium">{paymentBadge(selectedDoctor)}</p></div>

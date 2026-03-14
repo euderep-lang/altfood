@@ -52,7 +52,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     navigate('/login');
   };
 
-  const patientUrl = doctor ? `${window.location.origin}/p/${doctor.slug}` : '';
+  const patientUrl = doctor ? `${window.location.origin}/${doctor.slug}` : '';
 
   const subscriptionBanner = () => {
     if (!doctor) return null;

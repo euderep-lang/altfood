@@ -1,5 +1,11 @@
+export const RESERVED_SLUGS = [
+  'login', 'register', 'signup', 'dashboard', 'onboarding', 'profile',
+  'billing', 'planos', 'admin', 'support', 'changelog', 'reset-password',
+  'forgot-password', 'p', 'ref', 'compartilhar', 'novidades', 'assinatura',
+];
+
 export function generateSlug(name: string): string {
-  return name
+  const base = name
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -7,6 +13,11 @@ export function generateSlug(name: string): string {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
+
+  if (RESERVED_SLUGS.includes(base)) {
+    return `${base}-2`;
+  }
+  return base;
 }
 
 export function formatDate(date: string | Date): string {

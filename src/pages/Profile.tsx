@@ -105,7 +105,7 @@ export default function Profile() {
   const isPro = doctor.subscription_status === 'active';
   const primaryColor = getField('primary_color') || '#0F766E';
   const initials = (getField('name') || doctor.name).split(' ').filter((w: string) => w.length > 2).map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
-  const patientUrl = `${window.location.origin}/p/${slugValue || doctor.slug}`;
+  const patientUrl = `${window.location.origin}/${slugValue || doctor.slug}`;
   const bioLength = (getField('bio') || '').length;
 
   const handleLogoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -434,7 +434,7 @@ export default function Profile() {
         <CardContent className="p-5 space-y-3">
           <Label className="text-sm font-semibold">Link do paciente</Label>
           <div className="flex items-center gap-1 bg-muted rounded-xl px-3 py-2">
-            <span className="text-xs text-muted-foreground shrink-0">{window.location.origin}/p/</span>
+            <span className="text-xs text-muted-foreground shrink-0">{window.location.origin}/</span>
             <input
               value={slugValue}
               onChange={e => setSlugValue(generateSlug(e.target.value))}
