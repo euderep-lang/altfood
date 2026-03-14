@@ -56,82 +56,83 @@ export default function Register() {
 
     setLoading(true);
 
-    // Rate limit check
     try {
-      const { data: rlData } = await supabase.functions.invoke('check-rate-limit', {
-        body: { action: 'signup' },
-      });
-      if (rlData && !rlData.allowed) {
-        toast({ title: 'Muitas tentativas', description: rlData.message || 'Tente novamente mais tarde.', variant: 'destructive' });
-        setLoading(false);
-        return;
-      }
-    } catch {
-      // If rate limit check fails, proceed anyway
-    }
-
-    const cleanName = sanitize(form.name);
-    const cleanEmail = form.email.trim().toLowerCase();
-    const cleanDoc = sanitize(form.documentNumber);
-    const referralCode = localStorage.getItem('altfood_referral_code')?.trim().toLowerCase() || null;
-
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: cleanEmail,
-      password: form.password,
-      options: {
-        emailRedirectTo: window.location.origin,
-        data: {
-          name: cleanName,
-          specialty: form.specialty,
-          document_number: cleanDoc || null,
-          referral_code: referralCode,
-        },
-      },
-    });
-
-    if (authError || !authData.user) {
-      setLoading(false);
-      toast({ title: 'Erro ao criar conta', description: authError?.message || 'Tente novamente.', variant: 'destructive' });
-      return;
-    }
-
-    if (isExistingAuthUser(authData.user)) {
-      const { error: resendError } = await supabase.auth.resend({
-        type: 'signup',
-        email: cleanEmail,
-        options: { emailRedirectTo: window.location.origin },
-      });
-
-      setLoading(false);
-
-      if (resendError) {
-        toast({
-          title: 'Conta já existente',
-          description: 'Este e-mail já está cadastrado. Tente entrar ou recuperar sua senha.',
-          variant: 'destructive',
+      // Rate limit check
+      try {
+        const { data: rlData } = await supabase.functions.invoke('check-rate-limit', {
+          body: { action: 'signup' },
         });
+        if (rlData && !rlData.allowed) {
+          toast({ title: 'Muitas tentativas', description: rlData.message || 'Tente novamente mais tarde.', variant: 'destructive' });
+          return;
+        }
+      } catch {
+        // If rate limit check fails, proceed anyway
+      }
+
+      const cleanName = sanitize(form.name);
+      const cleanEmail = form.email.trim().toLowerCase();
+      const cleanDoc = sanitize(form.documentNumber);
+      const referralCode = localStorage.getItem('altfood_referral_code')?.trim().toLowerCase() || null;
+
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: cleanEmail,
+        password: form.password,
+        options: {
+          emailRedirectTo: window.location.origin,
+          data: {
+            name: cleanName,
+            specialty: form.specialty,
+            document_number: cleanDoc || null,
+            referral_code: referralCode,
+          },
+        },
+      });
+
+      if (authError || !authData.user) {
+        toast({ title: 'Erro ao criar conta', description: authError?.message || 'Tente novamente.', variant: 'destructive' });
         return;
       }
 
-      toast({
-        title: 'E-mail reenviado',
-        description: 'Já existe uma conta para este e-mail. Enviamos um novo link de confirmação.',
-      });
+      if (isExistingAuthUser(authData.user)) {
+        const { error: resendError } = await supabase.auth.resend({
+          type: 'signup',
+          email: cleanEmail,
+          options: { emailRedirectTo: window.location.origin },
+        });
+
+        if (resendError) {
+          toast({
+            title: 'Conta já existente',
+            description: 'Este e-mail já está cadastrado. Tente entrar ou recuperar sua senha.',
+            variant: 'destructive',
+          });
+          return;
+        }
+
+        toast({
+          title: 'E-mail reenviado',
+          description: 'Já existe uma conta para este e-mail. Enviamos um novo link de confirmação.',
+        });
+        setShowEmailSent(true);
+        return;
+      }
+
+      // Quando auto-confirm está ativo, a sessão vem no signUp e seguimos direto
+      if (authData.session) {
+        toast({ title: 'Conta criada com sucesso', description: 'Vamos finalizar seu perfil.' });
+        navigate('/onboarding', { replace: true });
+        return;
+      }
+
+      // Fallback para ambientes com confirmação por e-mail
       setShowEmailSent(true);
-      return;
+    } catch (err) {
+      console.error('[Register] Unexpected error:', err);
+      toast({ title: 'Erro inesperado', description: 'Tente novamente.', variant: 'destructive' });
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
-
-    // Quando auto-confirm está ativo, a sessão vem no signUp e seguimos direto
-    if (authData.session) {
-      toast({ title: 'Conta criada com sucesso', description: 'Vamos finalizar seu perfil.' });
-      navigate('/onboarding', { replace: true });
-      return;
-    }
-
-    // Fallback para ambientes com confirmação por e-mail
-    setShowEmailSent(true);
   };
 
   if (showEmailSent) {
