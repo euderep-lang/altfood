@@ -38,7 +38,17 @@ const ShareKit = lazy(() => import("./pages/ShareKit"));
 const Changelog = lazy(() => import("./pages/Changelog"));
 const Billing = lazy(() => import("./pages/Billing"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      retryDelay: 1000,
+      staleTime: 1000 * 30,
+      gcTime: 1000 * 60 * 5,
+      networkMode: 'offlineFirst',
+    },
+  },
+});
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
