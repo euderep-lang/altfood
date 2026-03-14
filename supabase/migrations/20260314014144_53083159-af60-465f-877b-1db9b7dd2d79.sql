@@ -1,0 +1,2 @@
+ALTER TABLE public.doctors DROP CONSTRAINT IF EXISTS doctors_subscription_status_check;
+ALTER TABLE public.doctors ADD CONSTRAINT doctors_subscription_status_check CHECK (subscription_status IN ('trial', 'active', 'inactive', 'blocked'));
