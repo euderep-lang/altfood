@@ -227,52 +227,73 @@ export default function Onboarding() {
 
   const saveProfile = async () => {
     setSaving(true);
-    const { error } = await supabase.from('doctors').update({
-      specialty,
-      document_number: documentNumber || null,
-      bio: bio || null,
-      primary_color: avatarColor,
-    }).eq('id', doctor.id);
-    setSaving(false);
-    if (error) {
-      toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
-      return;
+    try {
+      const { error } = await supabase.from('doctors').update({
+        specialty,
+        document_number: documentNumber || null,
+        bio: bio || null,
+        primary_color: avatarColor,
+      }).eq('id', doctor.id);
+      if (error) {
+        toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ['doctor'] });
+      setStep(2);
+    } catch (err) {
+      console.error('[Onboarding] saveProfile error:', err);
+      toast({ title: 'Erro ao salvar', description: 'Tente novamente.', variant: 'destructive' });
+    } finally {
+      setSaving(false);
     }
-    queryClient.invalidateQueries({ queryKey: ['doctor'] });
-    setStep(2);
   };
 
   const saveColor = async () => {
     setSaving(true);
-    const { error } = await supabase.from('doctors').update({
-      primary_color: primaryColor,
-      secondary_color: primaryColor,
-    }).eq('id', doctor.id);
-    setSaving(false);
-    if (error) {
-      toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
-      return;
+    try {
+      const { error } = await supabase.from('doctors').update({
+        primary_color: primaryColor,
+        secondary_color: primaryColor,
+      }).eq('id', doctor.id);
+      if (error) {
+        toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ['doctor'] });
+      setStep(3);
+    } catch (err) {
+      console.error('[Onboarding] saveColor error:', err);
+      toast({ title: 'Erro ao salvar', description: 'Tente novamente.', variant: 'destructive' });
+    } finally {
+      setSaving(false);
     }
-    queryClient.invalidateQueries({ queryKey: ['doctor'] });
-    setStep(3);
   };
 
   const completeOnboarding = async () => {
-    await supabase.from('doctors').update({ onboarding_completed: true } as any).eq('id', doctor.id);
-    queryClient.invalidateQueries({ queryKey: ['doctor'] });
-    setShowSubscribePopup(true);
+    try {
+      await supabase.from('doctors').update({ onboarding_completed: true } as any).eq('id', doctor.id);
+      queryClient.invalidateQueries({ queryKey: ['doctor'] });
+      setShowSubscribePopup(true);
+    } catch (err) {
+      console.error('[Onboarding] completeOnboarding error:', err);
+      toast({ title: 'Erro', description: 'Não foi possível completar. Tente novamente.', variant: 'destructive' });
+    }
   };
 
   const startTrial = async () => {
-    // Set trial to 3 days from now
-    const trialEnd = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
-    await supabase.from('doctors').update({
-      subscription_status: 'trial',
-      trial_ends_at: trialEnd,
-    } as any).eq('id', doctor.id);
-    queryClient.invalidateQueries({ queryKey: ['doctor'] });
-    setShowSubscribePopup(false);
-    navigate('/dashboard', { replace: true });
+    try {
+      const trialEnd = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+      await supabase.from('doctors').update({
+        subscription_status: 'trial',
+        trial_ends_at: trialEnd,
+      } as any).eq('id', doctor.id);
+      queryClient.invalidateQueries({ queryKey: ['doctor'] });
+      setShowSubscribePopup(false);
+      navigate('/dashboard', { replace: true });
+    } catch (err) {
+      console.error('[Onboarding] startTrial error:', err);
+      toast({ title: 'Erro', description: 'Não foi possível iniciar o trial. Tente novamente.', variant: 'destructive' });
+    }
   };
 
   const skipStep = () => {
