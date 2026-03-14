@@ -5,6 +5,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const RESERVED_SLUGS = [
+  'login', 'register', 'signup', 'dashboard', 'onboarding', 'profile',
+  'billing', 'planos', 'admin', 'support', 'changelog', 'reset-password',
+  'forgot-password', 'p', 'ref', 'compartilhar', 'novidades', 'assinatura',
+];
+
 type CreateDoctorPayload = {
   name?: string;
   email?: string;
