@@ -77,7 +77,6 @@ const App = () => (
                 <Route path="/assinatura/sucesso" element={<SubscriptionSuccess />} />
                 <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/ref/:code" element={<ReferralRedirect />} />
-                <Route path="/p/:slug" element={<PatientPage />} />
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/dashboard/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="/dashboard/stats" element={<ProtectedRoute><Stats /></ProtectedRoute>} />
