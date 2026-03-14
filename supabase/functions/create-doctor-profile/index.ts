@@ -2,7 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 const RESERVED_SLUGS = [
@@ -32,25 +32,37 @@ Deno.serve(async (req) => {
 
   try {
     const authHeader = req.headers.get("Authorization");
-    const token = authHeader?.replace("Bearer ", "").trim();
-
-    if (!token) {
+    if (!authHeader?.startsWith("Bearer ")) {
       return new Response(
         JSON.stringify({ error: "Unauthorized" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const { data: authData, error: authError } = await supabaseAdmin.auth.getUser(token);
-    if (authError || !authData.user) {
+    const token = authHeader.replace("Bearer ", "").trim();
+
+    // Use anon client with getClaims for signing-keys compatibility
+    const supabaseAnon = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: claimsData, error: claimsError } = await supabaseAnon.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
       return new Response(
         JSON.stringify({ error: "Invalid session" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
+    const user = {
+      id: claimsData.claims.sub as string,
+      email: claimsData.claims.email as string | undefined,
+      user_metadata: claimsData.claims.user_metadata as Record<string, unknown> ?? {},
+    };
+
     const payload = (await req.json()) as CreateDoctorPayload;
-    const user = authData.user;
     const metadata = (user.user_metadata ?? {}) as Record<string, unknown>;
 
     const userId = user.id;
