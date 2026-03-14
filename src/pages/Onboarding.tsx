@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -55,6 +55,7 @@ export default function Onboarding() {
   const [creatingDoctor, setCreatingDoctor] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
   const [popupAnnual, setPopupAnnual] = useState(true);
+  const hasFetchedRef = useRef(false);
 
   // Step 2 fields
   const [specialty, setSpecialty] = useState('');
@@ -67,9 +68,9 @@ export default function Onboarding() {
   const [showSubscribePopup, setShowSubscribePopup] = useState(false);
 
   useEffect(() => {
-    if (!user || isLoading || doctor || creatingDoctor || creationError) return;
+    if (!user || isLoading || doctor || hasFetchedRef.current) return;
 
-    let cancelled = false;
+    hasFetchedRef.current = true;
 
     const createDoctorProfile = async () => {
       setCreatingDoctor(true);
@@ -150,22 +151,16 @@ export default function Onboarding() {
         await queryClient.invalidateQueries({ queryKey: ['doctor', user.id] });
         await queryClient.refetchQueries({ queryKey: ['doctor', user.id], type: 'active' });
       } catch (error) {
-        if (cancelled) return;
         console.error('[Onboarding] createDoctorProfile failed:', error);
         setCreationError(error instanceof Error ? error.message : 'Erro inesperado ao concluir cadastro.');
+        hasFetchedRef.current = false;
       } finally {
-        if (!cancelled) {
-          setCreatingDoctor(false);
-        }
+        setCreatingDoctor(false);
       }
     };
 
     createDoctorProfile();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [user, isLoading, doctor, creatingDoctor, creationError, queryClient]);
+  }, [user, isLoading, doctor, queryClient]);
 
   useEffect(() => {
     if (doctor) {
