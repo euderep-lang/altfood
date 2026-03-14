@@ -59,11 +59,26 @@ export function calculateSubstitutions(
   const origFat = (Number(selectedFood.fat) * weightGrams) / 100;
   const totalTarget = origProt + origCarb + origFat || 1;
 
+  // Extract first word of original food name for filtering similar names
+  const originalFirstWord = selectedFood.name
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .split(/\s+/)[0].toLowerCase();
+
+  const RAW_KEYWORDS = ['cru', 'crua', 'crus', 'cruas'];
+
   const results: SubstitutionResult[] = [];
 
   for (const food of allFoods) {
     if (food.id === selectedFood.id) continue;
     if (!food.is_active) continue;
+
+    // Filter: exclude foods whose name contains the original's first word
+    const normalizedName = food.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const nameWords = normalizedName.split(/\s+/);
+    if (nameWords.some(w => w === originalFirstWord)) continue;
+
+    // Filter: exclude raw foods
+    if (nameWords.some(w => RAW_KEYWORDS.includes(w))) continue;
 
     const subAnchor = getMacroValue(food, anchor);
     if (subAnchor === 0) continue;
@@ -96,11 +111,11 @@ export function calculateSubstitutions(
     });
   }
 
-  // Sort: same category first, then by similarity
+  // Sort: different categories first (more interesting substitutions), then by similarity
   results.sort((a, b) => {
-    const aCategory = a.food.category_id === selectedFood.category_id ? 0 : 1;
-    const bCategory = b.food.category_id === selectedFood.category_id ? 0 : 1;
-    if (aCategory !== bCategory) return aCategory - bCategory;
+    const aSameCategory = a.food.category_id === selectedFood.category_id ? 1 : 0;
+    const bSameCategory = b.food.category_id === selectedFood.category_id ? 1 : 0;
+    if (aSameCategory !== bSameCategory) return aSameCategory - bSameCategory;
     return b.similarityScore - a.similarityScore;
   });
 
