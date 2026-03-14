@@ -11,14 +11,43 @@ type DeleteProfessionalPayload = {
   email?: string;
 };
 
+type DoctorRow = {
+  id: string;
+  user_id: string;
+  email: string;
+  logo_url: string | null;
+};
+
 const AUTH_USER_NOT_FOUND_MESSAGES = ["User not found", "not found"];
+const DOCTOR_LOGO_PUBLIC_PATH = "/storage/v1/object/public/doctor-logos/";
 
 const normalize = (value?: string) => value?.trim() || undefined;
+const normalizeEmail = (value?: string) => normalize(value)?.toLowerCase();
 
-async function findUserIdByEmail(
+const isAuthUserNotFound = (message?: string) =>
+  AUTH_USER_NOT_FOUND_MESSAGES.some((text) => message?.toLowerCase().includes(text.toLowerCase()));
+
+const unique = <T>(items: T[]) => [...new Set(items)];
+
+function getLogoPathFromPublicUrl(logoUrl: string | null): string | null {
+  if (!logoUrl) return null;
+
+  const markerIndex = logoUrl.indexOf(DOCTOR_LOGO_PUBLIC_PATH);
+  if (markerIndex === -1) return null;
+
+  const path = logoUrl.slice(markerIndex + DOCTOR_LOGO_PUBLIC_PATH.length);
+  return path ? decodeURIComponent(path) : null;
+}
+
+async function findAuthUserIdsByEmails(
   supabaseAdmin: ReturnType<typeof createClient>,
-  email: string
-): Promise<string | null> {
+  emails: Set<string>
+): Promise<Map<string, string[]>> {
+  const normalizedEmails = new Set(Array.from(emails).map((email) => email.toLowerCase()));
+  const result = new Map<string, string[]>();
+
+  if (normalizedEmails.size === 0) return result;
+
   let page = 1;
   const perPage = 200;
 
@@ -26,11 +55,30 @@ async function findUserIdByEmail(
     const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
     if (error) throw new Error(error.message);
 
-    const foundUser = data.users.find((user) => user.email?.toLowerCase() === email.toLowerCase());
-    if (foundUser) return foundUser.id;
+    for (const user of data.users) {
+      const userEmail = user.email?.toLowerCase();
+      if (!userEmail || !normalizedEmails.has(userEmail)) continue;
 
-    if (data.users.length < perPage) return null;
+      const existing = result.get(userEmail) ?? [];
+      existing.push(user.id);
+      result.set(userEmail, existing);
+    }
+
+    if (data.users.length < perPage) break;
     page += 1;
+  }
+
+  return result;
+}
+
+async function hardDeleteAuthUser(
+  supabaseAdmin: ReturnType<typeof createClient>,
+  userId: string
+): Promise<void> {
+  const { error } = await supabaseAdmin.auth.admin.deleteUser(userId, false);
+
+  if (error && !isAuthUserNotFound(error.message)) {
+    throw new Error(error.message);
   }
 }
 
@@ -92,7 +140,7 @@ Deno.serve(async (req) => {
     const payload = (await req.json()) as DeleteProfessionalPayload;
     const doctorId = normalize(payload?.doctor_id);
     const userIdFromPayload = normalize(payload?.user_id);
-    const emailFromPayload = normalize(payload?.email)?.toLowerCase();
+    const emailFromPayload = normalizeEmail(payload?.email);
 
     if (!doctorId && !userIdFromPayload && !emailFromPayload) {
       return new Response(JSON.stringify({ error: "doctor_id, user_id or email is required" }), {
@@ -101,51 +149,114 @@ Deno.serve(async (req) => {
       });
     }
 
-    let targetUserId = userIdFromPayload ?? null;
+    const userIdsToDelete = new Set<string>();
+    const emailsToDelete = new Set<string>();
+    const doctorRowsById = new Map<string, DoctorRow>();
+
+    const addDoctorRows = (rows: DoctorRow[] | null) => {
+      if (!rows?.length) return;
+
+      for (const row of rows) {
+        doctorRowsById.set(row.id, row);
+        userIdsToDelete.add(row.user_id);
+        if (row.email) emailsToDelete.add(row.email.toLowerCase());
+      }
+    };
+
+    if (userIdFromPayload) userIdsToDelete.add(userIdFromPayload);
+    if (emailFromPayload) emailsToDelete.add(emailFromPayload);
 
     if (doctorId) {
-      const { data: selectedDoctor, error: selectedDoctorError } = await supabaseAdmin
+      const { data: doctorById, error: doctorByIdError } = await supabaseAdmin
         .from("doctors")
-        .select("id, user_id")
+        .select("id, user_id, email, logo_url")
         .eq("id", doctorId)
         .maybeSingle();
 
-      if (selectedDoctorError) {
-        return new Response(JSON.stringify({ error: selectedDoctorError.message }), {
+      if (doctorByIdError) {
+        return new Response(JSON.stringify({ error: doctorByIdError.message }), {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 
-      if (selectedDoctor) {
-        targetUserId = selectedDoctor.user_id;
+      if (doctorById) addDoctorRows([doctorById]);
+    }
+
+    if (userIdsToDelete.size > 0) {
+      const { data: doctorsByUser, error: doctorsByUserError } = await supabaseAdmin
+        .from("doctors")
+        .select("id, user_id, email, logo_url")
+        .in("user_id", Array.from(userIdsToDelete));
+
+      if (doctorsByUserError) {
+        return new Response(JSON.stringify({ error: doctorsByUserError.message }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      addDoctorRows(doctorsByUser ?? []);
+    }
+
+    if (emailsToDelete.size > 0) {
+      const orFilter = Array.from(emailsToDelete)
+        .map((email) => `email.ilike.${email}`)
+        .join(",");
+
+      if (orFilter) {
+        const { data: doctorsByEmail, error: doctorsByEmailError } = await supabaseAdmin
+          .from("doctors")
+          .select("id, user_id, email, logo_url")
+          .or(orFilter);
+
+        if (doctorsByEmailError) {
+          return new Response(JSON.stringify({ error: doctorsByEmailError.message }), {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        addDoctorRows(doctorsByEmail ?? []);
       }
     }
 
-    if (!targetUserId && emailFromPayload) {
-      targetUserId = await findUserIdByEmail(supabaseAdmin, emailFromPayload);
+    const authUserIdsByEmail = await findAuthUserIdsByEmails(supabaseAdmin, emailsToDelete);
+    for (const ids of authUserIdsByEmail.values()) {
+      for (const userId of ids) userIdsToDelete.add(userId);
     }
 
-    if (!targetUserId) {
+    if (userIdsToDelete.size > 0) {
+      const { data: additionalDoctors, error: additionalDoctorsError } = await supabaseAdmin
+        .from("doctors")
+        .select("id, user_id, email, logo_url")
+        .in("user_id", Array.from(userIdsToDelete));
+
+      if (additionalDoctorsError) {
+        return new Response(JSON.stringify({ error: additionalDoctorsError.message }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      addDoctorRows(additionalDoctors ?? []);
+    }
+
+    const doctorRows = Array.from(doctorRowsById.values());
+    const doctorIds = unique(doctorRows.map((row) => row.id));
+    const allUserIds = unique(Array.from(userIdsToDelete));
+    const logoPaths = unique(
+      doctorRows
+        .map((row) => getLogoPathFromPublicUrl(row.logo_url))
+        .filter((path): path is string => Boolean(path))
+    );
+
+    if (doctorIds.length === 0 && allUserIds.length === 0) {
       return new Response(JSON.stringify({ error: "Professional/Auth user not found" }), {
         status: 404,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    const { data: userDoctors, error: userDoctorsError } = await supabaseAdmin
-      .from("doctors")
-      .select("id")
-      .eq("user_id", targetUserId);
-
-    if (userDoctorsError) {
-      return new Response(JSON.stringify({ error: userDoctorsError.message }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const doctorIds = (userDoctors || []).map((doctor) => doctor.id);
 
     if (doctorIds.length > 0) {
       const doctorScopedTables = [
@@ -205,49 +316,74 @@ Deno.serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-    }
 
-    const { error: deleteDoctorsError } = await supabaseAdmin
-      .from("doctors")
-      .delete()
-      .eq("user_id", targetUserId);
+      const { error: deleteDoctorsByIdError } = await supabaseAdmin
+        .from("doctors")
+        .delete()
+        .in("id", doctorIds);
 
-    if (deleteDoctorsError) {
-      return new Response(JSON.stringify({ error: deleteDoctorsError.message }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const { error: deleteRolesError } = await supabaseAdmin
-      .from("user_roles")
-      .delete()
-      .eq("user_id", targetUserId);
-
-    if (deleteRolesError) {
-      return new Response(JSON.stringify({ error: deleteRolesError.message }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const { error: deleteAuthUserError } = await supabaseAdmin.auth.admin.deleteUser(targetUserId);
-
-    if (deleteAuthUserError) {
-      const isUserAlreadyDeleted = AUTH_USER_NOT_FOUND_MESSAGES.some((msg) =>
-        deleteAuthUserError.message?.toLowerCase().includes(msg.toLowerCase())
-      );
-
-      if (!isUserAlreadyDeleted) {
-        return new Response(JSON.stringify({ error: deleteAuthUserError.message }), {
+      if (deleteDoctorsByIdError) {
+        return new Response(JSON.stringify({ error: deleteDoctorsByIdError.message }), {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
     }
 
+    if (allUserIds.length > 0) {
+      const { error: deleteDoctorsByUserError } = await supabaseAdmin
+        .from("doctors")
+        .delete()
+        .in("user_id", allUserIds);
+
+      if (deleteDoctorsByUserError) {
+        return new Response(JSON.stringify({ error: deleteDoctorsByUserError.message }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const { error: deleteRolesError } = await supabaseAdmin
+        .from("user_roles")
+        .delete()
+        .in("user_id", allUserIds);
+
+      if (deleteRolesError) {
+        return new Response(JSON.stringify({ error: deleteRolesError.message }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    if (logoPaths.length > 0) {
+      await supabaseAdmin.storage.from("doctor-logos").remove(logoPaths);
+    }
+
+    const deletedAuthUserIds: string[] = [];
+
+    for (const userId of allUserIds) {
+      await hardDeleteAuthUser(supabaseAdmin, userId);
+      deletedAuthUserIds.push(userId);
+    }
+
+    if (emailsToDelete.size > 0) {
+      const remainingAuthUsers = await findAuthUserIdsByEmails(supabaseAdmin, emailsToDelete);
+      const remainingIds = unique(Array.from(remainingAuthUsers.values()).flat());
+
+      for (const userId of remainingIds) {
+        if (deletedAuthUserIds.includes(userId)) continue;
+        await hardDeleteAuthUser(supabaseAdmin, userId);
+        deletedAuthUserIds.push(userId);
+      }
+    }
+
     return new Response(
-      JSON.stringify({ success: true, user_id: targetUserId, deleted_doctors: doctorIds.length }),
+      JSON.stringify({
+        success: true,
+        deleted_doctors: doctorIds.length,
+        deleted_auth_users: deletedAuthUserIds.length,
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
