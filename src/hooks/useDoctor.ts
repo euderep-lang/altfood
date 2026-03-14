@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { createTimeoutSignal } from '@/lib/supabaseHelpers';
 import { useAuth } from './useAuth';
 
 export function useDoctor() {
@@ -15,7 +16,8 @@ export function useDoctor() {
         .select('id, user_id, name, email, phone, document_number, document_type, specialty, logo_url, slug, primary_color, secondary_color, subscription_status, subscription_end_date, mp_subscription_id, mp_payer_email, trial_ends_at, created_at, updated_at, bio, whatsapp_link, instagram_link, welcome_message, onboarding_completed, email_weekly_summary, email_tips, referral_code, referred_by, theme_layout, featured_food_id')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(1);
+        .limit(1)
+        .abortSignal(createTimeoutSignal(15000));
 
       if (error) throw error;
       return data?.[0] ?? null;
