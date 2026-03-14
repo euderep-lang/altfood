@@ -53,8 +53,8 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <GlobalLoadingBar />
           <BrowserRouter>
+            <GlobalLoadingBar />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Landing />} />
