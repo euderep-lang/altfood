@@ -136,13 +136,32 @@ Deno.serve(async (req) => {
       );
     }
 
+    let finalSlug = slug;
+    if (RESERVED_SLUGS.includes(finalSlug)) {
+      finalSlug = `${finalSlug}-2`;
+    }
+
+    // Check for slug uniqueness and increment if needed
+    let slugAttempt = finalSlug;
+    let counter = 2;
+    while (true) {
+      const { data: existingSlug } = await supabaseAdmin
+        .from("doctors")
+        .select("id")
+        .eq("slug", slugAttempt)
+        .maybeSingle();
+      if (!existingSlug) break;
+      slugAttempt = `${finalSlug}-${counter}`;
+      counter++;
+    }
+
     const insertData: Record<string, unknown> = {
       user_id: userId,
       name,
       email,
       document_number: documentNumber || null,
       specialty,
-      slug,
+      slug: slugAttempt,
     };
 
     if (referredBy) {
