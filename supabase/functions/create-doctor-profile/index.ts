@@ -56,10 +56,20 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Verify user actually exists in auth.users (JWT may be stale)
+    const userId = claimsData.claims.sub as string;
+    const { data: authUser, error: authUserError } = await supabaseAdmin.auth.admin.getUserById(userId);
+    if (authUserError || !authUser?.user) {
+      return new Response(
+        JSON.stringify({ error: "User not found. Please log out and log in again." }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const user = {
-      id: claimsData.claims.sub as string,
-      email: claimsData.claims.email as string | undefined,
-      user_metadata: claimsData.claims.user_metadata as Record<string, unknown> ?? {},
+      id: authUser.user.id,
+      email: authUser.user.email,
+      user_metadata: (authUser.user.user_metadata ?? {}) as Record<string, unknown>,
     };
 
     const payload = (await req.json()) as CreateDoctorPayload;
