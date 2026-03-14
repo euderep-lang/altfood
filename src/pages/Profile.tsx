@@ -105,7 +105,7 @@ export default function Profile() {
   const isPro = doctor.subscription_status === 'active';
   const primaryColor = getField('primary_color') || '#0F766E';
   const initials = (getField('name') || doctor.name).split(' ').filter((w: string) => w.length > 2).map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
-  const patientUrl = `${window.location.origin}/p/${slugValue || doctor.slug}`;
+  const patientUrl = `${window.location.origin}/${slugValue || doctor.slug}`;
   const bioLength = (getField('bio') || '').length;
 
   const handleLogoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
