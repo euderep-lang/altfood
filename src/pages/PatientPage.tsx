@@ -850,9 +850,9 @@ export default function PatientPage() {
                         <Input
                           type="number"
                           value={weight}
-                          onChange={e => setWeight(Math.max(10, Math.min(500, Number(e.target.value))))}
+                          onChange={e => setWeight(Math.max(1, Math.min(500, Number(e.target.value))))}
                           className="text-3xl font-bold text-center rounded-2xl h-16 w-32 border-2 focus:border-primary/40"
-                          min={10} max={500}
+                          min={1} max={500}
                         />
                         <span className="text-xl text-muted-foreground font-semibold">g</span>
                       </div>
