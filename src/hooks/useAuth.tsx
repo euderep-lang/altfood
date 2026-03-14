@@ -23,52 +23,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // 1. Buscar sessão atual primeiro
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (!error) {
+        setSession(session);
+        setUser(session?.user ?? null);
+      }
+      setLoading(false);
+    });
+
+    // 2. Depois configurar o listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
-
-      // Handle session expiry
-      if (event === 'TOKEN_REFRESHED' && !session) {
-        toast({
-          title: 'Sessão expirada',
-          description: 'Sua sessão expirou. Faça login novamente.',
-          variant: 'destructive',
-        });
-        window.location.href = '/login';
-        return;
-      }
 
       if (event === 'SIGNED_OUT') {
         setUser(null);
         setSession(null);
       }
 
-      // When user confirms email via link, redirect to dashboard
       if (event === 'SIGNED_IN' && session?.user) {
         setTimeout(() => {
-          const path = window.location.pathname;
-          if (path === '/') {
+          if (window.location.pathname === '/') {
             window.location.href = '/dashboard';
           }
         }, 100);
       }
-    });
-
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error('[Auth] getSession error:', error);
-        toast({
-          title: 'Sessão expirada',
-          description: 'Sua sessão expirou. Faça login novamente.',
-          variant: 'destructive',
-        });
-        setLoading(false);
-        return;
-      }
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
