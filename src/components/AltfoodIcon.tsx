@@ -1,7 +1,7 @@
+import { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
-interface AltfoodIconProps {
-  className?: string;
+interface AltfoodIconProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
@@ -13,14 +13,20 @@ const sizeMap = {
   xl: 'w-20 h-20',
 };
 
-const AltfoodIcon = ({ className, size = 'md' }: AltfoodIconProps) => {
-  return (
-    <img
-      src="/altfood-icon.png"
-      alt="Altfood"
-      className={cn(sizeMap[size], 'rounded-xl object-cover', className)}
-    />
-  );
-};
+const AltfoodIcon = forwardRef<HTMLImageElement, AltfoodIconProps>(
+  ({ className, size = 'md', ...props }, ref) => {
+    return (
+      <img
+        ref={ref}
+        src="/altfood-icon.png"
+        alt="Altfood"
+        className={cn(sizeMap[size], 'rounded-xl object-cover', className)}
+        {...props}
+      />
+    );
+  }
+);
+
+AltfoodIcon.displayName = 'AltfoodIcon';
 
 export default AltfoodIcon;
