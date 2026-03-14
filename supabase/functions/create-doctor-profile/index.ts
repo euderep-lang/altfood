@@ -63,7 +63,6 @@ Deno.serve(async (req) => {
     };
 
     const payload = (await req.json()) as CreateDoctorPayload;
-    const user = authData.user;
     const metadata = (user.user_metadata ?? {}) as Record<string, unknown>;
 
     const userId = user.id;
