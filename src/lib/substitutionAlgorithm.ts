@@ -72,10 +72,10 @@ export function calculateSubstitutions(
     if (food.id === selectedFood.id) continue;
     if (!food.is_active) continue;
 
-    // Filter: exclude foods whose name contains the original's first word
+    // Filter: exclude foods whose name starts with the original's first word
     const normalizedName = food.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    if (normalizedName.startsWith(originalFirstWord)) continue;
     const nameWords = normalizedName.split(/\s+/);
-    if (nameWords.some(w => w === originalFirstWord)) continue;
 
     // Filter: exclude raw foods
     if (nameWords.some(w => RAW_KEYWORDS.includes(w))) continue;
