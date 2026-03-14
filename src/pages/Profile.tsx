@@ -434,7 +434,7 @@ export default function Profile() {
         <CardContent className="p-5 space-y-3">
           <Label className="text-sm font-semibold">Link do paciente</Label>
           <div className="flex items-center gap-1 bg-muted rounded-xl px-3 py-2">
-            <span className="text-xs text-muted-foreground shrink-0">{window.location.origin}/p/</span>
+            <span className="text-xs text-muted-foreground shrink-0">{window.location.origin}/</span>
             <input
               value={slugValue}
               onChange={e => setSlugValue(generateSlug(e.target.value))}

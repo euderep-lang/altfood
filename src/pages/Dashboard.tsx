@@ -133,7 +133,7 @@ export default function Dashboard() {
     return <Navigate to="/onboarding" replace />;
   }
 
-  const patientUrl = `${window.location.origin}/p/${doctor.slug}`;
+  const patientUrl = `${window.location.origin}/${doctor.slug}`;
   const referralCode = (doctor as any).referral_code || '';
   const referralUrl = `${window.location.origin}/ref/${referralCode}`;
   const initials = doctor.name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();

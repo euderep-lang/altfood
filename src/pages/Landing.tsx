@@ -517,7 +517,7 @@ export default function Landing() {
               {[
                 { q: 'Posso testar antes de pagar?', a: 'Sim! Você tem 3 dias grátis para explorar todos os recursos do Altfood Pro. Sem compromisso — se não gostar, basta não continuar.' },
                 { q: 'Precisa instalar alguma coisa?', a: 'Não! O Altfood funciona 100% no navegador, sem necessidade de instalar nenhum app. Seus pacientes acessam pelo link, e você gerencia tudo pelo dashboard online.' },
-                { q: 'Como compartilho com pacientes?', a: 'Você recebe um link exclusivo (ex: altfood.app/p/dra-maria). Basta enviar via WhatsApp, colocar na bio do Instagram, ou gerar um QR Code. Seus pacientes acessam sem precisar criar conta.' },
+                { q: 'Como compartilho com pacientes?', a: 'Você recebe um link exclusivo (ex: altfood.app/dra-maria). Basta enviar via WhatsApp, colocar na bio do Instagram, ou gerar um QR Code. Seus pacientes acessam sem precisar criar conta.' },
                 { q: 'Os dados são da TACO?', a: 'Sim! Utilizamos a Tabela TACO (Tabela Brasileira de Composição de Alimentos), 4ª edição, desenvolvida pela NEPA/UNICAMP — a referência nacional em dados nutricionais com 463+ alimentos catalogados.' },
                 { q: 'Posso cancelar a qualquer momento?', a: 'Sim, sem multas ou burocracia. Você pode cancelar pelo dashboard e continua tendo acesso até o final do período pago.' },
                 { q: 'Funciona no celular?', a: 'Sim! O Altfood foi projetado mobile-first. A página de paciente funciona perfeitamente em qualquer celular, com interface otimizada e até modo offline.' },

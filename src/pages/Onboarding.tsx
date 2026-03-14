@@ -220,7 +220,7 @@ export default function Onboarding() {
     );
   }
 
-  const patientUrl = `${window.location.origin}/p/${doctor.slug}`;
+  const patientUrl = `${window.location.origin}/${doctor.slug}`;
   const firstName = doctor.name.split(' ')[0];
   const initials = doctor.name.split(' ').filter((w: string) => w.length > 2).map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
 
