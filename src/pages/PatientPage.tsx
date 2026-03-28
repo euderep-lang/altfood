@@ -984,19 +984,25 @@ export default function PatientPage() {
 
                   {/* Skeleton loading */}
                   {computing && (
-                    <div className="space-y-3">
-                      {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="rounded-2xl border border-border bg-card p-4 space-y-3 animate-pulse">
-                          <div className="flex items-center gap-3">
-                            <Skeleton className="w-11 h-11 rounded-xl" />
-                            <div className="flex-1 space-y-2">
-                              <Skeleton className="h-4 w-3/4 rounded-lg" />
-                              <Skeleton className="h-3 w-1/2 rounded-lg" />
+                    <div className="space-y-4">
+                      <div className="flex flex-col items-center justify-center py-6 animate-pulse">
+                        <Loader2 className="w-8 h-8 animate-spin text-primary mb-3" />
+                        <p className="text-sm font-medium text-foreground">Analisando nutrientes com IA...</p>
+                        <p className="text-xs text-muted-foreground mt-1">Buscando a melhor equivalência para você</p>
+                      </div>
+                      <div className="space-y-3 opacity-50">
+                        {[1, 2, 3].map(i => (
+                          <div key={i} className="rounded-2xl border border-border bg-card p-4 space-y-3">
+                            <div className="flex items-center gap-3">
+                              <Skeleton className="w-11 h-11 rounded-xl" />
+                              <div className="flex-1 space-y-2">
+                                <Skeleton className="h-4 w-3/4 rounded-lg" />
+                                <Skeleton className="h-3 w-1/2 rounded-lg" />
+                              </div>
                             </div>
                           </div>
-                          <Skeleton className="h-12 w-24 rounded-xl mx-auto" />
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   )}
 
