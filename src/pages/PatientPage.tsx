@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, Loader2, X, Clock, AlertTriangle, ChevronDown, ChevronUp, MessageCircle, Star, History, Heart, WifiOff, Download, Trash2, GitCompare, Info } from 'lucide-react';
+import { Search, Loader2, X, Clock, AlertTriangle, ChevronDown, ChevronUp, MessageCircle, Star, History, Heart, WifiOff, Download, Trash2, GitCompare, Info, ArrowRight } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import { calculateSubstitutions, getSimilarityLabel, type SubstitutionResult } from '@/lib/substitutionAlgorithm';
@@ -407,6 +407,30 @@ export default function PatientPage() {
     vibrate(10);
   }, []);
 
+  const handleFreeSearch = useCallback(() => {
+    if (!substitutionQuery.trim() || !selectedFood) return;
+    
+    // Simula a IA interpretando o que foi escrito
+    // Primeiro tentamos achar um match exato ou próximo
+    const q = substitutionQuery.toLowerCase();
+    const bestMatch = foods.find(f => 
+      f.name.toLowerCase().includes(q) || 
+      f.name_short.toLowerCase().includes(q) ||
+      (f.preparation && f.preparation.toLowerCase().includes(q))
+    );
+
+    if (bestMatch) {
+      findSpecificSubstitution(bestMatch);
+    } else if (filteredSubSuggestions.length > 0) {
+      // Se não achou match direto mas tem sugestões, usa a primeira
+      findSpecificSubstitution(filteredSubSuggestions[0]);
+    } else {
+      // Aqui poderíamos ter uma lógica de "AI" mais avançada, 
+      // por enquanto vamos apenas avisar ou não fazer nada se estiver vazio
+      vibrate(20);
+    }
+  }, [substitutionQuery, selectedFood, foods, filteredSubSuggestions]);
+
   const findSpecificSubstitution = (foodToSub: Food) => {
     if (!selectedFood) return;
     setComputing(true);
@@ -424,8 +448,6 @@ export default function PatientPage() {
       if (specificSub) {
         setResults([specificSub]);
       } else {
-        // If not in the usual top results, calculate it manually
-        const anchor = categories.find(c => c.id === selectedFood.category_id)?.name || 'calories';
         const sub = calculateSubstitutions(selectedFood, weight, [foodToSub], categories, categoryName);
         setResults(sub);
       }
@@ -938,14 +960,20 @@ export default function PatientPage() {
                     <div className="relative">
                       <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="Busca Inteligente (ex: coxa, patinho...)"
+                        placeholder="O que você quer comer hoje? (IA)"
                         value={substitutionQuery}
                         onChange={e => { setSubstitutionQuery(e.target.value); setShowSubSearch(true); }}
                         onFocus={() => setShowSubSearch(true)}
-                        className="pl-10 rounded-2xl h-14 bg-white border-2 border-primary/20 focus:border-primary/50 text-base shadow-sm"
+                        onKeyDown={e => { if (e.key === 'Enter') handleFreeSearch(); }}
+                        className="pl-10 pr-14 rounded-2xl h-14 bg-white border-2 border-primary/20 focus:border-primary/50 text-base shadow-sm"
                       />
-                      <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                        <span className="text-[10px] font-bold text-primary/60 bg-primary/5 px-1.5 py-0.5 rounded uppercase tracking-tighter">IA</span>
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                        <button
+                          onClick={handleFreeSearch}
+                          className="p-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                        >
+                          <ArrowRight className="w-5 h-5" />
+                        </button>
                       </div>
                     </div>
 
