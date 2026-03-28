@@ -160,12 +160,14 @@ export default function PatientPage() {
   const { slug: urlSlug } = useParams<{ slug: string }>();
   const slug = urlSlug || 'altfood';
   const [searchQuery, setSearchQuery] = useState('');
+  const [substitutionQuery, setSubstitutionQuery] = useState('');
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [weight, setWeight] = useState(100);
   const [results, setResults] = useState<SubstitutionResult[]>([]);
   const [computing, setComputing] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [showSearch, setShowSearch] = useState(false);
+  const [showSubSearch, setShowSubSearch] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [recentFoods, setRecentFoods] = useState(getRecentFoods);
@@ -373,6 +375,15 @@ export default function PatientPage() {
     ).slice(0, 12);
   }, [searchQuery, foods]);
 
+  const filteredSubSuggestions = useMemo(() => {
+    if (!substitutionQuery.trim()) return [];
+    const q = substitutionQuery.toLowerCase();
+    return foods.filter(f =>
+      (f.name.toLowerCase().includes(q) || f.name_short.toLowerCase().includes(q)) &&
+      f.id !== selectedFood?.id
+    ).slice(0, 8);
+  }, [substitutionQuery, foods, selectedFood]);
+
   const foodsByCategory = useMemo(() => {
     const map: Record<string, Food[]> = {};
     categories.forEach(c => { map[c.id] = []; });
@@ -383,7 +394,9 @@ export default function PatientPage() {
   const selectFood = useCallback((food: Food) => {
     setSelectedFood(food);
     setSearchQuery('');
+    setSubstitutionQuery('');
     setShowSearch(false);
+    setShowSubSearch(false);
     setResults([]);
     setWeight(100);
     setCategoryFilter(null);
@@ -393,6 +406,34 @@ export default function PatientPage() {
     setActiveTab('search');
     vibrate(10);
   }, []);
+
+  const findSpecificSubstitution = (foodToSub: Food) => {
+    if (!selectedFood) return;
+    setComputing(true);
+    vibrate(15);
+    setSubstitutionQuery('');
+    setShowSubSearch(false);
+    
+    const categoryName = categories.find(c => c.id === selectedFood.category_id)?.name || '';
+    
+    // Simulate "IA processing"
+    setTimeout(() => {
+      const allSubs = calculateSubstitutions(selectedFood, weight, [foodToSub, ...foods], categories, categoryName);
+      const specificSub = allSubs.find(s => s.food.id === foodToSub.id);
+      
+      if (specificSub) {
+        setResults([specificSub]);
+      } else {
+        // If not in the usual top results, calculate it manually
+        const anchor = categories.find(c => c.id === selectedFood.category_id)?.name || 'calories';
+        const sub = calculateSubstitutions(selectedFood, weight, [foodToSub], categories, categoryName);
+        setResults(sub);
+      }
+      
+      setComputing(false);
+      setSearchCount(prev => prev + 1);
+    }, 800);
+  };
 
   const selectRecentFood = useCallback((id: string) => {
     const food = foods.find(f => f.id === id);
@@ -891,6 +932,52 @@ export default function PatientPage() {
                     </CardContent>
                   </Card>
 
+                  {/* Specific substitution search */}
+                  <div className="relative space-y-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">Substituir por um alimento específico?</p>
+                    <div className="relative">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Busca Inteligente (ex: coxa, patinho...)"
+                        value={substitutionQuery}
+                        onChange={e => { setSubstitutionQuery(e.target.value); setShowSubSearch(true); }}
+                        onFocus={() => setShowSubSearch(true)}
+                        className="pl-10 rounded-2xl h-14 bg-white border-2 border-primary/20 focus:border-primary/50 text-base shadow-sm"
+                      />
+                      <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                        <span className="text-[10px] font-bold text-primary/60 bg-primary/5 px-1.5 py-0.5 rounded uppercase tracking-tighter">IA</span>
+                      </div>
+                    </div>
+
+                    <AnimatePresence>
+                      {showSubSearch && filteredSubSuggestions.length > 0 && (
+                        <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} className="absolute z-50 w-full mt-1.5">
+                          <Card className="rounded-2xl shadow-xl border max-h-60 overflow-y-auto">
+                            <CardContent className="p-1.5">
+                              {filteredSubSuggestions.map(food => {
+                                const cat = categories.find(c => c.id === food.category_id);
+                                return (
+                                  <button
+                                    key={food.id}
+                                    onClick={() => findSpecificSubstitution(food)}
+                                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted text-left transition-colors min-h-[44px]"
+                                  >
+                                    <span className="text-lg">{cat?.icon || '🍽️'}</span>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-sm font-medium text-foreground truncate">{food.name_short}</p>
+                                      <p className="text-[10px] text-muted-foreground truncate">{cat?.name}</p>
+                                    </div>
+                                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">{food.calories} kcal</span>
+                                  </button>
+                                );
+                              })}
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
                   {/* Find button - desktop */}
                   <div className="hidden md:block">
                     <Button onClick={findSubstitutions} className="w-full rounded-2xl h-14 text-base font-bold shadow-lg" style={{ backgroundColor: primaryColor }} disabled={computing}>
@@ -901,19 +988,25 @@ export default function PatientPage() {
 
                   {/* Skeleton loading */}
                   {computing && (
-                    <div className="space-y-3">
-                      {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="rounded-2xl border border-border bg-card p-4 space-y-3 animate-pulse">
-                          <div className="flex items-center gap-3">
-                            <Skeleton className="w-11 h-11 rounded-xl" />
-                            <div className="flex-1 space-y-2">
-                              <Skeleton className="h-4 w-3/4 rounded-lg" />
-                              <Skeleton className="h-3 w-1/2 rounded-lg" />
+                    <div className="space-y-4">
+                      <div className="flex flex-col items-center justify-center py-6 animate-pulse">
+                        <Loader2 className="w-8 h-8 animate-spin text-primary mb-3" />
+                        <p className="text-sm font-medium text-foreground">Analisando nutrientes com IA...</p>
+                        <p className="text-xs text-muted-foreground mt-1">Buscando a melhor equivalência para você</p>
+                      </div>
+                      <div className="space-y-3 opacity-50">
+                        {[1, 2, 3].map(i => (
+                          <div key={i} className="rounded-2xl border border-border bg-card p-4 space-y-3">
+                            <div className="flex items-center gap-3">
+                              <Skeleton className="w-11 h-11 rounded-xl" />
+                              <div className="flex-1 space-y-2">
+                                <Skeleton className="h-4 w-3/4 rounded-lg" />
+                                <Skeleton className="h-3 w-1/2 rounded-lg" />
+                              </div>
                             </div>
                           </div>
-                          <Skeleton className="h-12 w-24 rounded-xl mx-auto" />
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   )}
 
@@ -947,10 +1040,17 @@ export default function PatientPage() {
                         ))}
                       </div>
 
-                      <p className="text-sm font-medium text-muted-foreground">
-                        {filteredResults.length} {t(lang, 'substitutionsFound')}
-                        <span className="text-[10px] ml-2 text-muted-foreground/60">{t(lang, 'swipeHint')}</span>
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-muted-foreground">
+                          {results.length === 1 ? 'Substituição encontrada' : `${filteredResults.length} ${t(lang, 'substitutionsFound')}`}
+                          <span className="text-[10px] ml-2 text-muted-foreground/60">{t(lang, 'swipeHint')}</span>
+                        </p>
+                        {results.length === 1 && (
+                          <button onClick={findSubstitutions} className="text-xs font-semibold text-primary underline underline-offset-4">
+                            Ver todas as opções
+                          </button>
+                        )}
+                      </div>
 
                       {filteredResults.length === 0 && (
                         <Card className="rounded-2xl shadow-sm">
