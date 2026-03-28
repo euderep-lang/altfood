@@ -932,6 +932,48 @@ export default function PatientPage() {
                     </CardContent>
                   </Card>
 
+                  {/* Specific substitution search */}
+                  <div className="relative">
+                    <div className="relative">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Buscar substituição específica (ex: coxa)"
+                        value={substitutionQuery}
+                        onChange={e => { setSubstitutionQuery(e.target.value); setShowSubSearch(true); }}
+                        onFocus={() => setShowSubSearch(true)}
+                        className="pl-10 rounded-2xl h-12 bg-muted/40 border-transparent focus:border-primary/30 text-sm"
+                      />
+                    </div>
+
+                    <AnimatePresence>
+                      {showSubSearch && filteredSubSuggestions.length > 0 && (
+                        <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} className="absolute z-50 w-full mt-1.5">
+                          <Card className="rounded-2xl shadow-xl border max-h-60 overflow-y-auto">
+                            <CardContent className="p-1.5">
+                              {filteredSubSuggestions.map(food => {
+                                const cat = categories.find(c => c.id === food.category_id);
+                                return (
+                                  <button
+                                    key={food.id}
+                                    onClick={() => findSpecificSubstitution(food)}
+                                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted text-left transition-colors min-h-[44px]"
+                                  >
+                                    <span className="text-lg">{cat?.icon || '🍽️'}</span>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-sm font-medium text-foreground truncate">{food.name_short}</p>
+                                      <p className="text-[10px] text-muted-foreground truncate">{cat?.name}</p>
+                                    </div>
+                                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">{food.calories} kcal</span>
+                                  </button>
+                                );
+                              })}
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
                   {/* Find button - desktop */}
                   <div className="hidden md:block">
                     <Button onClick={findSubstitutions} className="w-full rounded-2xl h-14 text-base font-bold shadow-lg" style={{ backgroundColor: primaryColor }} disabled={computing}>
