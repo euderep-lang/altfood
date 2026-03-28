@@ -157,7 +157,8 @@ function SwipeableCard({ children, onSwipeRight, onSwipeLeft, showHint }: { chil
 type Tab = 'search' | 'favorites' | 'history';
 
 export default function PatientPage() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug: urlSlug } = useParams<{ slug: string }>();
+  const slug = urlSlug || 'altfood';
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [weight, setWeight] = useState(100);
