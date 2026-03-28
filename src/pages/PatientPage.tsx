@@ -16,6 +16,7 @@ import FoodComparisonModal from '@/components/FoodComparisonModal';
 import PatientFeedback from '@/components/PatientFeedback';
 import { t, getSavedLang, saveLang, type Lang } from '@/lib/i18n';
 import type { Database } from '@/integrations/supabase/types';
+import { toast } from 'sonner';
 
 type Food = Database['public']['Tables']['foods']['Row'];
 type FoodCategory = Database['public']['Tables']['food_categories']['Row'];
