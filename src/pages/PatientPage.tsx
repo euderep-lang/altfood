@@ -367,30 +367,29 @@ export default function PatientPage() {
     return () => { document.title = 'Altfood'; };
   }, [doctor]);
 
+  const matchesSearch = useCallback((food: Food, query: string): boolean => {
+    const name = food.name.toLowerCase();
+    const short = food.name_short.toLowerCase();
+    const prep = food.preparation?.toLowerCase() || '';
+    const combined = `${name} ${short} ${prep}`;
+    
+    // Split query into words, ignore short connectors
+    const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 1 && !['de', 'do', 'da', 'com', 'sem', 'em', 'no', 'na'].includes(w));
+    if (words.length === 0) return false;
+    
+    // All meaningful words must appear somewhere in the combined text
+    return words.every(w => combined.includes(w));
+  }, []);
+
   const filteredFoods = useMemo(() => {
     if (!searchQuery.trim()) return [];
-    const q = searchQuery.toLowerCase();
-    const qFixed = q.replace(/g/g, 'f'); // Handle 'f'/'g' typos
-    
-    return foods.filter(f => {
-      const name = f.name.toLowerCase();
-      const short = f.name_short.toLowerCase();
-      return name.includes(q) || short.includes(q) || name.includes(qFixed) || short.includes(qFixed) ||
-             (f.preparation && f.preparation.toLowerCase().includes(q));
-    }).slice(0, 12);
-  }, [searchQuery, foods]);
+    return foods.filter(f => matchesSearch(f, searchQuery)).slice(0, 12);
+  }, [searchQuery, foods, matchesSearch]);
 
   const filteredSubSuggestions = useMemo(() => {
     if (!substitutionQuery.trim()) return [];
-    const q = substitutionQuery.toLowerCase();
-    const qFixed = q.replace(/g/g, 'f');
-    
-    return foods.filter(f =>
-      (f.name.toLowerCase().includes(q) || f.name_short.toLowerCase().includes(q) ||
-       f.name.toLowerCase().includes(qFixed) || f.name_short.toLowerCase().includes(qFixed)) &&
-      f.id !== selectedFood?.id
-    ).slice(0, 8);
-  }, [substitutionQuery, foods, selectedFood]);
+    return foods.filter(f => matchesSearch(f, substitutionQuery) && f.id !== selectedFood?.id).slice(0, 8);
+  }, [substitutionQuery, foods, selectedFood, matchesSearch]);
 
   const foodsByCategory = useMemo(() => {
     const map: Record<string, Food[]> = {};
