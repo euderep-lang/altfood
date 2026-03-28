@@ -407,6 +407,30 @@ export default function PatientPage() {
     vibrate(10);
   }, []);
 
+  const handleFreeSearch = useCallback(() => {
+    if (!substitutionQuery.trim() || !selectedFood) return;
+    
+    // Simula a IA interpretando o que foi escrito
+    // Primeiro tentamos achar um match exato ou próximo
+    const q = substitutionQuery.toLowerCase();
+    const bestMatch = foods.find(f => 
+      f.name.toLowerCase().includes(q) || 
+      f.name_short.toLowerCase().includes(q) ||
+      (f.preparation && f.preparation.toLowerCase().includes(q))
+    );
+
+    if (bestMatch) {
+      findSpecificSubstitution(bestMatch);
+    } else if (filteredSubSuggestions.length > 0) {
+      // Se não achou match direto mas tem sugestões, usa a primeira
+      findSpecificSubstitution(filteredSubSuggestions[0]);
+    } else {
+      // Aqui poderíamos ter uma lógica de "AI" mais avançada, 
+      // por enquanto vamos apenas avisar ou não fazer nada se estiver vazio
+      vibrate(20);
+    }
+  }, [substitutionQuery, selectedFood, foods, filteredSubSuggestions]);
+
   const findSpecificSubstitution = (foodToSub: Food) => {
     if (!selectedFood) return;
     setComputing(true);
@@ -424,8 +448,6 @@ export default function PatientPage() {
       if (specificSub) {
         setResults([specificSub]);
       } else {
-        // If not in the usual top results, calculate it manually
-        const anchor = categories.find(c => c.id === selectedFood.category_id)?.name || 'calories';
         const sub = calculateSubstitutions(selectedFood, weight, [foodToSub], categories, categoryName);
         setResults(sub);
       }
