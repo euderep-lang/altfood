@@ -370,17 +370,24 @@ export default function PatientPage() {
   const filteredFoods = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase();
-    return foods.filter(f =>
-      f.name.toLowerCase().includes(q) || f.name_short.toLowerCase().includes(q) ||
-      (f.preparation && f.preparation.toLowerCase().includes(q))
-    ).slice(0, 12);
+    const qFixed = q.replace(/g/g, 'f'); // Handle 'f'/'g' typos
+    
+    return foods.filter(f => {
+      const name = f.name.toLowerCase();
+      const short = f.name_short.toLowerCase();
+      return name.includes(q) || short.includes(q) || name.includes(qFixed) || short.includes(qFixed) ||
+             (f.preparation && f.preparation.toLowerCase().includes(q));
+    }).slice(0, 12);
   }, [searchQuery, foods]);
 
   const filteredSubSuggestions = useMemo(() => {
     if (!substitutionQuery.trim()) return [];
     const q = substitutionQuery.toLowerCase();
+    const qFixed = q.replace(/g/g, 'f');
+    
     return foods.filter(f =>
-      (f.name.toLowerCase().includes(q) || f.name_short.toLowerCase().includes(q)) &&
+      (f.name.toLowerCase().includes(q) || f.name_short.toLowerCase().includes(q) ||
+       f.name.toLowerCase().includes(qFixed) || f.name_short.toLowerCase().includes(qFixed)) &&
       f.id !== selectedFood?.id
     ).slice(0, 8);
   }, [substitutionQuery, foods, selectedFood]);
