@@ -160,12 +160,14 @@ export default function PatientPage() {
   const { slug: urlSlug } = useParams<{ slug: string }>();
   const slug = urlSlug || 'altfood';
   const [searchQuery, setSearchQuery] = useState('');
+  const [substitutionQuery, setSubstitutionQuery] = useState('');
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [weight, setWeight] = useState(100);
   const [results, setResults] = useState<SubstitutionResult[]>([]);
   const [computing, setComputing] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [showSearch, setShowSearch] = useState(false);
+  const [showSubSearch, setShowSubSearch] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [recentFoods, setRecentFoods] = useState(getRecentFoods);
