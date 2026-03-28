@@ -975,7 +975,7 @@ export default function PatientPage() {
                     <div className="relative">
                       <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="O que você quer comer hoje? (IA)"
+                        placeholder={lang === 'pt' ? "Busque um alimento (ex: coxa de frango)" : "Search food (e.g. chicken thigh)"}
                         value={substitutionQuery}
                         onChange={e => { setSubstitutionQuery(e.target.value); setShowSubSearch(true); }}
                         onFocus={() => setShowSubSearch(true)}
