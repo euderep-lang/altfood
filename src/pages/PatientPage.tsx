@@ -394,7 +394,9 @@ export default function PatientPage() {
   const selectFood = useCallback((food: Food) => {
     setSelectedFood(food);
     setSearchQuery('');
+    setSubstitutionQuery('');
     setShowSearch(false);
+    setShowSubSearch(false);
     setResults([]);
     setWeight(100);
     setCategoryFilter(null);
@@ -404,6 +406,34 @@ export default function PatientPage() {
     setActiveTab('search');
     vibrate(10);
   }, []);
+
+  const findSpecificSubstitution = (foodToSub: Food) => {
+    if (!selectedFood) return;
+    setComputing(true);
+    vibrate(15);
+    setSubstitutionQuery('');
+    setShowSubSearch(false);
+    
+    const categoryName = categories.find(c => c.id === selectedFood.category_id)?.name || '';
+    
+    // Simulate "IA processing"
+    setTimeout(() => {
+      const allSubs = calculateSubstitutions(selectedFood, weight, [foodToSub, ...foods], categories, categoryName);
+      const specificSub = allSubs.find(s => s.food.id === foodToSub.id);
+      
+      if (specificSub) {
+        setResults([specificSub]);
+      } else {
+        // If not in the usual top results, calculate it manually
+        const anchor = categories.find(c => c.id === selectedFood.category_id)?.name || 'calories';
+        const sub = calculateSubstitutions(selectedFood, weight, [foodToSub], categories, categoryName);
+        setResults(sub);
+      }
+      
+      setComputing(false);
+      setSearchCount(prev => prev + 1);
+    }, 800);
+  };
 
   const selectRecentFood = useCallback((id: string) => {
     const food = foods.find(f => f.id === id);
