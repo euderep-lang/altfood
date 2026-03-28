@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, Loader2, X, Clock, AlertTriangle, ChevronDown, ChevronUp, MessageCircle, Star, History, Heart, WifiOff, Download, Trash2, GitCompare, Info } from 'lucide-react';
+import { Search, Loader2, X, Clock, AlertTriangle, ChevronDown, ChevronUp, MessageCircle, Star, History, Heart, WifiOff, Download, Trash2, GitCompare, Info, ArrowRight } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion, AnimatePresence, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import { calculateSubstitutions, getSimilarityLabel, type SubstitutionResult } from '@/lib/substitutionAlgorithm';
