@@ -16,6 +16,7 @@ import FoodComparisonModal from '@/components/FoodComparisonModal';
 import PatientFeedback from '@/components/PatientFeedback';
 import { t, getSavedLang, saveLang, type Lang } from '@/lib/i18n';
 import type { Database } from '@/integrations/supabase/types';
+import { toast } from 'sonner';
 
 type Food = Database['public']['Tables']['foods']['Row'];
 type FoodCategory = Database['public']['Tables']['food_categories']['Row'];
@@ -369,17 +370,24 @@ export default function PatientPage() {
   const filteredFoods = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase();
-    return foods.filter(f =>
-      f.name.toLowerCase().includes(q) || f.name_short.toLowerCase().includes(q) ||
-      (f.preparation && f.preparation.toLowerCase().includes(q))
-    ).slice(0, 12);
+    const qFixed = q.replace(/g/g, 'f'); // Handle 'f'/'g' typos
+    
+    return foods.filter(f => {
+      const name = f.name.toLowerCase();
+      const short = f.name_short.toLowerCase();
+      return name.includes(q) || short.includes(q) || name.includes(qFixed) || short.includes(qFixed) ||
+             (f.preparation && f.preparation.toLowerCase().includes(q));
+    }).slice(0, 12);
   }, [searchQuery, foods]);
 
   const filteredSubSuggestions = useMemo(() => {
     if (!substitutionQuery.trim()) return [];
     const q = substitutionQuery.toLowerCase();
+    const qFixed = q.replace(/g/g, 'f');
+    
     return foods.filter(f =>
-      (f.name.toLowerCase().includes(q) || f.name_short.toLowerCase().includes(q)) &&
+      (f.name.toLowerCase().includes(q) || f.name_short.toLowerCase().includes(q) ||
+       f.name.toLowerCase().includes(qFixed) || f.name_short.toLowerCase().includes(qFixed)) &&
       f.id !== selectedFood?.id
     ).slice(0, 8);
   }, [substitutionQuery, foods, selectedFood]);
@@ -410,26 +418,33 @@ export default function PatientPage() {
   const handleFreeSearch = useCallback(() => {
     if (!substitutionQuery.trim() || !selectedFood) return;
     
-    // Simula a IA interpretando o que foi escrito
-    // Primeiro tentamos achar um match exato ou próximo
     const q = substitutionQuery.toLowerCase();
-    const bestMatch = foods.find(f => 
+    const qFixed = q.replace(/g/g, 'f');
+    
+    // First try exact match or direct includes
+    let bestMatch = foods.find(f => 
       f.name.toLowerCase().includes(q) || 
       f.name_short.toLowerCase().includes(q) ||
       (f.preparation && f.preparation.toLowerCase().includes(q))
     );
 
+    // If not found, try the typo-fixed version
+    if (!bestMatch) {
+      bestMatch = foods.find(f => 
+        f.name.toLowerCase().includes(qFixed) || 
+        f.name_short.toLowerCase().includes(qFixed)
+      );
+    }
+
     if (bestMatch) {
       findSpecificSubstitution(bestMatch);
     } else if (filteredSubSuggestions.length > 0) {
-      // Se não achou match direto mas tem sugestões, usa a primeira
       findSpecificSubstitution(filteredSubSuggestions[0]);
     } else {
-      // Aqui poderíamos ter uma lógica de "AI" mais avançada, 
-      // por enquanto vamos apenas avisar ou não fazer nada se estiver vazio
+      toast.error(lang === 'pt' ? 'Nenhum alimento encontrado. Verifique a grafia.' : 'No food found. Check spelling.');
       vibrate(20);
     }
-  }, [substitutionQuery, selectedFood, foods, filteredSubSuggestions]);
+  }, [substitutionQuery, selectedFood, foods, filteredSubSuggestions, lang]);
 
   const findSpecificSubstitution = (foodToSub: Food) => {
     if (!selectedFood) return;
@@ -960,7 +975,7 @@ export default function PatientPage() {
                     <div className="relative">
                       <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="O que você quer comer hoje? (IA)"
+                        placeholder={lang === 'pt' ? "Busque um alimento (ex: coxa de frango)" : "Search food (e.g. chicken thigh)"}
                         value={substitutionQuery}
                         onChange={e => { setSubstitutionQuery(e.target.value); setShowSubSearch(true); }}
                         onFocus={() => setShowSubSearch(true)}
