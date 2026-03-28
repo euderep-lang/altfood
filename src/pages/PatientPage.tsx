@@ -455,16 +455,52 @@ export default function PatientPage() {
     
     const categoryName = categories.find(c => c.id === selectedFood.category_id)?.name || '';
     
-    // Simulate "IA processing"
     setTimeout(() => {
+      // Try via algorithm first
       const allSubs = calculateSubstitutions(selectedFood, weight, [foodToSub, ...foods], categories, categoryName);
       const specificSub = allSubs.find(s => s.food.id === foodToSub.id);
       
       if (specificSub) {
         setResults([specificSub]);
       } else {
-        const sub = calculateSubstitutions(selectedFood, weight, [foodToSub], categories, categoryName);
-        setResults(sub);
+        // Algorithm filtered it out — calculate manually so we always show the chosen food
+        const ANCHOR_MAP: Record<string, 'protein' | 'carbohydrates' | 'fat' | 'calories'> = {
+          'Proteínas Animais': 'protein', 'Proteínas Vegetais': 'protein',
+          'Laticínios e Derivados': 'protein', 'Carboidratos': 'carbohydrates',
+          'Gorduras e Oleaginosas': 'fat', 'Frutas': 'calories',
+          'Vegetais e Legumes': 'calories', 'Temperos e Condimentos': 'calories',
+          'Bebidas Funcionais': 'calories', 'Suplementos Alimentares': 'protein',
+        };
+        const anchor = ANCHOR_MAP[categoryName] || 'calories';
+        const getVal = (f: Food, n: string) => Number(n === 'protein' ? f.protein : n === 'carbohydrates' ? f.carbohydrates : n === 'fat' ? f.fat : f.calories);
+        
+        const anchorPer100 = getVal(selectedFood, anchor);
+        const subAnchor = getVal(foodToSub, anchor);
+        
+        if (anchorPer100 > 0 && subAnchor > 0) {
+          const targetMacro = (anchorPer100 * weight) / 100;
+          const eqWeight = Math.round((targetMacro * 100) / subAnchor);
+          const prot = Math.round((Number(foodToSub.protein) * eqWeight) / 100 * 10) / 10;
+          const carb = Math.round((Number(foodToSub.carbohydrates) * eqWeight) / 100 * 10) / 10;
+          const fat = Math.round((Number(foodToSub.fat) * eqWeight) / 100 * 10) / 10;
+          const cal = Math.round((Number(foodToSub.calories) * eqWeight) / 100 * 10) / 10;
+          
+          const origProt = (Number(selectedFood.protein) * weight) / 100;
+          const origCarb = (Number(selectedFood.carbohydrates) * weight) / 100;
+          const origFat = (Number(selectedFood.fat) * weight) / 100;
+          const total = origProt + origCarb + origFat || 1;
+          const similarity = Math.max(0, 1 - (Math.abs(prot - origProt) + Math.abs(carb - origCarb) + Math.abs(fat - origFat)) / total);
+          
+          const category = categories.find(c => c.id === foodToSub.category_id);
+          setResults([{
+            food: foodToSub, category, equivalentWeight: eqWeight,
+            protein: prot, carbohydrates: carb, fat, calories: cal,
+            similarityScore: Math.round(similarity * 100) / 100,
+          }]);
+        } else {
+          toast.error(lang === 'pt' ? 'Não foi possível calcular a substituição.' : 'Could not calculate substitution.');
+          setResults([]);
+        }
       }
       
       setComputing(false);
