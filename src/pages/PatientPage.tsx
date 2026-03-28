@@ -418,26 +418,33 @@ export default function PatientPage() {
   const handleFreeSearch = useCallback(() => {
     if (!substitutionQuery.trim() || !selectedFood) return;
     
-    // Simula a IA interpretando o que foi escrito
-    // Primeiro tentamos achar um match exato ou próximo
     const q = substitutionQuery.toLowerCase();
-    const bestMatch = foods.find(f => 
+    const qFixed = q.replace(/g/g, 'f');
+    
+    // First try exact match or direct includes
+    let bestMatch = foods.find(f => 
       f.name.toLowerCase().includes(q) || 
       f.name_short.toLowerCase().includes(q) ||
       (f.preparation && f.preparation.toLowerCase().includes(q))
     );
 
+    // If not found, try the typo-fixed version
+    if (!bestMatch) {
+      bestMatch = foods.find(f => 
+        f.name.toLowerCase().includes(qFixed) || 
+        f.name_short.toLowerCase().includes(qFixed)
+      );
+    }
+
     if (bestMatch) {
       findSpecificSubstitution(bestMatch);
     } else if (filteredSubSuggestions.length > 0) {
-      // Se não achou match direto mas tem sugestões, usa a primeira
       findSpecificSubstitution(filteredSubSuggestions[0]);
     } else {
-      // Aqui poderíamos ter uma lógica de "AI" mais avançada, 
-      // por enquanto vamos apenas avisar ou não fazer nada se estiver vazio
+      toast.error(lang === 'pt' ? 'Nenhum alimento encontrado. Verifique a grafia.' : 'No food found. Check spelling.');
       vibrate(20);
     }
-  }, [substitutionQuery, selectedFood, foods, filteredSubSuggestions]);
+  }, [substitutionQuery, selectedFood, foods, filteredSubSuggestions, lang]);
 
   const findSpecificSubstitution = (foodToSub: Food) => {
     if (!selectedFood) return;
