@@ -97,7 +97,12 @@ export default function AdminLogin() {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium">Senha</Label>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-medium">Senha</Label>
+                  <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                    Esqueci minha senha
+                  </Link>
+                </div>
                 <Input
                   type="password"
                   value={password}
