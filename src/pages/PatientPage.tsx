@@ -1036,10 +1036,17 @@ export default function PatientPage() {
                         ))}
                       </div>
 
-                      <p className="text-sm font-medium text-muted-foreground">
-                        {filteredResults.length} {t(lang, 'substitutionsFound')}
-                        <span className="text-[10px] ml-2 text-muted-foreground/60">{t(lang, 'swipeHint')}</span>
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-muted-foreground">
+                          {results.length === 1 ? 'Substituição encontrada' : `${filteredResults.length} ${t(lang, 'substitutionsFound')}`}
+                          <span className="text-[10px] ml-2 text-muted-foreground/60">{t(lang, 'swipeHint')}</span>
+                        </p>
+                        {results.length === 1 && (
+                          <button onClick={findSubstitutions} className="text-xs font-semibold text-primary underline underline-offset-4">
+                            Ver todas as opções
+                          </button>
+                        )}
+                      </div>
 
                       {filteredResults.length === 0 && (
                         <Card className="rounded-2xl shadow-sm">
