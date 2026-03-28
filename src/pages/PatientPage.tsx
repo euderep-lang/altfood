@@ -960,14 +960,20 @@ export default function PatientPage() {
                     <div className="relative">
                       <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="Busca Inteligente (ex: coxa, patinho...)"
+                        placeholder="O que você quer comer hoje? (IA)"
                         value={substitutionQuery}
                         onChange={e => { setSubstitutionQuery(e.target.value); setShowSubSearch(true); }}
                         onFocus={() => setShowSubSearch(true)}
-                        className="pl-10 rounded-2xl h-14 bg-white border-2 border-primary/20 focus:border-primary/50 text-base shadow-sm"
+                        onKeyDown={e => { if (e.key === 'Enter') handleFreeSearch(); }}
+                        className="pl-10 pr-14 rounded-2xl h-14 bg-white border-2 border-primary/20 focus:border-primary/50 text-base shadow-sm"
                       />
-                      <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                        <span className="text-[10px] font-bold text-primary/60 bg-primary/5 px-1.5 py-0.5 rounded uppercase tracking-tighter">IA</span>
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                        <button
+                          onClick={handleFreeSearch}
+                          className="p-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                        >
+                          <ArrowRight className="w-5 h-5" />
+                        </button>
                       </div>
                     </div>
 
