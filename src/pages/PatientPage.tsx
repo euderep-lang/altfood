@@ -375,6 +375,15 @@ export default function PatientPage() {
     ).slice(0, 12);
   }, [searchQuery, foods]);
 
+  const filteredSubSuggestions = useMemo(() => {
+    if (!substitutionQuery.trim()) return [];
+    const q = substitutionQuery.toLowerCase();
+    return foods.filter(f =>
+      (f.name.toLowerCase().includes(q) || f.name_short.toLowerCase().includes(q)) &&
+      f.id !== selectedFood?.id
+    ).slice(0, 8);
+  }, [substitutionQuery, foods, selectedFood]);
+
   const foodsByCategory = useMemo(() => {
     const map: Record<string, Food[]> = {};
     categories.forEach(c => { map[c.id] = []; });
