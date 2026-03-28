@@ -157,7 +157,8 @@ function SwipeableCard({ children, onSwipeRight, onSwipeLeft, showHint }: { chil
 type Tab = 'search' | 'favorites' | 'history';
 
 export default function PatientPage() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug: urlSlug } = useParams<{ slug: string }>();
+  const slug = urlSlug || 'altfood';
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [weight, setWeight] = useState(100);
@@ -188,6 +189,20 @@ export default function PatientPage() {
     queryKey: ['doctor-slug', slug],
     queryFn: async () => {
       const { data, error } = await supabase.from('doctors').select('*').eq('slug', slug).single();
+      
+      if (error && slug === 'altfood') {
+        // Return a default "Altfood" doctor if slug is "altfood" but not found in DB
+        return {
+          id: '00000000-0000-0000-0000-000000000000',
+          name: 'Altfood',
+          slug: 'altfood',
+          primary_color: '#0EA5E9',
+          bio: 'Encontre substituições alimentares seguras.',
+          onboarding_completed: true,
+          theme_layout: 'minimal'
+        } as unknown as Doctor;
+      }
+      
       if (error) throw error;
       return data as Doctor;
     },
