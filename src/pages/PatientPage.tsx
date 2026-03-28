@@ -933,16 +933,20 @@ export default function PatientPage() {
                   </Card>
 
                   {/* Specific substitution search */}
-                  <div className="relative">
+                  <div className="relative space-y-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1">Substituir por um alimento específico?</p>
                     <div className="relative">
                       <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="Buscar substituição específica (ex: coxa)"
+                        placeholder="Busca Inteligente (ex: coxa, patinho...)"
                         value={substitutionQuery}
                         onChange={e => { setSubstitutionQuery(e.target.value); setShowSubSearch(true); }}
                         onFocus={() => setShowSubSearch(true)}
-                        className="pl-10 rounded-2xl h-12 bg-muted/40 border-transparent focus:border-primary/30 text-sm"
+                        className="pl-10 rounded-2xl h-14 bg-white border-2 border-primary/20 focus:border-primary/50 text-base shadow-sm"
                       />
+                      <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                        <span className="text-[10px] font-bold text-primary/60 bg-primary/5 px-1.5 py-0.5 rounded uppercase tracking-tighter">IA</span>
+                      </div>
                     </div>
 
                     <AnimatePresence>
