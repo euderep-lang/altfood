@@ -108,7 +108,12 @@ export default function PatientPage() {
     enabled: !!doctor,
   });
 
-  const foods = useMemo(() => allFoods.filter(f => !hiddenFoodIds.includes(f.id)), [allFoods, hiddenFoodIds]);
+  const allHiddenIds = useMemo(() => {
+    const set = new Set([...hiddenFoodIds, ...profileHiddenIds]);
+    return Array.from(set);
+  }, [hiddenFoodIds, profileHiddenIds]);
+
+  const foods = useMemo(() => allFoods.filter(f => !allHiddenIds.includes(f.id)), [allFoods, allHiddenIds]);
 
   const toggleLang = () => { const n = lang === 'pt' ? 'en' : 'pt'; setLang(n); saveLang(n); };
 
