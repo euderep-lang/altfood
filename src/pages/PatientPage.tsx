@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, Loader2, X, ChevronDown, ChevronUp, Info, ArrowRight, MessageCircle } from 'lucide-react';
+import { Search, Loader2, X, ChevronDown, ChevronUp, Info, ArrowRight, MessageCircle, Share2 } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion, AnimatePresence } from 'framer-motion';
 import { calculateSubstitutions, getSimilarityLabel, type SubstitutionResult } from '@/lib/substitutionAlgorithm';
@@ -694,6 +694,30 @@ export default function PatientPage() {
                               <button onClick={() => setDetailFood(result.food)}
                                 className="flex items-center gap-1 text-[11px] font-medium text-primary hover:text-primary/80 transition-colors">
                                 <Info className="w-3.5 h-3.5" /> {t(lang, 'details')}
+                              </button>
+                              <span className="text-border">·</span>
+                              <button onClick={async () => {
+                                const ptn = Math.round(Number(result.food.protein) * result.equivalentWeight / 100 * 10) / 10;
+                                const carb = Math.round(Number(result.food.carbohydrates) * result.equivalentWeight / 100 * 10) / 10;
+                                const gord = Math.round(Number(result.food.fat) * result.equivalentWeight / 100 * 10) / 10;
+                                const shareText = lang === 'pt'
+                                  ? `🥗 *Substituição Alimentar*\n\n*${selectedFood.name_short}* (${weight}g)\npode ser substituído por:\n\n*${result.food.name_short}* (${Math.round(result.equivalentWeight)}g)\n\nMacros equivalentes: ${ptn}g ptn · ${carb}g carb · ${gord}g gordura\n\nFonte: Tabela TACO\nPowered by Altfood`
+                                  : `🥗 *Food Substitution*\n\n*${selectedFood.name_short}* (${weight}g)\ncan be replaced by:\n\n*${result.food.name_short}* (${Math.round(result.equivalentWeight)}g)\n\nEquivalent macros: ${ptn}g protein · ${carb}g carbs · ${gord}g fat\n\nSource: TACO Table\nPowered by Altfood`;
+                                try {
+                                  if (navigator.share) {
+                                    await navigator.share({ text: shareText });
+                                    toast.success(lang === 'pt' ? 'Compartilhado!' : 'Shared!');
+                                  } else {
+                                    window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
+                                  }
+                                } catch (e: any) {
+                                  if (e?.name !== 'AbortError') {
+                                    window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
+                                  }
+                                }
+                              }}
+                                className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors">
+                                <Share2 className="w-3.5 h-3.5" /> {lang === 'pt' ? 'Compartilhar' : 'Share'}
                               </button>
                               <span className="text-border">·</span>
                               <button onClick={() => toggleCard(result.food.id)}
