@@ -40,6 +40,12 @@ export function formatPhone(phone: string): string {
   return phone;
 }
 
+export function getShareableUrl(slug: string): string {
+  const base = window.location.origin;
+  const projectId = 'pbmgjgjvwcisvsembqon';
+  return `https://${projectId}.supabase.co/functions/v1/meta-preview?slug=${slug}&base=${encodeURIComponent(base)}`;
+}
+
 export function daysRemaining(date: string): number {
   const end = new Date(date);
   const now = new Date();
