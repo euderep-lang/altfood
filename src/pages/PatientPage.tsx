@@ -654,6 +654,20 @@ export default function PatientPage() {
                               </p>
                             </div>
 
+                            {/* Human summary */}
+                            {(() => {
+                              const eqW = result.equivalentWeight;
+                              const qtyDiff = eqW - weight;
+                              const qtySummary = qtyDiff > 20 ? 'Você vai usar mais quantidade.' : qtyDiff < -20 ? 'Você vai usar menos quantidade.' : 'A quantidade é praticamente igual.';
+                              const calDiff = Math.round(result.calories - origCal);
+                              const calSummary = calDiff > 30 ? `Um pouco mais calórico (+${calDiff}kcal).` : calDiff < -30 ? `Menos calórico (${calDiff}kcal a menos).` : 'Calorias equivalentes.';
+                              return (
+                                <p className="text-[11px] italic text-muted-foreground text-center mt-1 mb-3 leading-relaxed">
+                                  Use {eqW}g no lugar de {weight}g de {selectedFood.name_short}. {qtySummary} {calSummary}
+                                </p>
+                              );
+                            })()}
+
                             {/* Quick macro pills */}
                             <div className="flex gap-1 justify-center flex-wrap">
                               {macros.map(m => (
