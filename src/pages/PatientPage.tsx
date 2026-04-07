@@ -240,6 +240,19 @@ export default function PatientPage() {
     }, 400);
   };
 
+  // Auto-recalculate when weight changes
+  useEffect(() => {
+    if (!selectedFood || weight <= 0) return;
+    setComputing(true);
+    const categoryName = categories.find(c => c.id === selectedFood.category_id)?.name || '';
+    const timer = setTimeout(() => {
+      const subs = calculateSubstitutions(selectedFood, weight, foods, categories, categoryName);
+      setResults(subs);
+      setComputing(false);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [weight, selectedFood, foods, categories]);
+
   const toggleCard = (id: string) => {
     setExpandedCards(prev => {
       const next = new Set(prev);
