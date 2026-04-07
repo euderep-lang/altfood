@@ -539,13 +539,6 @@ export default function PatientPage() {
                 </AnimatePresence>
               </div>
 
-              {/* Find All Button */}
-              {results.length === 0 && !computing && (
-                <Button onClick={findSubstitutions} className="w-full rounded-2xl h-13 text-sm font-semibold shadow-md"
-                  style={{ backgroundColor: primaryColor }}>
-                  {t(lang, 'findSubstitutions')}
-                </Button>
-              )}
 
               {/* Loading */}
               {computing && (
