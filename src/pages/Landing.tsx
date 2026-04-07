@@ -3,9 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowRight, Check, Sparkles, Star, UserPlus, Share2, Search, Crown } from 'lucide-react';
+import { ArrowRight, Check, Sparkles, Star, Crown } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { useState, useEffect, useCallback } from 'react';
+import stepCreatePageImg from '@/assets/step-create-page.png';
+import stepShareLinkImg from '@/assets/step-share-link.png';
+import stepPatientImg from '@/assets/step-patient-autonomous.png';
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
