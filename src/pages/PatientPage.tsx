@@ -452,8 +452,8 @@ export default function PatientPage() {
                           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted/60 text-left transition-colors">
                           <span className="text-lg">{cat?.icon || '🍽️'}</span>
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-foreground truncate">{food.name_short}</p>
-                            <p className="text-[11px] text-muted-foreground">{cat?.name}</p>
+                            <p className="text-sm font-medium text-foreground truncate">{fn(lang, food.name_short)}</p>
+                            <p className="text-[11px] text-muted-foreground">{cn(lang, cat?.name || '')}</p>
                           </div>
                           <span className="text-[11px] text-muted-foreground/70">{food.calories} kcal</span>
                         </button>
@@ -480,8 +480,8 @@ export default function PatientPage() {
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/60 bg-card text-xs font-medium text-muted-foreground whitespace-nowrap shrink-0 hover:bg-muted/50 transition-colors"
                   style={{ borderColor: `${primaryColor}30`, color: primaryColor }}
                 >
-                  <span>{cat.icon}</span>
-                  {cat.name}
+                   <span>{cat.icon}</span>
+                   {cn(lang, cat.name)}
                 </button>
               ))}
           </div>
@@ -501,8 +501,8 @@ export default function PatientPage() {
                       {selectedCategory?.icon || '🍽️'}
                     </div>
                     <div>
-                      <p className="font-semibold text-foreground text-sm">{selectedFood.name_short}</p>
-                      <p className="text-[11px] text-muted-foreground">{selectedFood.preparation}</p>
+                      <p className="font-semibold text-foreground text-sm">{fn(lang, selectedFood.name_short)}</p>
+                      <p className="text-[11px] text-muted-foreground">{fp(lang, selectedFood.preparation)}</p>
                     </div>
                   </div>
                   <button onClick={() => { setSelectedFood(null); setResults([]); }}
@@ -590,8 +590,8 @@ export default function PatientPage() {
                                 className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-muted/60 text-left transition-colors">
                                 <span className="text-base">{cat?.icon || '🍽️'}</span>
                                 <div className="min-w-0 flex-1">
-                                  <p className="text-sm font-medium text-foreground truncate">{food.name_short}</p>
-                                  <p className="text-[10px] text-muted-foreground">{cat?.name}</p>
+                                   <p className="text-sm font-medium text-foreground truncate">{fn(lang, food.name_short)}</p>
+                                   <p className="text-[10px] text-muted-foreground">{cn(lang, cat?.name || '')}</p>
                                 </div>
                               </button>
                             );
@@ -651,8 +651,8 @@ export default function PatientPage() {
                                 {result.category?.icon || '🍽️'}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="font-semibold text-foreground text-sm">{result.food.name_short}</p>
-                                <p className="text-[11px] text-muted-foreground">{result.food.preparation}</p>
+                                <p className="font-semibold text-foreground text-sm">{fn(lang, result.food.name_short)}</p>
+                                <p className="text-[11px] text-muted-foreground">{fp(lang, result.food.preparation)}</p>
                               </div>
                               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0"
                                 style={{ backgroundColor: sim.bg, color: sim.color }}>
@@ -667,7 +667,7 @@ export default function PatientPage() {
                               </span>
                               <span className="text-base font-medium text-muted-foreground ml-1">g</span>
                               <p className="text-[11px] text-muted-foreground mt-0.5">
-                                {t(lang, 'equivalent')} {weight}g {t(lang, 'of')} {selectedFood.name_short}
+                                {t(lang, 'equivalent')} {weight}g {t(lang, 'of')} {fn(lang, selectedFood.name_short)}
                               </p>
                             </div>
 
@@ -675,12 +675,19 @@ export default function PatientPage() {
                             {(() => {
                               const eqW = result.equivalentWeight;
                               const qtyDiff = eqW - weight;
-                              const qtySummary = qtyDiff > 20 ? 'Você vai usar mais quantidade.' : qtyDiff < -20 ? 'Você vai usar menos quantidade.' : 'A quantidade é praticamente igual.';
+                              const qtySummary = lang === 'pt'
+                                ? (qtyDiff > 20 ? 'Você vai usar mais quantidade.' : qtyDiff < -20 ? 'Você vai usar menos quantidade.' : 'A quantidade é praticamente igual.')
+                                : (qtyDiff > 20 ? 'You will use more.' : qtyDiff < -20 ? 'You will use less.' : 'The amount is about the same.');
                               const calDiff = Math.round(result.calories - origCal);
-                              const calSummary = calDiff > 30 ? `Um pouco mais calórico (+${calDiff}kcal).` : calDiff < -30 ? `Menos calórico (${calDiff}kcal a menos).` : 'Calorias equivalentes.';
+                              const calSummary = lang === 'pt'
+                                ? (calDiff > 30 ? `Um pouco mais calórico (+${calDiff}kcal).` : calDiff < -30 ? `Menos calórico (${calDiff}kcal a menos).` : 'Calorias equivalentes.')
+                                : (calDiff > 30 ? `Slightly higher in calories (+${calDiff}kcal).` : calDiff < -30 ? `Lower in calories (${Math.abs(calDiff)}kcal less).` : 'Equivalent calories.');
+                              const useTxt = lang === 'pt'
+                                ? `Use ${eqW}g no lugar de ${weight}g de ${selectedFood.name_short}.`
+                                : `Use ${eqW}g instead of ${weight}g of ${fn(lang, selectedFood.name_short)}.`;
                               return (
                                 <p className="text-[11px] italic text-muted-foreground text-center mt-1 mb-3 leading-relaxed">
-                                  Use {eqW}g no lugar de {weight}g de {selectedFood.name_short}. {qtySummary} {calSummary}
+                                  {useTxt} {qtySummary} {calSummary}
                                 </p>
                               );
                             })()}
@@ -707,7 +714,7 @@ export default function PatientPage() {
                                 const gord = Math.round(Number(result.food.fat) * result.equivalentWeight / 100 * 10) / 10;
                                 const shareText = lang === 'pt'
                                   ? `🥗 *Substituição Alimentar*\n\n*${selectedFood.name_short}* (${weight}g)\npode ser substituído por:\n\n*${result.food.name_short}* (${Math.round(result.equivalentWeight)}g)\n\nMacros equivalentes: ${ptn}g ptn · ${carb}g carb · ${gord}g gordura\n\nFonte: Tabela TACO\nPowered by Altfood`
-                                  : `🥗 *Food Substitution*\n\n*${selectedFood.name_short}* (${weight}g)\ncan be replaced by:\n\n*${result.food.name_short}* (${Math.round(result.equivalentWeight)}g)\n\nEquivalent macros: ${ptn}g protein · ${carb}g carbs · ${gord}g fat\n\nSource: TACO Table\nPowered by Altfood`;
+                                  : `🥗 *Food Substitution*\n\n*${fn(lang, selectedFood.name_short)}* (${weight}g)\ncan be replaced by:\n\n*${fn(lang, result.food.name_short)}* (${Math.round(result.equivalentWeight)}g)\n\nEquivalent macros: ${ptn}g protein · ${carb}g carbs · ${gord}g fat\n\nSource: TACO Table\nPowered by Altfood`;
                                 try {
                                   if (navigator.share) {
                                     await navigator.share({ text: shareText });
