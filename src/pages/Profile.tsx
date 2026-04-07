@@ -180,7 +180,7 @@ export default function Profile() {
         updateData.slug = slugValue;
       }
 
-      const { error } = await supabase.from('doctors').update(updateData).eq('id', doctor.id);
+      const { error } = await supabase.from('doctors').update(updateData as any).eq('id', doctor.id);
 
       if (error) {
         toast({ title: 'Erro ao salvar', description: error.message, variant: 'destructive' });
