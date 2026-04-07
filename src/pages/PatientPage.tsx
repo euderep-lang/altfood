@@ -127,8 +127,13 @@ export default function PatientPage() {
 
   const filteredFoods = useMemo(() => {
     if (!searchQuery.trim()) return [];
+    // Check if query matches a category name exactly — show foods from that category
+    const matchedCategory = categories.find(c => c.name.toLowerCase() === searchQuery.trim().toLowerCase());
+    if (matchedCategory) {
+      return foods.filter(f => f.category_id === matchedCategory.id).slice(0, 20);
+    }
     return foods.filter(f => matchesSearch(f, searchQuery)).slice(0, 10);
-  }, [searchQuery, foods, matchesSearch]);
+  }, [searchQuery, foods, categories, matchesSearch]);
 
   const filteredSubSuggestions = useMemo(() => {
     if (!substitutionQuery.trim()) return [];
