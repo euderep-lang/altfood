@@ -122,7 +122,25 @@ export default function PatientPage() {
     if (doctor) {
       const raw = navigator.userAgent + new Date().toDateString();
       const hash = btoa(raw).slice(0, 16);
-      supabase.from('page_views').insert({ doctor_id: doctor.id, ip_hash: hash, user_agent: navigator.userAgent, referrer: document.referrer || 'direct' });
+      const referrer = document.referrer || 'direct';
+
+      const getTrafficSource = (ref: string): string => {
+        if (!ref || ref === 'direct') return 'direct';
+        const r = ref.toLowerCase();
+        if (r.includes('wa.me') || r.includes('whatsapp') || r.includes('api.whatsapp')) return 'whatsapp';
+        if (r.includes('instagram') || r.includes('ig.me')) return 'instagram';
+        if (r.includes('facebook') || r.includes('fb.com') || r.includes('fb.me')) return 'facebook';
+        if (r.includes('google') || r.includes('bing') || r.includes('yahoo') || r.includes('duckduckgo')) return 'google';
+        return 'other';
+      };
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const utmSource = urlParams.get('utm_source')?.toLowerCase();
+      const source = utmSource
+        ? (['whatsapp', 'instagram', 'facebook', 'google'].includes(utmSource) ? utmSource : 'other')
+        : getTrafficSource(referrer);
+
+      supabase.from('page_views').insert({ doctor_id: doctor.id, ip_hash: hash, user_agent: navigator.userAgent, referrer, source } as any);
     }
   }, [doctor]);
 
