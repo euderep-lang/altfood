@@ -143,7 +143,7 @@ export default function Landing() {
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">Entrar</Button>
             </Link>
             <Link to="/register">
-              <Button size="sm" className="gradient-hero shadow-md">Testar 3 dias grátis</Button>
+              <Button size="sm" className="gradient-hero shadow-md">Testar 14 dias grátis</Button>
             </Link>
           </div>
         </div>
@@ -175,7 +175,7 @@ export default function Landing() {
           <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
             <Link to="/register">
               <Button variant="premium" size="xl" className="w-full sm:w-auto group">
-                Testar 3 dias grátis
+                Testar 14 dias grátis
                 <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
@@ -399,7 +399,7 @@ export default function Landing() {
               Escolha o plano ideal para você
             </motion.h2>
             <motion.p variants={fadeUp} custom={2} className="text-sm text-primary-foreground/40 max-w-md mx-auto">
-              Teste grátis por 3 dias. Sem compromisso — cancele quando quiser.
+              Teste grátis por 14 dias. Sem compromisso — cancele quando quiser.
             </motion.p>
           </motion.div>
 
@@ -504,7 +504,7 @@ export default function Landing() {
                       <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
-                  <p className="text-[10px] text-primary-foreground/25 text-center mt-3">3 dias grátis • Cancele a qualquer momento</p>
+                  <p className="text-[10px] text-primary-foreground/25 text-center mt-3">14 dias grátis • Cancele a qualquer momento</p>
                 </div>
               </div>
             </motion.div>
@@ -525,7 +525,7 @@ export default function Landing() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }}>
             <Accordion type="single" collapsible className="space-y-3">
               {[
-                { q: 'Posso testar antes de pagar?', a: 'Sim! Você tem 3 dias grátis para explorar todos os recursos do Altfood Pro. Sem compromisso — se não gostar, basta não continuar.' },
+                { q: 'Posso testar antes de pagar?', a: 'Sim! Você tem 14 dias grátis para explorar todos os recursos do Altfood Pro. Sem compromisso — se não gostar, basta não continuar.' },
                 { q: 'Precisa instalar alguma coisa?', a: 'Não! O Altfood funciona 100% no navegador, sem necessidade de instalar nenhum app. Seus pacientes acessam pelo link, e você gerencia tudo pelo dashboard online.' },
                 { q: 'Como compartilho com pacientes?', a: 'Você recebe um link exclusivo (ex: altfood.app/dra-maria). Basta enviar via WhatsApp, colocar na bio do Instagram, ou gerar um QR Code. Seus pacientes acessam sem precisar criar conta.' },
                 { q: 'Os dados são da TACO?', a: 'Sim! Utilizamos a Tabela TACO (Tabela Brasileira de Composição de Alimentos), 4ª edição, desenvolvida pela NEPA/UNICAMP — a referência nacional em dados nutricionais com 463+ alimentos catalogados.' },
@@ -559,7 +559,7 @@ export default function Landing() {
                   Quanto tempo você perdeu hoje respondendo substituição?
                 </h2>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  Pare de calcular "100g de frango = Xg de patinho" no WhatsApp. Deixa o Altfood fazer isso por você. Teste grátis por 3 dias.
+                  Pare de calcular "100g de frango = Xg de patinho" no WhatsApp. Deixa o Altfood fazer isso por você. Teste grátis por 14 dias.
                 </p>
                 <Link to="/register" className="pt-4 block">
                   <Button variant="premium" size="xl" className="group">
