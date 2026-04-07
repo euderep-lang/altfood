@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, Search, Leaf, Crown, Copy, Share2, ExternalLink, Palette, Users, Loader2, Sparkles, ArrowUpRight, Gift, Lightbulb } from 'lucide-react';
-import { formatDateTime, formatNumber, daysRemaining } from '@/lib/helpers';
+import { formatDateTime, formatNumber, daysRemaining, getShareableUrl } from '@/lib/helpers';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
 import { Link, Navigate } from 'react-router-dom';
@@ -134,6 +134,7 @@ export default function Dashboard() {
   }
 
   const patientUrl = `${window.location.origin}/${doctor.slug}`;
+  const shareUrl = getShareableUrl(doctor.slug);
   const referralCode = (doctor as any).referral_code || '';
   const referralUrl = `${window.location.origin}/ref/${referralCode}`;
   const initials = doctor.name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
@@ -146,7 +147,7 @@ export default function Dashboard() {
   const badges = getBadges(doctor, pageViews.length, completedReferrals.length);
 
   const copyLink = async () => {
-    await navigator.clipboard.writeText(patientUrl);
+    await navigator.clipboard.writeText(shareUrl);
     toast({ title: '✅ Link copiado!', description: 'Cole e envie para seus pacientes.' });
   };
 
@@ -157,7 +158,7 @@ export default function Dashboard() {
 
   const shareLink = async () => {
     if (navigator.share) {
-      await navigator.share({ title: 'Altfood - Substituição Alimentar', url: patientUrl });
+      await navigator.share({ title: 'Altfood - Substituição Alimentar', url: shareUrl });
     } else {
       copyLink();
     }
