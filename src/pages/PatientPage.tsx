@@ -144,7 +144,20 @@ export default function PatientPage() {
     setResults([]);
     setWeight(100);
     setExpandedCards(new Set());
-  }, []);
+
+    // Auto-trigger substitutions immediately
+    setComputing(true);
+    if (doctor) {
+      supabase.from('substitution_queries').insert({ doctor_id: doctor.id, food_name: food.name_short, weight_grams: 100 });
+    }
+    const categoryName = categories.find(c => c.id === food.category_id)?.name || '';
+    setTimeout(() => {
+      const subs = calculateSubstitutions(food, 100, foods, categories, categoryName);
+      setResults(subs);
+      setComputing(false);
+      setSearchCount(prev => prev + 1);
+    }, 400);
+  }, [doctor, foods, categories]);
 
   const findSpecificSubstitution = (foodToSub: Food) => {
     if (!selectedFood) return;
@@ -226,6 +239,19 @@ export default function PatientPage() {
       setSearchCount(prev => prev + 1);
     }, 400);
   };
+
+  // Auto-recalculate when weight changes
+  useEffect(() => {
+    if (!selectedFood || weight <= 0) return;
+    setComputing(true);
+    const categoryName = categories.find(c => c.id === selectedFood.category_id)?.name || '';
+    const timer = setTimeout(() => {
+      const subs = calculateSubstitutions(selectedFood, weight, foods, categories, categoryName);
+      setResults(subs);
+      setComputing(false);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [weight, selectedFood, foods, categories]);
 
   const toggleCard = (id: string) => {
     setExpandedCards(prev => {
@@ -513,13 +539,6 @@ export default function PatientPage() {
                 </AnimatePresence>
               </div>
 
-              {/* Find All Button */}
-              {results.length === 0 && !computing && (
-                <Button onClick={findSubstitutions} className="w-full rounded-2xl h-13 text-sm font-semibold shadow-md"
-                  style={{ backgroundColor: primaryColor }}>
-                  {t(lang, 'findSubstitutions')}
-                </Button>
-              )}
 
               {/* Loading */}
               {computing && (
