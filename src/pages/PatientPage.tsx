@@ -279,27 +279,60 @@ export default function PatientPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
-      {/* Minimal Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="max-w-lg mx-auto px-5 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 min-w-0">
+      {/* Header */}
+      <header className="bg-card border-b border-border">
+        <div className="max-w-lg mx-auto px-4 py-5">
+          <div className="flex items-center gap-4">
             {doctor.logo_url ? (
-              <img src={doctor.logo_url} alt={doctor.name} className="h-10 w-10 rounded-xl object-contain" />
+              <img src={doctor.logo_url} alt={doctor.name} className="h-14 w-14 rounded-2xl object-contain shadow-sm border border-border" />
             ) : (
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-white shrink-0"
-                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)` }}>
+              <div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-bold shrink-0 shadow-sm"
+                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}cc)`, color: '#fff' }}
+              >
                 {doctor.name.split(' ').filter(w => w.length > 2).map(w => w[0]).join('').slice(0, 2).toUpperCase()}
               </div>
             )}
-            <div className="min-w-0">
-              <h1 className="font-semibold text-sm text-foreground truncate">{doctor.name}</h1>
-              <p className="text-[11px] text-muted-foreground truncate">{doctor.specialty}</p>
+            <div className="min-w-0 flex-1">
+              <h1 className="font-bold text-base text-foreground truncate">{doctor.name}</h1>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {doctor.document_type} {doctor.document_number} • {doctor.specialty}
+              </p>
+            </div>
+            <div className="flex gap-1.5 shrink-0">
+              <button
+                onClick={toggleLang}
+                className="w-9 h-9 rounded-xl flex items-center justify-center text-sm bg-muted hover:bg-muted/80 transition-colors"
+                title={lang === 'pt' ? 'Switch to English' : 'Mudar para Português'}
+              >
+                {lang === 'pt' ? '🇺🇸' : '🇧🇷'}
+              </button>
+              {(doctor as any).whatsapp_link && (
+                <a href={(doctor as any).whatsapp_link} target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-sm" style={{ backgroundColor: '#25D36620', color: '#25D366' }}>
+                  💬
+                </a>
+              )}
+              {(doctor as any).instagram_link && (
+                <a href={(doctor as any).instagram_link} target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-sm bg-pink-50 text-pink-600">
+                  📷
+                </a>
+              )}
             </div>
           </div>
-          <button onClick={toggleLang}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-xs bg-muted/60 hover:bg-muted transition-colors">
-            {lang === 'pt' ? '🇺🇸' : '🇧🇷'}
-          </button>
+          {(doctor as any).welcome_message && (
+            <p className="text-sm text-muted-foreground mt-3 italic text-center">"{(doctor as any).welcome_message}"</p>
+          )}
+          {(doctor as any).bio && (
+            <p className="text-xs text-muted-foreground mt-2 text-center">{(doctor as any).bio}</p>
+          )}
+          <div className="mt-3 flex items-center justify-center">
+            <span className="text-xs font-semibold tracking-wider uppercase px-3 py-1 rounded-full"
+              style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
+              {t(lang, 'substitutionTable')}
+            </span>
+          </div>
         </div>
       </header>
 
