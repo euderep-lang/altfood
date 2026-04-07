@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Upload, X, Check, AlertTriangle, Trash2, ExternalLink, MessageCircle, Lock, Crown, Mail, Plus, Globe, Palette, Layout } from 'lucide-react';
 import HiddenFoodsManager from '@/components/HiddenFoodsManager';
+import PatientProfileManager from '@/components/PatientProfileManager';
 import SubscriptionManager from '@/components/SubscriptionManager';
 import { Switch } from '@/components/ui/switch';
 import { generateSlug, daysRemaining, formatDate } from '@/lib/helpers';
@@ -702,7 +703,8 @@ export default function Profile() {
 
       {/* Hidden Foods Manager */}
       {doctor && (
-        <div className="mt-6">
+        <div className="mt-6 space-y-6">
+          <PatientProfileManager doctorId={doctor.id} doctorSlug={doctor.slug} />
           <HiddenFoodsManager doctorId={doctor.id} />
         </div>
       )}
