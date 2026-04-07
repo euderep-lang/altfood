@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, Search, Leaf, Crown, Copy, Share2, ExternalLink, Palette, Users, Loader2, Sparkles, ArrowUpRight, Gift, Lightbulb } from 'lucide-react';
 import { formatDateTime, formatNumber, daysRemaining } from '@/lib/helpers';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
 import { Link, Navigate } from 'react-router-dom';
 import { useMemo } from 'react';
@@ -389,7 +389,96 @@ export default function Dashboard() {
           </Card>
         </motion.div>
 
-        {/* Recent Activity */}
+        {/* Analytics Widgets */}
+        {(() => {
+          const DAY_NAMES = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+          // Top 5 foods
+          const foodCounts: Record<string, number> = {};
+          queries.forEach(q => {
+            foodCounts[q.food_name] = (foodCounts[q.food_name] || 0) + 1;
+          });
+          const topFoods = Object.entries(foodCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([name, count]) => ({ name: name.length > 18 ? name.slice(0, 18) + '…' : name, count }));
+
+          // Searches by day of week
+          const dayCounts = Array(7).fill(0);
+          queries.forEach(q => {
+            const day = new Date(q.queried_at).getDay();
+            dayCounts[day]++;
+          });
+          const dayData = DAY_NAMES.map((name, i) => ({ name, count: dayCounts[i] }));
+
+          // Engagement rate
+          const totalSearches = queries.length;
+          const totalViews = pageViews.length;
+          const engagementRate = totalViews > 0 ? Math.round((totalSearches / totalViews) * 100) : 0;
+          const engagementColor = engagementRate > 30 ? 'text-emerald-600' : engagementRate >= 10 ? 'text-amber-600' : 'text-destructive';
+          const engagementBg = engagementRate > 30 ? 'bg-emerald-50' : engagementRate >= 10 ? 'bg-amber-50' : 'bg-destructive/5';
+
+          return (
+            <motion.div initial="hidden" animate="visible" custom={8.5} variants={fadeUp} className="grid md:grid-cols-3 gap-4">
+              {/* Top 5 Foods */}
+              <Card className="rounded-2xl shadow-sm border-border/50">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold text-foreground">Alimentos mais buscados</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {topFoods.length === 0 ? (
+                    <p className="text-xs text-muted-foreground py-8 text-center">Nenhuma busca registrada ainda.</p>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={160}>
+                      <BarChart data={topFoods} layout="vertical" margin={{ left: 0, right: 8, top: 0, bottom: 0 }}>
+                        <XAxis type="number" hide />
+                        <YAxis type="category" dataKey="name" width={80} tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                        <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', fontSize: 12 }} />
+                        <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 6, 6, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Searches by Day of Week */}
+              <Card className="rounded-2xl shadow-sm border-border/50">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold text-foreground">Quando seus pacientes consultam</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={160}>
+                    <BarChart data={dayData} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
+                      <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                      <YAxis hide allowDecimals={false} />
+                      <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid hsl(var(--border))', fontSize: 12 }} />
+                      <Bar dataKey="count" fill="hsl(var(--secondary))" radius={[6, 6, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Engagement Rate */}
+              <Card className="rounded-2xl shadow-sm border-border/50">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold text-foreground">Taxa de engajamento</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center h-[160px]">
+                  <div className={`w-20 h-20 rounded-2xl ${engagementBg} flex items-center justify-center mb-3`}>
+                    <span className={`text-3xl font-bold ${engagementColor}`}>{engagementRate}%</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center">
+                    dos visitantes fizeram uma busca
+                  </p>
+                  <p className="text-[10px] text-muted-foreground/60 text-center mt-1">
+                    {totalSearches} buscas / {totalViews} visitas (30 dias)
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          );
+        })()}
+
         <motion.div initial="hidden" animate="visible" custom={9} variants={fadeUp}>
           <Card className="rounded-2xl shadow-sm border-border/50">
             <CardHeader className="pb-2">
