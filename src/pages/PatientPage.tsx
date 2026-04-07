@@ -177,12 +177,10 @@ export default function PatientPage() {
       supabase.from('substitution_queries').insert({ doctor_id: doctor.id, food_name: food.name_short, weight_grams: 100 });
     }
     const categoryName = categories.find(c => c.id === food.category_id)?.name || '';
-    setTimeout(() => {
-      const subs = calculateSubstitutions(food, 100, foods, categories, categoryName);
-      setResults(subs);
-      setComputing(false);
-      setSearchCount(prev => prev + 1);
-    }, 400);
+    const subs = calculateSubstitutions(food, 100, foods, categories, categoryName);
+    setResults(subs);
+    setComputing(false);
+    setSearchCount(prev => prev + 1);
   }, [doctor, foods, categories]);
 
   const findSpecificSubstitution = (foodToSub: Food) => {
@@ -193,52 +191,50 @@ export default function PatientPage() {
 
     const categoryName = categories.find(c => c.id === selectedFood.category_id)?.name || '';
 
-    setTimeout(() => {
-      const allSubs = calculateSubstitutions(selectedFood, weight, [foodToSub, ...foods], categories, categoryName);
-      const specificSub = allSubs.find(s => s.food.id === foodToSub.id);
+    const allSubs = calculateSubstitutions(selectedFood, weight, [foodToSub, ...foods], categories, categoryName);
+    const specificSub = allSubs.find(s => s.food.id === foodToSub.id);
 
-      if (specificSub) {
-        setResults([specificSub]);
+    if (specificSub) {
+      setResults([specificSub]);
+    } else {
+      // Manual fallback
+      const ANCHOR_MAP: Record<string, 'protein' | 'carbohydrates' | 'fat' | 'calories'> = {
+        'Proteínas Animais': 'protein', 'Proteínas Vegetais': 'protein',
+        'Laticínios e Derivados': 'protein', 'Carboidratos': 'carbohydrates',
+        'Gorduras e Oleaginosas': 'fat', 'Frutas': 'calories',
+        'Vegetais e Legumes': 'calories', 'Temperos e Condimentos': 'calories',
+        'Bebidas Funcionais': 'calories', 'Suplementos Alimentares': 'protein',
+      };
+      const anchor = ANCHOR_MAP[categoryName] || 'calories';
+      const getVal = (f: Food, n: string) => Number(n === 'protein' ? f.protein : n === 'carbohydrates' ? f.carbohydrates : n === 'fat' ? f.fat : f.calories);
+      const anchorPer100 = getVal(selectedFood, anchor);
+      const subAnchor = getVal(foodToSub, anchor);
+
+      if (anchorPer100 > 0 && subAnchor > 0) {
+        const targetMacro = (anchorPer100 * weight) / 100;
+        const eqWeight = Math.round((targetMacro * 100) / subAnchor);
+        const prot = Math.round((Number(foodToSub.protein) * eqWeight) / 100 * 10) / 10;
+        const carb = Math.round((Number(foodToSub.carbohydrates) * eqWeight) / 100 * 10) / 10;
+        const fat = Math.round((Number(foodToSub.fat) * eqWeight) / 100 * 10) / 10;
+        const cal = Math.round((Number(foodToSub.calories) * eqWeight) / 100 * 10) / 10;
+        const origProt = (Number(selectedFood.protein) * weight) / 100;
+        const origCarb = (Number(selectedFood.carbohydrates) * weight) / 100;
+        const origFat = (Number(selectedFood.fat) * weight) / 100;
+        const total = origProt + origCarb + origFat || 1;
+        const similarity = Math.max(0, 1 - (Math.abs(prot - origProt) + Math.abs(carb - origCarb) + Math.abs(fat - origFat)) / total);
+        const category = categories.find(c => c.id === foodToSub.category_id);
+        setResults([{
+          food: foodToSub, category, equivalentWeight: eqWeight,
+          protein: prot, carbohydrates: carb, fat, calories: cal,
+          similarityScore: Math.round(similarity * 100) / 100,
+        }]);
       } else {
-        // Manual fallback
-        const ANCHOR_MAP: Record<string, 'protein' | 'carbohydrates' | 'fat' | 'calories'> = {
-          'Proteínas Animais': 'protein', 'Proteínas Vegetais': 'protein',
-          'Laticínios e Derivados': 'protein', 'Carboidratos': 'carbohydrates',
-          'Gorduras e Oleaginosas': 'fat', 'Frutas': 'calories',
-          'Vegetais e Legumes': 'calories', 'Temperos e Condimentos': 'calories',
-          'Bebidas Funcionais': 'calories', 'Suplementos Alimentares': 'protein',
-        };
-        const anchor = ANCHOR_MAP[categoryName] || 'calories';
-        const getVal = (f: Food, n: string) => Number(n === 'protein' ? f.protein : n === 'carbohydrates' ? f.carbohydrates : n === 'fat' ? f.fat : f.calories);
-        const anchorPer100 = getVal(selectedFood, anchor);
-        const subAnchor = getVal(foodToSub, anchor);
-
-        if (anchorPer100 > 0 && subAnchor > 0) {
-          const targetMacro = (anchorPer100 * weight) / 100;
-          const eqWeight = Math.round((targetMacro * 100) / subAnchor);
-          const prot = Math.round((Number(foodToSub.protein) * eqWeight) / 100 * 10) / 10;
-          const carb = Math.round((Number(foodToSub.carbohydrates) * eqWeight) / 100 * 10) / 10;
-          const fat = Math.round((Number(foodToSub.fat) * eqWeight) / 100 * 10) / 10;
-          const cal = Math.round((Number(foodToSub.calories) * eqWeight) / 100 * 10) / 10;
-          const origProt = (Number(selectedFood.protein) * weight) / 100;
-          const origCarb = (Number(selectedFood.carbohydrates) * weight) / 100;
-          const origFat = (Number(selectedFood.fat) * weight) / 100;
-          const total = origProt + origCarb + origFat || 1;
-          const similarity = Math.max(0, 1 - (Math.abs(prot - origProt) + Math.abs(carb - origCarb) + Math.abs(fat - origFat)) / total);
-          const category = categories.find(c => c.id === foodToSub.category_id);
-          setResults([{
-            food: foodToSub, category, equivalentWeight: eqWeight,
-            protein: prot, carbohydrates: carb, fat, calories: cal,
-            similarityScore: Math.round(similarity * 100) / 100,
-          }]);
-        } else {
-          toast.error(lang === 'pt' ? 'Não foi possível calcular.' : 'Could not calculate.');
-          setResults([]);
-        }
+        toast.error(lang === 'pt' ? 'Não foi possível calcular.' : 'Could not calculate.');
+        setResults([]);
       }
-      setComputing(false);
-      setSearchCount(prev => prev + 1);
-    }, 600);
+    }
+    setComputing(false);
+    setSearchCount(prev => prev + 1);
   };
 
   const handleFreeSearch = useCallback(() => {
@@ -258,12 +254,10 @@ export default function PatientPage() {
       supabase.from('substitution_queries').insert({ doctor_id: doctor.id, food_name: selectedFood.name_short, weight_grams: weight });
     }
     const categoryName = categories.find(c => c.id === selectedFood.category_id)?.name || '';
-    setTimeout(() => {
-      const subs = calculateSubstitutions(selectedFood, weight, foods, categories, categoryName);
-      setResults(subs);
-      setComputing(false);
-      setSearchCount(prev => prev + 1);
-    }, 400);
+    const subs = calculateSubstitutions(selectedFood, weight, foods, categories, categoryName);
+    setResults(subs);
+    setComputing(false);
+    setSearchCount(prev => prev + 1);
   };
 
   // Auto-recalculate when weight changes
@@ -275,7 +269,7 @@ export default function PatientPage() {
       const subs = calculateSubstitutions(selectedFood, weight, foods, categories, categoryName);
       setResults(subs);
       setComputing(false);
-    }, 400);
+    }, 100);
     return () => clearTimeout(timer);
   }, [weight, selectedFood, foods, categories]);
 
