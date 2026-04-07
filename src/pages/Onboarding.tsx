@@ -720,7 +720,7 @@ export default function Onboarding() {
                 className="w-full rounded-xl h-11 text-sm gap-2 border-primary/20 hover:bg-primary/5"
               >
                 <Clock className="w-4 h-4" />
-                Testar grátis por 3 dias
+                Testar grátis por 14 dias
               </Button>
             </div>
           </div>

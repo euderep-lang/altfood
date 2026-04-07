@@ -89,7 +89,7 @@ export default function Pricing() {
       <main className="max-w-xl mx-auto px-4 py-12 md:py-20">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground">Pare de responder substituições no WhatsApp</h1>
-          <p className="text-muted-foreground mt-3 text-base">Seus pacientes se viram sozinhos. Teste grátis por 3 dias.</p>
+          <p className="text-muted-foreground mt-3 text-base">Seus pacientes se viram sozinhos. Teste grátis por 14 dias.</p>
 
           {/* Toggle */}
           <div className="flex items-center justify-center gap-3 mt-6">
@@ -140,7 +140,7 @@ export default function Pricing() {
                   disabled={loading}
                 >
                   {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <Crown className="w-4 h-4 mr-2" />}
-                  {user ? 'Assinar Pro' : 'Testar 3 dias grátis'}
+                  {user ? 'Assinar Pro' : 'Testar 14 dias grátis'}
                 </Button>
               )}
             </CardContent>
