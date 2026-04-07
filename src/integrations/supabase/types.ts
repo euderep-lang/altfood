@@ -343,6 +343,7 @@ export type Database = {
           id: string
           ip_hash: string | null
           referrer: string | null
+          source: string | null
           user_agent: string | null
           viewed_at: string
         }
@@ -351,6 +352,7 @@ export type Database = {
           id?: string
           ip_hash?: string | null
           referrer?: string | null
+          source?: string | null
           user_agent?: string | null
           viewed_at?: string
         }
@@ -359,6 +361,7 @@ export type Database = {
           id?: string
           ip_hash?: string | null
           referrer?: string | null
+          source?: string | null
           user_agent?: string | null
           viewed_at?: string
         }
