@@ -423,6 +423,27 @@ export default function PatientPage() {
           </AnimatePresence>
         </div>
 
+        {/* Category chips */}
+        {!searchQuery && !selectedFood && !showSearch && (
+          <div className="flex gap-2 mt-3 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
+            {categories
+              .slice()
+              .sort((a, b) => a.sort_order - b.sort_order)
+              .slice(0, 8)
+              .map(cat => (
+                <button
+                  key={cat.id}
+                  onClick={() => { setSearchQuery(cat.name); setShowSearch(true); }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/60 bg-card text-xs font-medium text-muted-foreground whitespace-nowrap shrink-0 hover:bg-muted/50 transition-colors"
+                  style={{ borderColor: `${primaryColor}30`, color: primaryColor }}
+                >
+                  <span>{cat.icon}</span>
+                  {cat.name}
+                </button>
+              ))}
+          </div>
+        )}
+
         {/* Selected Food + Weight + Results */}
         <AnimatePresence>
           {selectedFood && (
