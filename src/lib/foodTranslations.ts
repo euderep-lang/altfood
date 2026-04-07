@@ -503,7 +503,6 @@ const PREPARATION_MAP: Record<string, string> = {
   'Em conserva': 'Canned',
   'Natural, sem adição de açúcar': 'Natural, no added sugar',
   'Água filtrada com limão espremido': 'Filtered water with squeezed lemon',
-  'Crua': 'Raw',
 };
 
 export function translateCategoryName(name: string): string {
