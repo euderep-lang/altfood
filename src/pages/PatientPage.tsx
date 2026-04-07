@@ -144,7 +144,20 @@ export default function PatientPage() {
     setResults([]);
     setWeight(100);
     setExpandedCards(new Set());
-  }, []);
+
+    // Auto-trigger substitutions immediately
+    setComputing(true);
+    if (doctor) {
+      supabase.from('substitution_queries').insert({ doctor_id: doctor.id, food_name: food.name_short, weight_grams: 100 });
+    }
+    const categoryName = categories.find(c => c.id === food.category_id)?.name || '';
+    setTimeout(() => {
+      const subs = calculateSubstitutions(food, 100, foods, categories, categoryName);
+      setResults(subs);
+      setComputing(false);
+      setSearchCount(prev => prev + 1);
+    }, 400);
+  }, [doctor, foods, categories]);
 
   const findSpecificSubstitution = (foodToSub: Food) => {
     if (!selectedFood) return;
