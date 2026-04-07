@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { generateSlug } from '@/lib/helpers';
+import { generateSlug, getShareableUrl } from '@/lib/helpers';
 import {
   ArrowRight, Copy, Check, Share2, Loader2, Palette,
   MessageCircle, ExternalLink, Crown, Sparkles, Clock,
@@ -210,6 +210,7 @@ export default function Onboarding() {
   }
 
   const patientUrl = `${window.location.origin}/${slugValue || doctor.slug}`;
+  const shareUrl = getShareableUrl(slugValue || doctor.slug);
   const firstName = doctor.name.split(' ')[0];
   const initials = doctor.name.split(' ').filter((w: string) => w.length > 2).map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
 
@@ -289,7 +290,7 @@ export default function Onboarding() {
   };
 
   const copyLink = async () => {
-    await navigator.clipboard.writeText(patientUrl);
+    await navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setShowConfetti(true);
     toast({ title: '✅ Link copiado!' });
@@ -298,7 +299,7 @@ export default function Onboarding() {
   };
 
   const shareWhatsApp = () => {
-    const text = `Olá! Agora você pode consultar substituições alimentares no meu link: ${patientUrl}`;
+    const text = `Olá! Agora você pode consultar substituições alimentares no meu link: ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 

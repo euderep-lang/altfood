@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { getShareableUrl } from '@/lib/helpers';
 import { useDoctor } from '@/hooks/useDoctor';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
@@ -31,6 +32,7 @@ export default function ShareKit() {
 
   const referralCode = (doctor as any).referral_code || '';
   const referralUrl = `${window.location.origin}/ref/${referralCode}`;
+  const shareUrl = getShareableUrl(doctor.slug);
   const whatsappMsg = `Oi! Uso o Altfood para dar substituições alimentares aos meus pacientes pelo celular. Cria sua conta grátis aqui: ${referralUrl}`;
 
   const copyLink = async () => {
