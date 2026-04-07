@@ -99,7 +99,9 @@ export default function PatientPage() {
   // Track page view
   useEffect(() => {
     if (doctor) {
-      supabase.from('page_views').insert({ doctor_id: doctor.id, ip_hash: 'anonymous', user_agent: navigator.userAgent, referrer: document.referrer || 'direct' });
+      const raw = navigator.userAgent + new Date().toDateString();
+      const hash = btoa(raw).slice(0, 16);
+      supabase.from('page_views').insert({ doctor_id: doctor.id, ip_hash: hash, user_agent: navigator.userAgent, referrer: document.referrer || 'direct' });
     }
   }, [doctor]);
 
