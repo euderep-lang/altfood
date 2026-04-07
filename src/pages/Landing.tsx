@@ -172,14 +172,24 @@ export default function Landing() {
             O <strong className="text-foreground">Altfood</strong> responde por você. Seu paciente consulta na hora, pelo celular, com a <strong className="text-foreground">sua marca</strong>.
           </motion.p>
 
-          <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+          <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
             <Link to="/register">
               <Button variant="premium" size="xl" className="w-full sm:w-auto group">
                 Testar 3 dias grátis
                 <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
+            <a href={`${window.location.origin}/altfood`} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="xl" className="w-full sm:w-auto group rounded-xl">
+                Ver como o paciente vê
+                <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </a>
           </motion.div>
+
+          <motion.p variants={fadeUp} custom={3.5} className="text-xs text-muted-foreground text-center">
+            Sem cadastro. Veja agora como seu paciente vai usar.
+          </motion.p>
 
           <motion.div variants={fadeUp} custom={4} className="flex items-center justify-center gap-6 pt-4 flex-wrap">
             {['Setup em 2 minutos', 'Cancele quando quiser', 'Dados da Tabela TACO'].map((t, i) => (
