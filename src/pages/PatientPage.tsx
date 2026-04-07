@@ -23,7 +23,7 @@ type Doctor = Database['public']['Tables']['doctors']['Row'];
 const QUICK_WEIGHTS = [50, 100, 150, 200, 250, 300];
 
 export default function PatientPage() {
-  const { slug: urlSlug } = useParams<{ slug: string }>();
+  const { slug: urlSlug, profileSlug } = useParams<{ slug: string; profileSlug?: string }>();
   const slug = urlSlug || 'altfood';
   const [searchQuery, setSearchQuery] = useState('');
   const [substitutionQuery, setSubstitutionQuery] = useState('');
@@ -82,6 +82,22 @@ export default function PatientPage() {
     enabled: !!doctor,
   });
 
+  // Fetch profile-specific hidden foods if profileSlug is present
+  const { data: profileHiddenIds = [] } = useQuery({
+    queryKey: ['profile-hidden-foods', doctor?.id, profileSlug],
+    queryFn: async () => {
+      if (!doctor || !profileSlug) return [];
+      const { data } = await supabase
+        .from('patient_profiles')
+        .select('hidden_food_ids')
+        .eq('doctor_id', doctor.id)
+        .eq('slug_suffix', profileSlug)
+        .single();
+      return (data?.hidden_food_ids as string[]) || [];
+    },
+    enabled: !!doctor && !!profileSlug,
+  });
+
   const { data: doctorSections = [] } = useQuery({
     queryKey: ['doctor-sections', doctor?.id],
     queryFn: async () => {
@@ -92,7 +108,12 @@ export default function PatientPage() {
     enabled: !!doctor,
   });
 
-  const foods = useMemo(() => allFoods.filter(f => !hiddenFoodIds.includes(f.id)), [allFoods, hiddenFoodIds]);
+  const allHiddenIds = useMemo(() => {
+    const set = new Set([...hiddenFoodIds, ...profileHiddenIds]);
+    return Array.from(set);
+  }, [hiddenFoodIds, profileHiddenIds]);
+
+  const foods = useMemo(() => allFoods.filter(f => !allHiddenIds.includes(f.id)), [allFoods, allHiddenIds]);
 
   const toggleLang = () => { const n = lang === 'pt' ? 'en' : 'pt'; setLang(n); saveLang(n); };
 

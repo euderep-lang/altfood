@@ -401,6 +401,44 @@ export type Database = {
           },
         ]
       }
+      patient_profiles: {
+        Row: {
+          created_at: string
+          description: string | null
+          doctor_id: string
+          hidden_food_ids: string[]
+          id: string
+          name: string
+          slug_suffix: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          doctor_id: string
+          hidden_food_ids?: string[]
+          id?: string
+          name: string
+          slug_suffix: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          doctor_id?: string
+          hidden_food_ids?: string[]
+          id?: string
+          name?: string
+          slug_suffix?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_profiles_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
