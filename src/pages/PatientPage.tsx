@@ -23,6 +23,10 @@ type Doctor = Database['public']['Tables']['doctors']['Row'];
 
 const QUICK_WEIGHTS = [50, 100, 150, 200, 250, 300];
 
+// Translation helpers bound to current lang
+const fn = (lang: Lang, name: string) => lang === 'en' ? translateFoodName(name) : name;
+const cn = (lang: Lang, name: string) => lang === 'en' ? translateCategoryName(name) : name;
+const fp = (lang: Lang, prep: string | null) => lang === 'en' ? translatePreparation(prep) : prep;
 export default function PatientPage() {
   const { slug: urlSlug, profileSlug } = useParams<{ slug: string; profileSlug?: string }>();
   const slug = urlSlug || 'altfood';
