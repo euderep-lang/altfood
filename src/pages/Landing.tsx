@@ -191,7 +191,8 @@ export default function Landing() {
           </motion.div>
 
           <motion.p variants={fadeUp} custom={3.5} className="text-xs text-muted-foreground text-center">
-            Sem cadastro. Veja agora como seu paciente vai usar.
+            Sem cadastro. Veja agora como seu paciente vai usar. <br className="sm:hidden" />
+            Ou comece grátis, sem cartão de crédito.
           </motion.p>
 
           <motion.div variants={fadeUp} custom={4} className="flex items-center justify-center gap-6 pt-4 flex-wrap">
