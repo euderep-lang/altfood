@@ -3,9 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowRight, Check, Sparkles, Star, UserPlus, Share2, Search, Crown } from 'lucide-react';
+import { ArrowRight, Check, Sparkles, Star, Crown } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { useState, useEffect, useCallback } from 'react';
+import stepCreatePageImg from '@/assets/step-create-page.png';
+import stepShareLinkImg from '@/assets/step-share-link.png';
+import stepPatientImg from '@/assets/step-patient-autonomous.png';
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -277,15 +280,15 @@ export default function Landing() {
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid md:grid-cols-3 gap-5">
             {[
-              { step: '01', title: 'Crie sua página', desc: 'Cadastre-se em 2 minutos. Personalize com sua marca, logo e cores. Sua página já fica online.', icon: UserPlus },
-              { step: '02', title: 'Compartilhe o link', desc: 'Envie para seus pacientes via WhatsApp, Instagram ou QR Code. "Qualquer dúvida de troca, acessa aqui."', icon: Share2 },
-              { step: '03', title: 'Paciente se vira sozinho 😎', desc: '"Não tem frango?" O paciente abre o link, digita frango e descobre que pode usar patinho, em segundos.', icon: Search },
+              { step: '01', title: 'Crie sua página', desc: 'Cadastre-se em 2 minutos. Personalize com sua marca, logo e cores. Sua página já fica online.', img: stepCreatePageImg },
+              { step: '02', title: 'Compartilhe o link', desc: 'Envie para seus pacientes via WhatsApp, Instagram ou QR Code. "Qualquer dúvida de troca, acessa aqui."', img: stepShareLinkImg },
+              { step: '03', title: 'Paciente se vira sozinho 😎', desc: '"Não tem frango?" O paciente abre o link, digita frango e descobre que pode usar patinho, em segundos.', img: stepPatientImg },
             ].map((s, i) => (
               <motion.div key={i} variants={scaleIn} custom={i}>
                 <Card className="rounded-3xl glass-card hover:glow-shadow transition-all duration-500 group h-full">
                   <CardContent className="p-6 md:p-8 text-center space-y-4">
-                    <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center bg-primary/10 group-hover:bg-primary/15 transition-colors">
-                      <s.icon className="w-7 h-7 text-primary" />
+                    <div className="w-24 h-24 mx-auto">
+                      <img src={s.img} alt={s.title} loading="lazy" width={96} height={96} className="w-full h-full object-contain" />
                     </div>
                     <span className="text-gradient text-xs font-bold tracking-widest uppercase">{s.step}</span>
                     <h3 className="text-lg font-bold text-foreground">{s.title}</h3>
