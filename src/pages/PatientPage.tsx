@@ -27,6 +27,95 @@ const QUICK_WEIGHTS = [50, 100, 150, 200, 250, 300];
 const fn = (lang: Lang, name: string) => lang === 'en' ? translateFoodName(name) : name;
 const cn = (lang: Lang, name: string) => lang === 'en' ? translateCategoryName(name) : name;
 const fp = (lang: Lang, prep: string | null) => lang === 'en' ? translatePreparation(prep) : prep;
+
+function setDoctorMeta(doctor: {
+  name: string;
+  specialty: string;
+  bio: string | null;
+  logo_url: string | null;
+  slug: string;
+  primary_color: string;
+}) {
+  const baseUrl = window.location.origin;
+  const pageUrl = `${baseUrl}/${doctor.slug}`;
+  const title = `${doctor.name} — Substituições Alimentares | Altfood`;
+  const description = doctor.bio
+    ? `${doctor.bio.slice(0, 155)}...`
+    : `${doctor.name} é ${doctor.specialty} e usa o Altfood para oferecer substituições alimentares personalizadas aos seus pacientes. Acesse e descubra alternativas para os alimentos do seu plano.`;
+  const image = doctor.logo_url || `${baseUrl}/icon-512.png`;
+
+  const setMeta = (selector: string, attr: string, value: string) => {
+    let el = document.querySelector(selector) as HTMLMetaElement | null;
+    if (!el) {
+      el = document.createElement('meta');
+      const name = selector.match(/\[([^\]]+)=/)?.[1] || '';
+      const val = selector.match(/="([^"]+)"/)?.[1] || '';
+      if (name && val) el.setAttribute(name, val);
+      document.head.appendChild(el);
+    }
+    el.setAttribute(attr, value);
+  };
+
+  document.title = title;
+
+  setMeta('meta[name="description"]', 'content', description);
+  setMeta('meta[name="theme-color"]', 'content', doctor.primary_color);
+  setMeta('meta[name="robots"]', 'content', 'index, follow');
+
+  let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.rel = 'canonical';
+    document.head.appendChild(canonical);
+  }
+  canonical.href = pageUrl;
+
+  setMeta('meta[property="og:title"]', 'content', title);
+  setMeta('meta[property="og:description"]', 'content', description);
+  setMeta('meta[property="og:url"]', 'content', pageUrl);
+  setMeta('meta[property="og:image"]', 'content', image);
+  setMeta('meta[property="og:type"]', 'content', 'profile');
+  setMeta('meta[property="og:locale"]', 'content', 'pt_BR');
+
+  setMeta('meta[name="twitter:card"]', 'content', 'summary');
+  setMeta('meta[name="twitter:title"]', 'content', title);
+  setMeta('meta[name="twitter:description"]', 'content', description);
+  setMeta('meta[name="twitter:image"]', 'content', image);
+
+  const existingLd = document.getElementById('doctor-jsonld');
+  if (existingLd) existingLd.remove();
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': doctor.specialty.toLowerCase().includes('nutri') ? 'Nutritionist' : 'Physician',
+    name: doctor.name,
+    description,
+    url: pageUrl,
+    image,
+    medicalSpecialty: doctor.specialty,
+    availableService: {
+      '@type': 'MedicalTherapy',
+      name: 'Substituição Alimentar',
+      description: 'Sugestões de substituição de alimentos baseadas na Tabela TACO (NEPA/UNICAMP)',
+    },
+    sameAs: [],
+  };
+
+  const script = document.createElement('script');
+  script.id = 'doctor-jsonld';
+  script.type = 'application/ld+json';
+  script.textContent = JSON.stringify(jsonLd);
+  document.head.appendChild(script);
+}
+
+function resetMeta() {
+  document.title = 'Altfood — Substituição Alimentar para Profissionais de Saúde';
+  const canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  if (canonical) canonical.href = window.location.origin + '/';
+  const jsonLd = document.getElementById('doctor-jsonld');
+  if (jsonLd) jsonLd.remove();
+}
+
 export default function PatientPage() {
   const { slug: urlSlug, profileSlug } = useParams<{ slug: string; profileSlug?: string }>();
   const slug = urlSlug || 'altfood';
@@ -156,9 +245,16 @@ export default function PatientPage() {
 
   useEffect(() => {
     if (doctor) {
-      document.title = `Substituições Alimentares - ${doctor.name} | Altfood`;
+      setDoctorMeta({
+        name: doctor.name,
+        specialty: doctor.specialty,
+        bio: doctor.bio ?? null,
+        logo_url: doctor.logo_url ?? null,
+        slug: doctor.slug,
+        primary_color: doctor.primary_color ?? '#0F766E',
+      });
     }
-    return () => { document.title = 'Altfood'; };
+    return () => { resetMeta(); };
   }, [doctor]);
 
   // Search logic
