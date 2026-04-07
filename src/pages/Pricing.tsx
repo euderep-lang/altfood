@@ -7,9 +7,21 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useDoctor } from '@/hooks/useDoctor';
 import { supabase } from '@/integrations/supabase/client';
-import { Check, Loader2, Crown } from 'lucide-react';
+import { Check, Loader2, Crown, X } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
+
+const FREE_FEATURES = [
+  { text: 'Página pública com marca Altfood', included: true },
+  { text: 'Até 50 buscas de pacientes/mês', included: true },
+  { text: 'Slug personalizado básico', included: true },
+  { text: 'Base TACO completa', included: true },
+  { text: 'Logo e bio personalizados', included: false },
+  { text: 'Cores e identidade visual', included: false },
+  { text: 'Substituições ilimitadas', included: false },
+  { text: 'Analytics em tempo real', included: false },
+  { text: 'Suporte prioritário', included: false },
+];
 
 const PRO_FEATURES = [
   'Substituições ilimitadas',
@@ -38,7 +50,7 @@ export default function Pricing() {
   const savingsPerYear = ((monthlyPrice * 12) - annualTotal).toFixed(0);
 
   const price = annual ? annualPricePerMonth : monthlyPrice;
-  const period = annual ? '/mês' : '/mês';
+  const period = '/mês';
 
   const handleSubscribe = async () => {
     if (!user) {
@@ -86,7 +98,7 @@ export default function Pricing() {
         </div>
       </header>
 
-      <main className="max-w-xl mx-auto px-4 py-12 md:py-20">
+      <main className="max-w-4xl mx-auto px-4 py-12 md:py-20">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground">Pare de responder substituições no WhatsApp</h1>
           <p className="text-muted-foreground mt-3 text-base">Seus pacientes se viram sozinhos. Teste grátis por 14 dias.</p>
@@ -107,45 +119,81 @@ export default function Pricing() {
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <Card className="rounded-2xl shadow-lg border-2 border-primary/30 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
-            <CardContent className="p-6 flex flex-col">
-              <div className="flex items-center gap-2 mb-4">
-                <Badge className="bg-primary text-primary-foreground rounded-lg text-xs">Pro</Badge>
-                <Badge className="bg-primary/10 text-primary border-primary/20 rounded-lg text-[10px]">Tudo incluso</Badge>
-              </div>
-              <div className="mb-6 text-center">
-                <span className="text-4xl font-bold text-foreground">R$ {price.toFixed(2).replace('.', ',')}</span>
-                <span className="text-muted-foreground">{period}</span>
-                {annual && <p className="text-xs text-primary font-medium mt-1">R$ {annualTotal.toFixed(2).replace('.', ',')} cobrados anualmente (12 meses)</p>}
-                {!annual && <p className="text-xs text-muted-foreground mt-1">Cobrado mensalmente. Cancele quando quiser.</p>}
-              </div>
-              <ul className="space-y-3 flex-1">
-                {PRO_FEATURES.map(f => (
-                  <li key={f} className="flex items-start gap-2 text-sm">
-                    <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                    <span className="text-foreground">{f}</span>
-                  </li>
-                ))}
-              </ul>
-              {isPro ? (
-                <Button disabled className="w-full rounded-xl h-12 text-sm font-semibold mt-6 bg-primary/20 text-primary">
-                  <Crown className="w-4 h-4 mr-2" /> Você já é Pro
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleSubscribe}
-                  className="w-full rounded-xl h-12 text-sm font-semibold mt-6 bg-primary hover:bg-primary/90"
-                  disabled={loading}
-                >
-                  {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <Crown className="w-4 h-4 mr-2" />}
-                  {user ? 'Assinar Pro' : 'Testar 14 dias grátis'}
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Free Plan */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card className="rounded-2xl shadow-sm border border-border relative overflow-hidden h-full">
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-center gap-2 mb-4">
+                  <Badge variant="outline" className="rounded-lg text-xs">Gratuito</Badge>
+                </div>
+                <div className="mb-6 text-center">
+                  <span className="text-4xl font-bold text-foreground">R$ 0</span>
+                  <span className="text-muted-foreground">/mês</span>
+                  <p className="text-xs text-muted-foreground mt-1">Para sempre. Sem cartão de crédito.</p>
+                </div>
+                <ul className="space-y-3 flex-1">
+                  {FREE_FEATURES.map(f => (
+                    <li key={f.text} className="flex items-start gap-2 text-sm">
+                      {f.included ? (
+                        <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                      ) : (
+                        <X className="w-4 h-4 text-muted-foreground/40 mt-0.5 shrink-0" />
+                      )}
+                      <span className={f.included ? 'text-foreground' : 'text-muted-foreground/60 line-through'}>{f.text}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/register">
+                  <Button variant="outline" className="w-full rounded-xl h-12 text-sm font-semibold mt-6">
+                    Começar grátis
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Pro Plan */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+            <Card className="rounded-2xl shadow-lg border-2 border-primary/30 relative overflow-hidden h-full">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-center gap-2 mb-4">
+                  <Badge className="bg-primary text-primary-foreground rounded-lg text-xs">Pro</Badge>
+                  <Badge className="bg-primary/10 text-primary border-primary/20 rounded-lg text-[10px]">Mais popular</Badge>
+                </div>
+                <div className="mb-6 text-center">
+                  <span className="text-4xl font-bold text-foreground">R$ {price.toFixed(2).replace('.', ',')}</span>
+                  <span className="text-muted-foreground">{period}</span>
+                  {annual && <p className="text-xs text-primary font-medium mt-1">R$ {annualTotal.toFixed(2).replace('.', ',')} cobrados anualmente (12 meses)</p>}
+                  {!annual && <p className="text-xs text-muted-foreground mt-1">Cobrado mensalmente. Cancele quando quiser.</p>}
+                </div>
+                <ul className="space-y-3 flex-1">
+                  {PRO_FEATURES.map(f => (
+                    <li key={f} className="flex items-start gap-2 text-sm">
+                      <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                      <span className="text-foreground">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                {isPro ? (
+                  <Button disabled className="w-full rounded-xl h-12 text-sm font-semibold mt-6 bg-primary/20 text-primary">
+                    <Crown className="w-4 h-4 mr-2" /> Você já é Pro
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleSubscribe}
+                    className="w-full rounded-xl h-12 text-sm font-semibold mt-6 bg-primary hover:bg-primary/90"
+                    disabled={loading}
+                  >
+                    {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <Crown className="w-4 h-4 mr-2" />}
+                    {user ? 'Assinar Pro' : 'Testar 14 dias grátis'}
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
       </main>
     </div>
   );

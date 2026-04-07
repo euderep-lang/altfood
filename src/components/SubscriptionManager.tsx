@@ -97,10 +97,11 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
   };
 
   const statusConfig = {
-    active: { label: 'Ativo', color: 'bg-emerald-100 text-emerald-700 border-emerald-200', icon: Crown },
+    active: { label: 'Pro', color: 'bg-emerald-100 text-emerald-700 border-emerald-200', icon: Crown },
     trial: { label: 'Teste grátis', color: 'bg-amber-100 text-amber-700 border-amber-200', icon: Calendar },
     cancelled: { label: 'Cancelado', color: 'bg-red-100 text-red-700 border-red-200', icon: X },
-    expired: { label: 'Expirado', color: 'bg-muted text-muted-foreground border-border', icon: AlertTriangle },
+    inactive: { label: 'Gratuito', color: 'bg-muted text-muted-foreground border-border', icon: AlertTriangle },
+    expired: { label: 'Gratuito', color: 'bg-muted text-muted-foreground border-border', icon: AlertTriangle },
   };
 
   const status = isExpired && !isPro ? 'expired' : (doctor.subscription_status as keyof typeof statusConfig);
@@ -127,7 +128,7 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-foreground">
-                  {isPro ? `Plano Pro ${currentPlan}` : isTrial ? 'Período de teste' : isCancelled ? 'Plano Pro (cancelado)' : 'Sem plano ativo'}
+                  {isPro ? `Plano Pro ${currentPlan}` : isTrial ? 'Período de teste' : isCancelled ? 'Plano Pro (cancelado)' : 'Plano Gratuito'}
                 </p>
                 {(isPro || isCancelled) && lastPayment && (
                   <p className="text-xs text-muted-foreground mt-0.5">{currentPrice}</p>

@@ -185,14 +185,14 @@ export default function Dashboard() {
   }).length;
 
   const uniqueVisitors = new Set(pageViews.map(pv => pv.ip_hash).filter(Boolean)).size;
-  const planLabel = isTrial ? 'Trial' : isInactive ? 'Inativo' : 'Ativo';
-  const planColor = isTrial ? 'text-warning' : isInactive ? 'text-destructive' : 'text-primary';
+  const planLabel = isTrial ? 'Trial' : isInactive ? 'Gratuito' : 'Ativo';
+  const planColor = isTrial ? 'text-warning' : isInactive ? 'text-muted-foreground' : 'text-primary';
 
   const stats = [
     { label: 'Visitantes únicos', value: formatNumber(uniqueVisitors), icon: Users, bg: 'bg-primary/10', iconColor: 'text-primary' },
     { label: 'Visualizações este mês', value: formatNumber(thisMonthViews), icon: Eye, bg: 'bg-secondary/10', iconColor: 'text-secondary' },
     { label: 'Alimentos no banco', value: formatNumber(foodCount), icon: Leaf, bg: 'bg-accent', iconColor: 'text-accent-foreground' },
-    { label: 'Plano atual', value: planLabel, icon: Crown, bg: isTrial ? 'bg-warning/10' : isInactive ? 'bg-destructive/10' : 'bg-primary/10', iconColor: planColor, isCta: isTrial || isInactive },
+    { label: 'Plano atual', value: planLabel, icon: Crown, bg: isTrial ? 'bg-warning/10' : isInactive ? 'bg-muted' : 'bg-primary/10', iconColor: planColor, isCta: isTrial || isInactive },
   ];
 
   return (
@@ -444,12 +444,12 @@ export default function Dashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-bold text-foreground">
-                    {isTrial ? `Trial — ${trialDays} dias restantes` : 'Assinatura inativa'}
+                    {isTrial ? `Trial — ${trialDays} dias restantes` : 'Você está no plano Gratuito'}
                   </h3>
                   <p className="text-sm text-muted-foreground mt-0.5">
                     {isTrial
                       ? 'Faça upgrade para o plano Pro e mantenha seus pacientes com acesso ilimitado.'
-                      : 'Reative sua assinatura para seus pacientes continuarem acessando.'}
+                      : 'Faça upgrade para desbloquear substituições ilimitadas, sua marca e analytics.'}
                   </p>
                 </div>
                 <Link to="/planos">
