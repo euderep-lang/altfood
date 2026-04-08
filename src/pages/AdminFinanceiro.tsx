@@ -267,7 +267,7 @@ export default function AdminFinanceiro() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Médico</TableHead>
+                      <TableHead>Profissional</TableHead>
                       <TableHead>Valor</TableHead>
                       <TableHead>Plano</TableHead>
                       <TableHead>Status</TableHead>
@@ -319,7 +319,7 @@ export default function AdminFinanceiro() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Médico</TableHead>
+                  <TableHead>Profissional</TableHead>
                   <TableHead>E-mail</TableHead>
                   <TableHead className="text-right">Valor/mês</TableHead>
                 </TableRow>

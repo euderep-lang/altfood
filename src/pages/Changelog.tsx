@@ -34,7 +34,7 @@ const updates = [
     date: 'Mar 2025',
     emoji: '🚀',
     title: 'Lançamento do Altfood',
-    description: 'Plataforma de substituição alimentar para médicos e nutricionistas. Tabela TACO com 48 alimentos, páginas personalizadas para pacientes e PWA.',
+    description: 'Plataforma de substituição alimentar para profissionais de saúde. Tabela TACO com 48 alimentos, páginas personalizadas para pacientes e PWA.',
   },
 ];
 
