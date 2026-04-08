@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useDoctor } from '@/hooks/useDoctor';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -61,37 +61,38 @@ function ProLockOverlay() {
 
 export default function Stats() {
   const { data: doctor, isLoading: loadingDoctor } = useDoctor();
-  const queryClient = useQueryClient();
   const [todayCount, setTodayCount] = useState(0);
 
   const isPro = doctor?.subscription_status === 'active' || doctor?.subscription_status === 'trial';
 
-  const { data: pageViews = [], isLoading: loadingViews } = useQuery({
+  const { data: pageViews = [], isLoading: loadingViews, error: pageViewsError } = useQuery({
     queryKey: ['stats-pageViews', doctor?.id],
     queryFn: async () => {
       if (!doctor) return [];
       const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('page_views')
         .select('*')
         .eq('doctor_id', doctor.id)
         .gte('viewed_at', sixtyDaysAgo)
         .order('viewed_at', { ascending: true });
+      if (error) throw error;
       return data || [];
     },
     enabled: !!doctor && isPro,
   });
 
-  const { data: topFoods = [] } = useQuery({
+  const { data: topFoods = [], error: topFoodsError } = useQuery({
     queryKey: ['stats-topFoods', doctor?.id],
     queryFn: async () => {
       if (!doctor) return [];
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('substitution_queries')
         .select('food_name')
         .eq('doctor_id', doctor.id)
         .gte('queried_at', thirtyDaysAgo);
+      if (error) throw error;
       if (!data) return [];
       const counts: Record<string, number> = {};
       data.forEach(q => { counts[q.food_name] = (counts[q.food_name] || 0) + 1; });
@@ -186,6 +187,10 @@ export default function Stats() {
     ? Math.round(((thisMonthCount - lastMonthCount) / lastMonthCount) * 100)
     : thisMonthCount > 0 ? 100 : 0;
 
+  const hasAnalyticsError = Boolean(pageViewsError || topFoodsError);
+  const hasNoAnalyticsYet = isPro && !loadingViews && !hasAnalyticsError && pageViews.length === 0 && topFoods.length === 0;
+  const publicPageUrl = doctor ? `${window.location.origin}/${doctor.slug}` : '';
+
   const exportCSV = () => {
     const header = 'Data,Fonte,User Agent\n';
     const rows = pageViews
@@ -240,6 +245,29 @@ export default function Stats() {
             )}
           </div>
         </motion.div>
+
+        {hasAnalyticsError && (
+          <Card className="rounded-2xl border-destructive/20 bg-destructive/5 shadow-sm">
+            <CardContent className="p-4 space-y-2">
+              <p className="text-sm font-semibold text-foreground">Não foi possível carregar as estatísticas.</p>
+              <p className="text-sm text-muted-foreground">Tente novamente em instantes. Se o problema persistir, verifique se sua página pública está abrindo normalmente.</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {hasNoAnalyticsYet && (
+          <Card className="rounded-2xl border-border/50 shadow-sm">
+            <CardContent className="p-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold text-foreground">Ainda não há dados para exibir.</p>
+                <p className="text-sm text-muted-foreground">Abra sua página pública e faça uma busca de teste para começar a alimentar as estatísticas.</p>
+              </div>
+              <a href={publicPageUrl} target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" className="rounded-xl">Abrir minha página</Button>
+              </a>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Summary cards */}
         <motion.div initial="hidden" animate="visible" className="grid grid-cols-2 lg:grid-cols-4 gap-3">
