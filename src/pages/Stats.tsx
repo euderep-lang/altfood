@@ -154,7 +154,7 @@ export default function Stats() {
     thirtyDaysViews.forEach(pv => {
       const d = new Date(pv.viewed_at);
       dayCounts[d.getDay()]++;
-      const src = (pv as any).referrer || 'direct';
+      const src = pv.source || 'direct';
       sourceCounts[src] = (sourceCounts[src] || 0) + 1;
     });
 
