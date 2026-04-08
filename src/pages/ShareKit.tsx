@@ -63,7 +63,7 @@ export default function ShareKit() {
                 <h2 className="text-sm font-bold text-foreground">O que é o Altfood?</h2>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                O Altfood é uma ferramenta online que permite a médicos e nutricionistas criar uma página personalizada 
+                O Altfood é uma ferramenta online que permite a profissionais de saúde criar uma página personalizada 
                 de substituição alimentar para seus pacientes. Baseada na Tabela TACO, ela funciona 100% pelo celular, 
                 sem necessidade de instalar nenhum app.
               </p>
@@ -181,7 +181,7 @@ export default function ShareKit() {
               <h2 className="text-sm font-bold text-foreground">Como funciona o programa</h2>
               <div className="space-y-3">
                 {[
-                  { step: '1', text: 'Compartilhe seu link de indicação com colegas médicos ou nutricionistas.' },
+                  { step: '1', text: 'Compartilhe seu link de indicação com colegas profissionais.' },
                   { step: '2', text: 'Quando eles se cadastrarem pelo seu link, ganham 14 dias de trial gratuito.' },
                   { step: '3', text: 'Quando o indicado comprar um plano Pro, você ganha 1 mês de Pro grátis automaticamente!' },
                 ].map(s => (

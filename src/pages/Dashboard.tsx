@@ -153,7 +153,7 @@ export default function Dashboard() {
 
   const copyReferralLink = async () => {
     await navigator.clipboard.writeText(referralUrl);
-    toast({ title: '✅ Link de indicação copiado!', description: 'Envie para colegas médicos.' });
+    toast({ title: '✅ Link de indicação copiado!', description: 'Envie para colegas profissionais.' });
   };
 
   const shareLink = async () => {

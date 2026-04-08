@@ -71,7 +71,7 @@ export default function NpsSurvey() {
 
   const copyReferral = async () => {
     await navigator.clipboard.writeText(referralUrl);
-    toast({ title: '✅ Link copiado!', description: 'Envie para colegas médicos.' });
+    toast({ title: '✅ Link copiado!', description: 'Envie para colegas profissionais.' });
   };
 
   if (!doctor || existing) return null;

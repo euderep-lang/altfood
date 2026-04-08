@@ -371,7 +371,7 @@ export default function Admin() {
   );
 
   const metrics = [
-    { label: 'Total de médicos', value: formatNumber(totalDoctors), icon: Users, trend: pctChange(newSignupsThisMonth, newSignupsLastMonth) },
+    { label: 'Total de profissionais', value: formatNumber(totalDoctors), icon: Users, trend: pctChange(newSignupsThisMonth, newSignupsLastMonth) },
     { label: 'Ativos este mês', value: formatNumber(activeThisMonth), icon: TrendingUp, trend: pctChange(activeThisMonth, activeLastMonth) },
     { label: 'Assinantes Pro', value: formatNumber(totalPro), icon: Crown },
     { label: 'MRR (R$)', value: `R$ ${mrr.toFixed(2).replace('.', ',')}`, icon: DollarSign, trend: pctChange(mrr, mrrLastMonth) },
