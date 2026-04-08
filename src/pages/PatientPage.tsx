@@ -213,7 +213,9 @@ export default function PatientPage() {
 
   // Track page view
   useEffect(() => {
-    if (doctor) {
+    if (!doctor || doctor.id === '00000000-0000-0000-0000-000000000000') return;
+
+    const trackPageView = async () => {
       const raw = navigator.userAgent + new Date().toDateString();
       const hash = btoa(raw).slice(0, 16);
       const referrer = document.referrer || 'direct';
@@ -234,8 +236,20 @@ export default function PatientPage() {
         ? (['whatsapp', 'instagram', 'facebook', 'google'].includes(utmSource) ? utmSource : 'other')
         : getTrafficSource(referrer);
 
-      supabase.from('page_views').insert({ doctor_id: doctor.id, ip_hash: hash, user_agent: navigator.userAgent, referrer, source } as any);
-    }
+      const { error } = await supabase.from('page_views').insert({
+        doctor_id: doctor.id,
+        ip_hash: hash,
+        user_agent: navigator.userAgent,
+        referrer,
+        source,
+      } as any);
+
+      if (error) {
+        console.error('Erro ao registrar visualização da página:', error);
+      }
+    };
+
+    void trackPageView();
   }, [doctor]);
 
   useEffect(() => {
@@ -293,7 +307,12 @@ export default function PatientPage() {
     // Auto-trigger substitutions immediately
     setComputing(true);
     if (doctor) {
-      supabase.from('substitution_queries').insert({ doctor_id: doctor.id, food_name: food.name_short, weight_grams: 100 });
+      void supabase
+        .from('substitution_queries')
+        .insert({ doctor_id: doctor.id, food_name: food.name_short, weight_grams: 100 })
+        .then(({ error }) => {
+          if (error) console.error('Erro ao registrar busca de substituição:', error);
+        });
     }
     const categoryName = categories.find(c => c.id === food.category_id)?.name || '';
     const subs = calculateSubstitutions(food, 100, foods, categories, categoryName);
@@ -370,7 +389,12 @@ export default function PatientPage() {
     if (!selectedFood) return;
     setComputing(true);
     if (doctor) {
-      supabase.from('substitution_queries').insert({ doctor_id: doctor.id, food_name: selectedFood.name_short, weight_grams: weight });
+      void supabase
+        .from('substitution_queries')
+        .insert({ doctor_id: doctor.id, food_name: selectedFood.name_short, weight_grams: weight })
+        .then(({ error }) => {
+          if (error) console.error('Erro ao registrar busca de substituição:', error);
+        });
     }
     const categoryName = categories.find(c => c.id === selectedFood.category_id)?.name || '';
     const subs = calculateSubstitutions(selectedFood, weight, foods, categories, categoryName);
