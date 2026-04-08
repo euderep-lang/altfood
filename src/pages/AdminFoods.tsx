@@ -44,6 +44,8 @@ export default function AdminFoods() {
   const [deleteFood, setDeleteFood] = useState<Food | null>(null);
   const [saving, setSaving] = useState(false);
   const [featuredFoodId, setFeaturedFoodId] = useState<string | null>(null);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   const { data: foods = [], isLoading } = useQuery({
     queryKey: ['admin-foods'],
@@ -63,7 +65,6 @@ export default function AdminFoods() {
     enabled: isAdmin,
   });
 
-  // Fetch admin doctor for featured food
   useQuery({
     queryKey: ['admin-doctor-featured', user?.id],
     queryFn: async () => {
@@ -79,14 +80,12 @@ export default function AdminFoods() {
     if (!user) return;
     const newId = featuredFoodId === foodId ? null : foodId;
     setFeaturedFoodId(newId);
-    // Update all doctors (admin sets globally)
     const { data: doc } = await supabase.from('doctors').select('id').eq('user_id', user.id).single();
     if (doc) {
       await supabase.from('doctors').update({ featured_food_id: newId }).eq('id', doc.id);
     }
     toast({ title: newId ? '🌟 Destaque do dia definido' : 'Destaque removido' });
   };
-
 
   const filtered = useMemo(() => {
     let list = foods;
@@ -125,7 +124,6 @@ export default function AdminFoods() {
     if (!editFood) return;
     setSaving(true);
     const { _isNew, id, ...data } = editFood;
-    // Clean up numeric fields
     data.calories = Number(data.calories) || 0;
     data.protein = Number(data.protein) || 0;
     data.carbohydrates = Number(data.carbohydrates) || 0;
@@ -167,77 +165,135 @@ export default function AdminFoods() {
     setDeleteFood(null);
   };
 
-  const handleCSVImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleXLSXImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setImporting(true);
 
-    const text = await file.text();
-    const lines = text.split('\n').filter(l => l.trim());
-    if (lines.length < 2) {
-      toast({ title: 'CSV vazio ou inválido', variant: 'destructive' });
-      setImporting(false);
-      return;
-    }
+    try {
+      const XLSX = await import('xlsx');
 
-    const header = lines[0].toLowerCase().split(',').map(h => h.trim().replace(/"/g, ''));
-    const nameIdx = header.indexOf('name');
-    const calIdx = header.indexOf('calories');
-    const protIdx = header.indexOf('protein');
-    const carbIdx = header.indexOf('carbs');
-    const fatIdx = header.indexOf('fat');
-    const fiberIdx = header.indexOf('fiber');
-    const catIdx = header.indexOf('category_name');
+      const arrayBuffer = await file.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
 
-    if (nameIdx === -1) {
-      toast({ title: 'Coluna "name" não encontrada no CSV', variant: 'destructive' });
-      setImporting(false);
-      return;
-    }
+      const SHEET_TO_CATEGORY: Record<string, string> = {
+        '🥩 Proteínas': 'Proteínas Animais',
+        '🍚 Carboidratos': 'Carboidratos',
+        '🍌 Frutas': 'Frutas',
+        '🥑 Gorduras': 'Gorduras e Oleaginosas',
+        '🍫 Doces': 'Doces',
+      };
 
-    const rows: any[] = [];
-    let errors = 0;
+      const SKIP_SHEETS = ['🏠 Início'];
+      let totalImported = 0;
+      let totalErrors = 0;
 
-    for (let i = 1; i < lines.length; i++) {
-      try {
-        const cols = lines[i].split(',').map(c => c.trim().replace(/"/g, ''));
-        const name = cols[nameIdx];
-        if (!name) { errors++; continue; }
+      // Refresh categories for matching
+      const { data: freshCategories } = await supabase.from('food_categories').select('*').order('sort_order');
+      const cats = (freshCategories || []) as FoodCategory[];
 
-        const categoryName = catIdx >= 0 ? cols[catIdx] : '';
-        const category = categories.find(c => c.name.toLowerCase() === categoryName?.toLowerCase());
+      for (const sheetName of workbook.SheetNames) {
+        if (SKIP_SHEETS.includes(sheetName)) continue;
 
-        rows.push({
-          name,
-          name_short: name,
-          calories: Number(cols[calIdx]) || 0,
-          protein: Number(cols[protIdx]) || 0,
-          carbohydrates: Number(cols[carbIdx]) || 0,
-          fat: Number(cols[fatIdx]) || 0,
-          fiber: fiberIdx >= 0 ? Number(cols[fiberIdx]) || 0 : 0,
-          category_id: category?.id || null,
-          source: 'Importação CSV',
-          is_active: true,
+        const categoryName = SHEET_TO_CATEGORY[sheetName] || sheetName.replace(/^[^\w]+/, '').trim();
+
+        let category = cats.find(
+          c => c.name.toLowerCase() === categoryName.toLowerCase()
+        );
+
+        if (!category) {
+          const { data: newCat, error: catErr } = await supabase
+            .from('food_categories')
+            .insert({ name: categoryName, sort_order: 99 })
+            .select()
+            .single();
+          if (catErr || !newCat) {
+            totalErrors++;
+            continue;
+          }
+          category = newCat as FoodCategory;
+          cats.push(category);
+        }
+
+        const ws = workbook.Sheets[sheetName];
+        const rows: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+
+        const dataRows = rows.slice(4);
+
+        const foodRows: any[] = [];
+        for (const row of dataRows) {
+          const name = row[1];
+          if (!name || typeof name !== 'string') continue;
+          const trimmedName = name.trim();
+          if (!trimmedName || trimmedName.startsWith('Total de alimentos') || trimmedName === '#') continue;
+
+          const porcao = row[2] ? String(row[2]).trim() : '';
+          const obs = row[8] ? String(row[8]).trim() : '';
+          const preparation = obs ? (porcao ? `${porcao} · ${obs}` : obs) : porcao;
+
+          foodRows.push({
+            name: trimmedName,
+            name_short: trimmedName,
+            preparation: preparation || null,
+            protein: Number(row[3]) || 0,
+            carbohydrates: Number(row[4]) || 0,
+            fat: Number(row[5]) || 0,
+            fiber: Number(row[6]) || 0,
+            calories: Number(row[7]) || 0,
+            category_id: category.id,
+            source: 'Tabela TACO · Altfood',
+            is_active: true,
+          });
+        }
+
+        if (foodRows.length > 0) {
+          const { error } = await supabase.from('foods').insert(foodRows);
+          if (error) {
+            totalErrors += foodRows.length;
+          } else {
+            totalImported += foodRows.length;
+          }
+        }
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['admin-foods'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
+
+      if (totalImported > 0) {
+        toast({
+          title: `✅ ${totalImported} alimentos importados`,
+          description: totalErrors > 0 ? `${totalErrors} erros encontrados.` : 'Importação concluída com sucesso.',
         });
-      } catch {
-        errors++;
-      }
-    }
-
-    if (rows.length > 0) {
-      const { error } = await supabase.from('foods').insert(rows);
-      if (error) {
-        toast({ title: 'Erro na importação', description: error.message, variant: 'destructive' });
       } else {
-        toast({ title: `✅ ${rows.length} alimentos importados${errors > 0 ? `, ${errors} erros` : ''}` });
-        queryClient.invalidateQueries({ queryKey: ['admin-foods'] });
+        toast({ title: 'Nenhum alimento importado', description: `${totalErrors} erros.`, variant: 'destructive' });
       }
-    } else {
-      toast({ title: `Nenhum alimento válido. ${errors} erros.`, variant: 'destructive' });
+    } catch (err: any) {
+      toast({ title: 'Erro ao processar planilha', description: err?.message || 'Arquivo inválido.', variant: 'destructive' });
     }
 
     setImporting(false);
     if (fileRef.current) fileRef.current.value = '';
+  };
+
+  const handleResetDatabase = async () => {
+    setResetting(true);
+    try {
+      const { error } = await supabase
+        .from('foods')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000');
+
+      if (error) {
+        toast({ title: 'Erro ao zerar banco', description: error.message, variant: 'destructive' });
+      } else {
+        toast({ title: '🗑️ Banco zerado com sucesso', description: 'Todos os alimentos foram removidos.' });
+        queryClient.invalidateQueries({ queryKey: ['admin-foods'] });
+      }
+    } catch (err: any) {
+      toast({ title: 'Erro inesperado', description: err?.message, variant: 'destructive' });
+    }
+    setResetting(false);
+    setResetOpen(false);
   };
 
   const updateField = (key: string, value: any) => {
@@ -246,7 +302,6 @@ export default function AdminFoods() {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      {/* Header */}
       <header className="bg-background border-b border-border sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -264,10 +319,14 @@ export default function AdminFoods() {
             </div>
           </div>
           <div className="flex gap-2">
-            <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleCSVImport} />
+            <input ref={fileRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={handleXLSXImport} />
             <Button variant="outline" size="sm" className="rounded-xl gap-2" onClick={() => fileRef.current?.click()} disabled={importing}>
               {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-              Importar CSV
+              Importar .xlsx
+            </Button>
+            <Button variant="destructive" size="sm" className="rounded-xl gap-2" onClick={() => setResetOpen(true)}>
+              <Trash2 className="w-4 h-4" />
+              Zerar banco
             </Button>
             <Button size="sm" className="rounded-xl gap-2 bg-primary hover:bg-primary/90" onClick={openNew}>
               <Plus className="w-4 h-4" /> Adicionar alimento
@@ -369,7 +428,6 @@ export default function AdminFoods() {
                     </tbody>
                   </table>
                 </div>
-                {/* Pagination */}
                 <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
                   <p className="text-xs text-muted-foreground">Página {page} de {totalPages}</p>
                   <div className="flex gap-1">
@@ -479,6 +537,30 @@ export default function AdminFoods() {
             <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="rounded-xl bg-destructive hover:bg-destructive/90">
               Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Reset database confirmation */}
+      <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
+        <AlertDialogContent className="rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>⚠️ Zerar banco de alimentos?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação irá excluir <strong>TODOS os alimentos</strong> do banco de dados permanentemente.
+              Esta ação não pode ser desfeita. Após zerar, você pode importar uma nova planilha .xlsx.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl" disabled={resetting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleResetDatabase}
+              disabled={resetting}
+              className="rounded-xl bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
+              {resetting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+              Sim, zerar tudo
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
