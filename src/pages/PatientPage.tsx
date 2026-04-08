@@ -897,6 +897,7 @@ export default function PatientPage() {
         onClose={() => setDetailFood(null)}
         categoryIcon={detailFood ? categories.find(c => c.id === detailFood.category_id)?.icon : undefined}
         categoryColor={detailFood ? categories.find(c => c.id === detailFood.category_id)?.color : undefined}
+        categoryName={detailFood ? categories.find(c => c.id === detailFood.category_id)?.name : undefined}
         doctorName={doctor.name}
       />
 
