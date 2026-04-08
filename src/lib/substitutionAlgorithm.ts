@@ -40,6 +40,135 @@ function getMacroValue(food: Food, nutrient: 'protein' | 'carbohydrates' | 'fat'
   }
 }
 
+/**
+ * Returns a priority score (lower = shown first) for a food item
+ * based on how typical/common it is in the Brazilian diet,
+ * grouped by protein source, carb type, fruit type, etc.
+ */
+function getFoodSubgroupPriority(food: Food, selectedFood: Food, selectedCategoryName: string): number {
+  const norm = (s: string) =>
+    s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  const name = norm(food.name);
+  const selectedName = norm(selectedFood.name);
+
+  if (selectedCategoryName === 'Proteínas Animais' || selectedCategoryName === 'Laticínios e Derivados') {
+    const isSelectedPoultry  = /frango|galinha|peru|pato|codorna|moela|coracao de galinha|figado de galinha/.test(selectedName);
+    const isSelectedBeef     = /alcatra|patinho|musculo|boi|carne mo|figado de boi|coracao de boi|contrafile|picanha|maminha/.test(selectedName);
+    const isSelectedPork     = /lombo|pernil|suino|porco|bacon|linguica/.test(selectedName);
+    const isSelectedFish     = /tilapia|atum|salmao|sardinha|merluza|pescada|bacalhau|camarao|peixe/.test(selectedName);
+    const isSelectedEgg      = /ovo|clara/.test(selectedName);
+    const isSelectedDairy    = /queijo|iogurte|leite|ricota|cottage|requeijao/.test(selectedName);
+
+    const groups = [
+      { match: /frango|galinha|peru|pato|codorna|moela|coracao de galinha|figado de galinha/, isSelected: isSelectedPoultry },
+      { match: /alcatra|patinho|musculo|boi|carne mo|figado de boi|contrafile|picanha|maminha/, isSelected: isSelectedBeef },
+      { match: /lombo|pernil|suino|porco|bacon/, isSelected: isSelectedPork },
+      { match: /tilapia|atum|salmao|sardinha|merluza|pescada|camarao|peixe/, isSelected: isSelectedFish },
+      { match: /ovo|clara/, isSelected: isSelectedEgg },
+      { match: /queijo|iogurte|leite|ricota|cottage|requeijao/, isSelected: isSelectedDairy },
+    ];
+
+    for (let i = 0; i < groups.length; i++) {
+      if (groups[i].match.test(name)) {
+        if (groups[i].isSelected) return 0;
+        const selectedIdx = groups.findIndex(g => g.isSelected);
+        return Math.abs(selectedIdx - i) + 1;
+      }
+    }
+    return 7;
+  }
+
+  if (selectedCategoryName === 'Carboidratos') {
+    const isSelectedRice   = /arroz/.test(selectedName);
+    const isSelectedPotato = /batata/.test(selectedName);
+    const isSelectedManioc = /mandioca|macaxeira|aipim/.test(selectedName);
+    const isSelectedPasta  = /macarrao|massa/.test(selectedName);
+    const isSelectedBread  = /pao|tapioca|cuscuz/.test(selectedName);
+    const isSelectedOat    = /aveia|granola/.test(selectedName);
+    const isSelectedBean   = /feijao|lentilha|grao|ervilha/.test(selectedName);
+
+    const groups = [
+      { match: /arroz/, isSelected: isSelectedRice },
+      { match: /batata/, isSelected: isSelectedPotato },
+      { match: /mandioca|macaxeira|aipim/, isSelected: isSelectedManioc },
+      { match: /macarrao|massa/, isSelected: isSelectedPasta },
+      { match: /pao|tapioca|cuscuz/, isSelected: isSelectedBread },
+      { match: /aveia|granola/, isSelected: isSelectedOat },
+      { match: /feijao|lentilha|grao|ervilha/, isSelected: isSelectedBean },
+    ];
+
+    for (let i = 0; i < groups.length; i++) {
+      if (groups[i].match.test(name)) {
+        if (groups[i].isSelected) return 0;
+        const selectedIdx = groups.findIndex(g => g.isSelected);
+        return Math.abs(selectedIdx - i) + 1;
+      }
+    }
+    return 8;
+  }
+
+  if (selectedCategoryName === 'Frutas') {
+    const FRUIT_RANK: [RegExp, number][] = [
+      [/banana/, 1],
+      [/maca/, 2],
+      [/laranja/, 3],
+      [/mamao|papaia/, 4],
+      [/manga/, 5],
+      [/uva/, 6],
+      [/morango/, 7],
+      [/melancia/, 8],
+      [/abacaxi|ananas/, 9],
+      [/pera/, 10],
+      [/goiaba/, 11],
+      [/mexerica|tangerina/, 12],
+    ];
+
+    const selectedRank = FRUIT_RANK.find(([r]) => r.test(selectedName))?.[1] ?? 99;
+    const candidateRank = FRUIT_RANK.find(([r]) => r.test(name))?.[1] ?? 99;
+    return Math.abs(selectedRank - candidateRank);
+  }
+
+  if (selectedCategoryName === 'Gorduras e Oleaginosas') {
+    const groups = [
+      { match: /azeite|oliva/, isSelected: /azeite|oliva/.test(selectedName) },
+      { match: /oleo/, isSelected: /oleo/.test(selectedName) },
+      { match: /abacate/, isSelected: /abacate/.test(selectedName) },
+      { match: /castanha|amendoa|nozes|pistache|macadamia|amendoim/, isSelected: /castanha|amendoa|nozes|pistache|macadamia|amendoim/.test(selectedName) },
+      { match: /manteiga|ghee/, isSelected: /manteiga|ghee/.test(selectedName) },
+    ];
+    for (let i = 0; i < groups.length; i++) {
+      if (groups[i].match.test(name)) {
+        if (groups[i].isSelected) return 0;
+        const selectedIdx = groups.findIndex(g => g.isSelected);
+        return Math.abs(selectedIdx - i) + 1;
+      }
+    }
+    return 6;
+  }
+
+  if (selectedCategoryName === 'Proteínas Vegetais') {
+    const groups = [
+      { match: /feijao/, isSelected: /feijao/.test(selectedName) },
+      { match: /lentilha/, isSelected: /lentilha/.test(selectedName) },
+      { match: /grao de bico/, isSelected: /grao de bico/.test(selectedName) },
+      { match: /soja|tofu|tempeh|edamame/, isSelected: /soja|tofu|tempeh|edamame/.test(selectedName) },
+      { match: /amendoim|pasta de amendoim/, isSelected: /amendoim/.test(selectedName) },
+      { match: /quinoa/, isSelected: /quinoa/.test(selectedName) },
+    ];
+    for (let i = 0; i < groups.length; i++) {
+      if (groups[i].match.test(name)) {
+        if (groups[i].isSelected) return 0;
+        const selectedIdx = groups.findIndex(g => g.isSelected);
+        return Math.abs(selectedIdx - i) + 1;
+      }
+    }
+    return 7;
+  }
+
+  return 0;
+}
+
 export function calculateSubstitutions(
   selectedFood: Food,
   weightGrams: number,
@@ -113,9 +242,17 @@ export function calculateSubstitutions(
 
   // Sort: same category first, then by similarity
   results.sort((a, b) => {
-    const aCategory = a.food.category_id === selectedFood.category_id ? 0 : 1;
-    const bCategory = b.food.category_id === selectedFood.category_id ? 0 : 1;
-    if (aCategory !== bCategory) return aCategory - bCategory;
+    // 1. Same category always comes first
+    const aCat = a.food.category_id === selectedFood.category_id ? 0 : 1;
+    const bCat = b.food.category_id === selectedFood.category_id ? 0 : 1;
+    if (aCat !== bCat) return aCat - bCat;
+
+    // 2. Within same category: sort by subgroup proximity
+    const aSubgroup = getFoodSubgroupPriority(a.food, selectedFood, selectedCategoryName);
+    const bSubgroup = getFoodSubgroupPriority(b.food, selectedFood, selectedCategoryName);
+    if (aSubgroup !== bSubgroup) return aSubgroup - bSubgroup;
+
+    // 3. Within same subgroup: sort by similarity score
     return b.similarityScore - a.similarityScore;
   });
 
