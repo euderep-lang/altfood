@@ -18,7 +18,7 @@ const AltfoodIcon = forwardRef<HTMLImageElement, AltfoodIconProps>(
     return (
       <img
         ref={ref}
-        src="/altfood-icon.png"
+        src="/altfood-icon.webp"
         alt="Altfood"
         className={cn(sizeMap[size], 'rounded-xl object-cover', className)}
         {...props}
