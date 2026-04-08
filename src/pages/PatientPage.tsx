@@ -21,7 +21,7 @@ type Food = Database['public']['Tables']['foods']['Row'];
 type FoodCategory = Database['public']['Tables']['food_categories']['Row'];
 type Doctor = Database['public']['Tables']['doctors']['Row'];
 
-const QUICK_WEIGHTS = [50, 100, 150, 200, 250, 300];
+const QUICK_WEIGHTS = [100, 150, 200, 250];
 
 // Translation helpers bound to current lang
 const fn = (lang: Lang, name: string) => lang === 'en' ? translateFoodName(name) : name;
