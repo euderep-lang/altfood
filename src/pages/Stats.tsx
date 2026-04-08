@@ -195,7 +195,7 @@ export default function Stats() {
     const header = 'Data,Fonte,User Agent\n';
     const rows = pageViews
       .filter(pv => new Date(pv.viewed_at) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
-      .map(pv => `${new Date(pv.viewed_at).toLocaleString('pt-BR')},"${(pv as any).referrer || 'direct'}","${(pv as any).user_agent || ''}"`)
+      .map(pv => `${new Date(pv.viewed_at).toLocaleString('pt-BR')},"${pv.source || 'direct'}","${pv.user_agent || ''}"`)
       .join('\n');
     const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
