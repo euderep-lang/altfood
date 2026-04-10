@@ -1,20 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { initMercadoPago, Payment } from '@mercadopago/sdk-react';
 import { Loader2, ShieldCheck, ArrowLeft } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { setPendingCheckoutPlan } from '@/lib/checkoutIntent';
 
 initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, { locale: 'pt-BR' });
 
 export default function Checkout() {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const { user } = useAuth();
 
-  const plan = searchParams.get('plan') || 'monthly';
+  const plan = searchParams.get('plan') === 'annual' ? 'annual' : 'monthly';
   const isAnnual = plan === 'annual';
+  const checkoutReturnPath = `/checkout?plan=${plan}`;
 
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,7 +27,10 @@ export default function Checkout() {
 
   useEffect(() => {
     if (!user) {
-      navigate('/register');
+      setPendingCheckoutPlan(plan);
+      setPreferenceId(null);
+      setError(null);
+      setLoading(false);
       return;
     }
 
@@ -50,7 +55,7 @@ export default function Checkout() {
     };
 
     fetchPreference();
-  }, [user, plan, navigate]);
+  }, [user, plan]);
 
   const initialization = useMemo(() => {
     return {
@@ -124,14 +129,31 @@ export default function Checkout() {
         </div>
 
         <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-          {loading && (
+          {!user && (
+            <div className="text-center py-8 space-y-4">
+              <p className="text-sm text-foreground font-medium">Entre ou crie uma conta para concluir o pagamento</p>
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                O checkout usa seus dados de profissional cadastrado. Depois de entrar, você volta aqui para pagar com cartão, Pix ou boleto.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                <Button asChild className="rounded-xl">
+                  <Link to={`/login?next=${encodeURIComponent(checkoutReturnPath)}`}>Já tenho conta</Link>
+                </Button>
+                <Button asChild variant="outline" className="rounded-xl">
+                  <Link to="/register">Criar conta</Link>
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {user && loading && (
             <div className="flex flex-col items-center justify-center py-16 gap-3">
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
               <p className="text-sm text-muted-foreground">Carregando formas de pagamento...</p>
             </div>
           )}
 
-          {error && (
+          {user && error && (
             <div className="text-center py-10">
               <p className="text-sm text-destructive">{error}</p>
               <button onClick={() => window.location.reload()} className="mt-4 text-sm text-primary underline">
@@ -140,7 +162,7 @@ export default function Checkout() {
             </div>
           )}
 
-          {!error && preferenceId && (
+          {user && !error && preferenceId && (
             <Payment
               initialization={initialization as any}
               customization={customization as any}

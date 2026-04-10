@@ -49,10 +49,6 @@ export default function Pricing() {
   const period = '/mês';
 
   const handleSubscribe = () => {
-    if (!user) {
-      navigate('/register');
-      return;
-    }
     navigate(`/checkout?plan=${annual ? 'annual' : 'monthly'}`);
   };
 

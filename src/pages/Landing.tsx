@@ -5,8 +5,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ArrowRight, Check, Sparkles, Star, Crown } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
-import { useAuth } from '@/hooks/useAuth';
-import { setPendingCheckoutPlan } from '@/lib/checkoutIntent';
 import { useState, useEffect, useCallback } from 'react';
 import stepCreatePageImg from '@/assets/step-create-page.png';
 import stepShareLinkImg from '@/assets/step-share-link.png';
@@ -115,16 +113,10 @@ function useRotatingTestimonials(count: number, intervalMs: number) {
 
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
-  const { user } = useAuth();
   const navigate = useNavigate();
   const testimonials = useRotatingTestimonials(3, 6000);
 
   const goToCheckout = (plan: 'monthly' | 'annual') => {
-    if (!user) {
-      setPendingCheckoutPlan(plan);
-      navigate('/register');
-      return;
-    }
     navigate(`/checkout?plan=${plan}`);
   };
 

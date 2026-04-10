@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
+import { getSafeInternalPath } from '@/lib/safeRedirect';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -16,6 +17,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const nextPath = getSafeInternalPath(searchParams.get('next'));
   const { toast } = useToast();
 
   const validate = () => {
@@ -73,7 +76,11 @@ export default function Login() {
       navigate('/planos');
     } else {
       toast({ title: '✅ Login realizado!' });
-      navigate('/dashboard');
+      if (nextPath) {
+        navigate(nextPath, { replace: true });
+      } else {
+        navigate('/dashboard');
+      }
     }
   };
 
@@ -126,7 +133,10 @@ export default function Login() {
                 <Link to="/forgot-password" className="text-muted-foreground hover:text-primary transition-colors">
                   Esqueci minha senha
                 </Link>
-                <Link to="/register" className="text-primary hover:underline font-medium">
+                <Link
+                  to={nextPath ? `/register?next=${encodeURIComponent(nextPath)}` : '/register'}
+                  className="text-primary hover:underline font-medium"
+                >
                   Criar conta
                 </Link>
               </div>
