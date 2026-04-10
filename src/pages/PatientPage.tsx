@@ -141,9 +141,16 @@ export default function PatientPage() {
       if (error && slug === 'altfood') {
         return {
           id: '00000000-0000-0000-0000-000000000000', name: 'Altfood', slug: 'altfood',
-          primary_color: '#0EA5E9', bio: 'Encontre substituições alimentares seguras.',
-          onboarding_completed: true, theme_layout: 'minimal',
-        } as unknown as Doctor;
+          primary_color: '#0EA5E9', secondary_color: '#38BDF8', bio: 'Encontre substituições alimentares seguras.',
+          onboarding_completed: true, theme_layout: 'minimal', specialty: 'Nutrição',
+          logo_url: null, welcome_message: null, whatsapp_link: null, instagram_link: null,
+          email: '', phone: null, document_number: null, document_type: 'CRN',
+          subscription_status: 'active', user_id: '', referral_code: null, referred_by: null,
+          email_weekly_summary: false, email_tips: false, featured_food_id: null,
+          subscription_end_date: null, mp_subscription_id: null, mp_payer_email: null,
+          trial_ends_at: new Date().toISOString(), created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        } as Doctor;
       }
       if (error) throw error;
       return data as Doctor;
