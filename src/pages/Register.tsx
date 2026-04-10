@@ -11,6 +11,7 @@ import { Loader2, Mail } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 
 import { motion } from 'framer-motion';
+import { getSiteOriginForAuth } from '@/lib/siteUrl';
 
 const specialties = ['Nutricionista', 'Endocrinologista', 'Clínico Geral', 'Nutrólogo', 'Outro'];
 
@@ -79,7 +80,7 @@ export default function Register() {
         email: cleanEmail,
         password: form.password,
         options: {
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: getSiteOriginForAuth(),
           data: {
             name: cleanName,
             specialty: form.specialty,
@@ -98,7 +99,7 @@ export default function Register() {
         const { error: resendError } = await supabase.auth.resend({
           type: 'signup',
           email: cleanEmail,
-          options: { emailRedirectTo: window.location.origin },
+          options: { emailRedirectTo: getSiteOriginForAuth() },
         });
 
         if (resendError) {

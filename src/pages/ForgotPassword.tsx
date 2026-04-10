@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { getSiteOriginForAuth } from '@/lib/siteUrl';
 import { Loader2, MailCheck } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,7 +25,7 @@ export default function ForgotPassword() {
     setError('');
     setLoading(true);
     const { error: apiErr } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${getSiteOriginForAuth()}/reset-password`,
     });
     setLoading(false);
     if (apiErr) {
