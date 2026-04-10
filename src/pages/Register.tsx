@@ -7,11 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 
 import { motion } from 'framer-motion';
-import { getSiteOriginForAuth } from '@/lib/siteUrl';
 
 const specialties = ['Nutricionista', 'Endocrinologista', 'Clínico Geral', 'Nutrólogo', 'Outro'];
 
@@ -29,7 +28,6 @@ export default function Register() {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [showEmailSent, setShowEmailSent] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -80,7 +78,6 @@ export default function Register() {
         email: cleanEmail,
         password: form.password,
         options: {
-          emailRedirectTo: getSiteOriginForAuth(),
           data: {
             name: cleanName,
             specialty: form.specialty,
@@ -96,38 +93,27 @@ export default function Register() {
       }
 
       if (isExistingAuthUser(authData.user)) {
-        const { error: resendError } = await supabase.auth.resend({
-          type: 'signup',
-          email: cleanEmail,
-          options: { emailRedirectTo: getSiteOriginForAuth() },
-        });
-
-        if (resendError) {
-          toast({
-            title: 'Conta já existente',
-            description: 'Este e-mail já está cadastrado. Tente entrar ou recuperar sua senha.',
-            variant: 'destructive',
-          });
-          return;
-        }
-
         toast({
-          title: 'E-mail reenviado',
-          description: 'Já existe uma conta para este e-mail. Enviamos um novo link de confirmação.',
+          title: 'Conta já existente',
+          description: 'Este e-mail já está cadastrado. Entre com sua senha ou use recuperar senha.',
+          variant: 'destructive',
         });
-        setShowEmailSent(true);
+        navigate('/login');
         return;
       }
 
-      // Quando auto-confirm está ativo, a sessão vem no signUp e seguimos direto
       if (authData.session) {
         toast({ title: 'Conta criada com sucesso', description: 'Vamos finalizar seu perfil.' });
         navigate('/onboarding', { replace: true });
         return;
       }
 
-      // Fallback para ambientes com confirmação por e-mail
-      setShowEmailSent(true);
+      toast({
+        title: 'Não foi possível entrar automaticamente',
+        description: 'Tente fazer login. Se o projeto ainda exigir confirmação por e-mail, desative em Authentication → Providers → Email no Supabase.',
+        variant: 'destructive',
+      });
+      navigate('/login');
     } catch (err) {
       console.error('[Register] Unexpected error:', err);
       toast({ title: 'Erro inesperado', description: 'Tente novamente.', variant: 'destructive' });
@@ -135,37 +121,6 @@ export default function Register() {
       setLoading(false);
     }
   };
-
-  if (showEmailSent) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-[400px]"
-        >
-          <Card className="rounded-2xl shadow-lg border-border/50">
-            <CardContent className="p-8 text-center space-y-5">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
-                <Mail className="w-8 h-8 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-foreground">Verifique seu e-mail 📩</h1>
-                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                  Enviamos um link de confirmação para <strong className="text-foreground">{form.email}</strong>. 
-                  Clique no link do e-mail para ativar sua conta e acessar o painel automaticamente.
-                </p>
-              </div>
-              <div className="bg-muted/50 rounded-xl p-3 text-xs text-muted-foreground">
-                Não encontrou? Verifique a pasta de spam ou lixo eletrônico.
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">

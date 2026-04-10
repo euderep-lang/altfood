@@ -1,5 +1,10 @@
 project_id = "yjdwdovvisymgfduzyao"
 
+# Confirmação por e-mail desligada por enquanto (cadastro entra direto com sessão).
+# Projeto hospedado: Authentication → Providers → Email → desligar "Confirm email".
+[auth.email]
+enable_confirmations = false
+
 [functions.mp-webhook]
 verify_jwt = false
 
