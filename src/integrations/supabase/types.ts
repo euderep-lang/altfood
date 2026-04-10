@@ -64,6 +64,8 @@ export type Database = {
           logo_url: string | null
           mp_payer_email: string | null
           mp_subscription_id: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
           name: string
           onboarding_completed: boolean
           phone: string | null
@@ -96,6 +98,8 @@ export type Database = {
           logo_url?: string | null
           mp_payer_email?: string | null
           mp_subscription_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           name: string
           onboarding_completed?: boolean
           phone?: string | null
@@ -128,6 +132,8 @@ export type Database = {
           logo_url?: string | null
           mp_payer_email?: string | null
           mp_subscription_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           name?: string
           onboarding_completed?: boolean
           phone?: string | null

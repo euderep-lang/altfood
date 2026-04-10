@@ -63,7 +63,12 @@ export default function Stats() {
   const { data: doctor, isLoading: loadingDoctor } = useDoctor();
   const [todayCount, setTodayCount] = useState(0);
 
-  const isPro = doctor?.subscription_status === 'active' || doctor?.subscription_status === 'trial';
+  const isPro =
+    doctor?.subscription_status === 'active' ||
+    doctor?.subscription_status === 'trial' ||
+    (doctor?.subscription_status === 'cancelled' &&
+      doctor?.subscription_end_date &&
+      new Date(doctor.subscription_end_date) > new Date());
 
   const { data: pageViews = [], isLoading: loadingViews, error: pageViewsError } = useQuery({
     queryKey: ['stats-pageViews', doctor?.id],

@@ -42,7 +42,14 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
   const [cancelStep, setCancelStep] = useState<'persuade' | 'confirm'>('persuade');
   const [cancelling, setCancelling] = useState(false);
 
-  const isPro = doctor.subscription_status === 'active';
+  const periodStillValid =
+    doctor.subscription_end_date &&
+    new Date(doctor.subscription_end_date) > new Date();
+  const isActiveSubscription = doctor.subscription_status === 'active';
+  const hasProAccess =
+    isActiveSubscription ||
+    (doctor.subscription_status === 'cancelled' && periodStillValid);
+  const isPro = hasProAccess;
   const isTrial = doctor.subscription_status === 'trial';
   const isCancelled = doctor.subscription_status === 'cancelled';
 
@@ -134,9 +141,11 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
                   <p className="text-xs text-muted-foreground mt-0.5">{currentPrice}</p>
                 )}
               </div>
-              {isPro && (
+              {hasProAccess && (
                 <div className="text-right">
-                  <p className="text-xs text-muted-foreground">Próxima renovação</p>
+                  <p className="text-xs text-muted-foreground">
+                    {isCancelled ? 'Acesso até' : 'Próxima renovação'}
+                  </p>
                   <p className="text-sm font-medium text-foreground">
                     {endDate ? new Date(endDate).toLocaleDateString('pt-BR') : '—'}
                   </p>
@@ -162,7 +171,7 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
               </div>
             )}
 
-            {isPro && (
+            {isActiveSubscription && (
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Shield className="w-3.5 h-3.5" />
                 <span>Renovação automática • Cancele quando quiser</span>
@@ -172,16 +181,16 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
 
           {/* Action buttons */}
           <div className="flex flex-wrap gap-2">
-            {(isTrial || isCancelled || (!isPro && isExpired)) && (
+            {(isTrial || (!hasProAccess && isExpired)) && (
               <Link to="/planos" className="flex-1">
                 <Button className="w-full rounded-xl h-10 text-sm bg-primary hover:bg-primary/90 gap-1.5">
                   <Crown className="w-4 h-4" />
-                  {isCancelled ? 'Reativar Pro' : 'Fazer upgrade para Pro'}
+                  Fazer upgrade para Pro
                 </Button>
               </Link>
             )}
 
-            {isPro && lastPayment?.plan === 'monthly' && (
+            {isActiveSubscription && lastPayment?.plan === 'monthly' && (
               <Link to="/planos" className="flex-1">
                 <Button variant="outline" className="w-full rounded-xl h-10 text-sm gap-1.5">
                   <ArrowUpRight className="w-4 h-4" />
@@ -190,7 +199,7 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
               </Link>
             )}
 
-            {isPro && (
+            {isActiveSubscription && (
               <Button
                 variant="ghost"
                 className="rounded-xl h-10 text-sm text-muted-foreground hover:text-destructive"

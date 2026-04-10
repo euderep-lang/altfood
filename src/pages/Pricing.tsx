@@ -3,11 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useDoctor } from '@/hooks/useDoctor';
-import { supabase } from '@/integrations/supabase/client';
-import { Check, Loader2, Crown, X } from 'lucide-react';
+import { Check, Crown, X } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
 
@@ -38,10 +36,8 @@ const PRO_FEATURES = [
 
 export default function Pricing() {
   const [annual, setAnnual] = useState(true);
-  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { data: doctor } = useDoctor();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const monthlyPrice = 47.90;
@@ -52,30 +48,19 @@ export default function Pricing() {
   const price = annual ? annualPricePerMonth : monthlyPrice;
   const period = '/mês';
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = () => {
     if (!user) {
       navigate('/register');
       return;
     }
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { plan: annual ? 'annual' : 'monthly' },
-      });
-      if (error) throw error;
-      if (data?.checkout_url) {
-        window.location.href = data.checkout_url;
-      } else {
-        throw new Error('No checkout URL returned');
-      }
-    } catch (err: any) {
-      toast({ title: 'Erro ao iniciar pagamento', description: err.message, variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
+    navigate(`/checkout?plan=${annual ? 'annual' : 'monthly'}`);
   };
 
-  const isPro = doctor?.subscription_status === 'active';
+  const hasProAccess =
+    doctor?.subscription_status === 'active' ||
+    (doctor?.subscription_status === 'cancelled' &&
+      doctor?.subscription_end_date &&
+      new Date(doctor.subscription_end_date) > new Date());
 
   return (
     <div className="min-h-screen bg-background">
@@ -176,17 +161,19 @@ export default function Pricing() {
                     </li>
                   ))}
                 </ul>
-                {isPro ? (
+                {hasProAccess ? (
                   <Button disabled className="w-full rounded-xl h-12 text-sm font-semibold mt-6 bg-primary/20 text-primary">
-                    <Crown className="w-4 h-4 mr-2" /> Você já é Pro
+                    <Crown className="w-4 h-4 mr-2" />{' '}
+                    {doctor?.subscription_status === 'cancelled'
+                      ? 'Pro ativo até o fim do período'
+                      : 'Você já é Pro'}
                   </Button>
                 ) : (
                   <Button
                     onClick={handleSubscribe}
                     className="w-full rounded-xl h-12 text-sm font-semibold mt-6 bg-primary hover:bg-primary/90"
-                    disabled={loading}
                   >
-                    {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <Crown className="w-4 h-4 mr-2" />}
+                    <Crown className="w-4 h-4 mr-2" />
                     {user ? 'Assinar Pro' : 'Testar 14 dias grátis'}
                   </Button>
                 )}

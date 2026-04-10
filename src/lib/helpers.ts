@@ -42,7 +42,7 @@ export function formatPhone(phone: string): string {
 
 export function getShareableUrl(slug: string): string {
   const base = window.location.origin;
-  const projectId = 'pbmgjgjvwcisvsembqon';
+  const projectId = 'yjdwdovvisymgfduzyao';
   return `https://${projectId}.supabase.co/functions/v1/meta-preview?slug=${slug}&base=${encodeURIComponent(base)}`;
 }
 

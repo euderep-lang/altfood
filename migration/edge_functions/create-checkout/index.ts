@@ -103,7 +103,7 @@ Deno.serve(async (req) => {
     const mpData = await mpRes.json();
 
     return new Response(
-      JSON.stringify({ preference_id: mpData.id }),
+      JSON.stringify({ checkout_url: mpData.init_point }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (err) {

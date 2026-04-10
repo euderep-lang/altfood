@@ -15,6 +15,9 @@ function isSubscriptionValid(doctor: any): boolean {
   if (doctor.subscription_status === 'trial') {
     return new Date(doctor.trial_ends_at) > new Date();
   }
+  if (doctor.subscription_status === 'cancelled' && doctor.subscription_end_date) {
+    return new Date(doctor.subscription_end_date) > new Date();
+  }
   return false;
 }
 

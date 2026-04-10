@@ -1,6 +1,9 @@
-project_id = "pbmgjgjvwcisvsembqon"
+project_id = "yjdwdovvisymgfduzyao"
 
 [functions.mp-webhook]
+verify_jwt = false
+
+[functions.stripe-webhook]
 verify_jwt = false
 
 [functions.send-email]

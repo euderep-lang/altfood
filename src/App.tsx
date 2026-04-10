@@ -25,6 +25,7 @@ const PatientPage = lazy(() => import("./pages/PatientPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Stats = lazy(() => import("./pages/Stats"));
 const Pricing = lazy(() => import("./pages/Pricing"));
+const Checkout = lazy(() => import("./pages/Checkout"));
 const SubscriptionSuccess = lazy(() => import("./pages/SubscriptionSuccess"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Admin = lazy(() => import("./pages/Admin"));
@@ -75,6 +76,7 @@ const App = () => (
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/planos" element={<Pricing />} />
+                <Route path="/checkout" element={<Checkout />} />
                 <Route path="/assinatura/sucesso" element={<SubscriptionSuccess />} />
                 <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                 <Route path="/ref/:code" element={<ReferralRedirect />} />
