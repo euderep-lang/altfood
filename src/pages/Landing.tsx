@@ -1,10 +1,12 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ArrowRight, Check, Sparkles, Star, Crown } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
+import { useAuth } from '@/hooks/useAuth';
+import { setPendingCheckoutPlan } from '@/lib/checkoutIntent';
 import { useState, useEffect, useCallback } from 'react';
 import stepCreatePageImg from '@/assets/step-create-page.png';
 import stepShareLinkImg from '@/assets/step-share-link.png';
@@ -113,8 +115,18 @@ function useRotatingTestimonials(count: number, intervalMs: number) {
 
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
-  const [billingAnnual] = useState(true);
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const testimonials = useRotatingTestimonials(3, 6000);
+
+  const goToCheckout = (plan: 'monthly' | 'annual') => {
+    if (!user) {
+      setPendingCheckoutPlan(plan);
+      navigate('/register');
+      return;
+    }
+    navigate(`/checkout?plan=${plan}`);
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -451,11 +463,14 @@ export default function Landing() {
                     ))}
                   </div>
 
-                  <Link to="/register" className="block mt-6">
-                    <Button size="xl" className="w-full bg-primary-foreground/10 text-primary-foreground border border-primary-foreground/20 hover:bg-primary-foreground/15 rounded-xl">
-                      Começar teste grátis
-                    </Button>
-                  </Link>
+                  <Button
+                    type="button"
+                    size="xl"
+                    className="w-full mt-6 bg-primary-foreground/10 text-primary-foreground border border-primary-foreground/20 hover:bg-primary-foreground/15 rounded-xl"
+                    onClick={() => goToCheckout('monthly')}
+                  >
+                    Assinar Pro — mensal
+                  </Button>
                 </div>
               </div>
             </motion.div>
@@ -502,13 +517,17 @@ export default function Landing() {
                     ))}
                   </div>
 
-                  <Link to="/register" className="block mt-6">
-                    <Button variant="premium" size="xl" className="w-full group">
-                      Começar teste grátis
-                      <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </Link>
-                  <p className="text-[10px] text-primary-foreground/25 text-center mt-3">14 dias grátis • Cancele a qualquer momento</p>
+                  <Button
+                    type="button"
+                    variant="premium"
+                    size="xl"
+                    className="w-full mt-6 group"
+                    onClick={() => goToCheckout('annual')}
+                  >
+                    Assinar Pro — anual
+                    <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                  <p className="text-[10px] text-primary-foreground/25 text-center mt-3">Pagamento seguro (Mercado Pago) • Cancele a qualquer momento</p>
                 </div>
               </div>
             </motion.div>

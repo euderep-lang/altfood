@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { generateSlug, getShareableUrl } from '@/lib/helpers';
+import { consumePendingCheckoutPlan } from '@/lib/checkoutIntent';
 import {
   ArrowRight, Copy, Check, Share2, Loader2, Palette,
   MessageCircle, ExternalLink, Crown, Sparkles, Clock,
@@ -604,7 +605,12 @@ export default function Onboarding() {
 
             <div className="space-y-2.5">
               <Button
-                onClick={() => { setShowSubscribePopup(false); navigate('/planos'); }}
+                onClick={() => {
+                  setShowSubscribePopup(false);
+                  const pending = consumePendingCheckoutPlan();
+                  const plan = pending ?? (popupAnnual ? 'annual' : 'monthly');
+                  navigate(`/checkout?plan=${plan}`);
+                }}
                 className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-base font-bold gap-2"
               >
                 <Crown className="w-5 h-5" />
