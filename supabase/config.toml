@@ -29,3 +29,8 @@ verify_jwt = false
 
 [functions.create-doctor-profile]
 verify_jwt = false
+
+# Mesmo padrão das outras funções autenticadas no app: o gateway não valida o JWT aqui;
+# a função valida com getUser(token). Evita "Invalid JWT" no gateway com sessão renovada em background.
+[functions.create-checkout]
+verify_jwt = false

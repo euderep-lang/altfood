@@ -102,9 +102,13 @@ export default function Checkout() {
         return;
       }
 
+      const { error: refreshError } = await supabase.auth.refreshSession();
+      if (refreshError) {
+        console.warn('[checkout] refreshSession:', refreshError.message);
+      }
+
       try {
-        // Não enviar Authorization manual: o fetch do cliente usa getSession() na hora e evita JWT
-        // desatualizado do React (causa "Invalid JWT" após refresh em background).
+        // Não enviar Authorization manual: o fetch do cliente injeta o token atual após refreshSession.
         const invokePromise = supabase.functions.invoke('create-checkout', {
           body: { plan },
         });
