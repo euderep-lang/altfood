@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       console.error('[create-checkout] Missing or invalid Authorization header');
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify({ error: 'Sessão inválida ou expirada. Entre de novo e tente o pagamento.' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     const supabase = createClient(
@@ -23,17 +23,28 @@ Deno.serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    // Obter usuário autenticado via getUser (mais confiável que getClaims em Edge Functions)
-    const { data: userData, error: userError } = await supabase.auth.getUser();
+    // Passa o JWT explicitamente — getUser() sem token não funciona em Edge Functions
+    const token = authHeader.replace('Bearer ', '');
+    const { data: userData, error: userError } = await supabase.auth.getUser(token);
     if (userError || !userData?.user) {
       console.error('[create-checkout] getUser failed:', userError?.message);
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify({ error: 'Sessão inválida ou expirada. Entre de novo e tente o pagamento.' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
     const userId = userData.user.id;
     console.log('[create-checkout] userId:', userId);
 
-    const { plan } = await req.json();
-    console.log('[create-checkout] plan:', plan);
+    let plan: string;
+    try {
+      const body = await req.json();
+      plan = body?.plan;
+    } catch {
+      return new Response(JSON.stringify({ error: 'Plano inválido. Use ?plan=monthly ou ?plan=annual.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const planNorm = plan === 'annual' ? 'annual' : 'monthly';
+    console.log('[create-checkout] plan:', planNorm);
 
     // Get doctor
     const { data: doctor, error: docErr } = await supabase
@@ -44,17 +55,29 @@ Deno.serve(async (req) => {
 
     if (docErr || !doctor) {
       console.error('[create-checkout] Doctor not found for userId:', userId, 'error:', docErr?.message);
-      return new Response(JSON.stringify({ error: 'Doctor not found' }), { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      return new Response(
+        JSON.stringify({
+          error:
+            'Não encontramos seu cadastro de profissional. Conclua o onboarding (dados e perfil) antes de assinar, ou entre em contato com o suporte.',
+        }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
     }
     console.log('[create-checkout] doctor found:', doctor.id);
 
     const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN');
     if (!accessToken) {
       console.error('[create-checkout] MERCADOPAGO_ACCESS_TOKEN not set');
-      return new Response(JSON.stringify({ error: 'Payment service not configured' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      return new Response(
+        JSON.stringify({
+          error:
+            'Pagamento não configurado no servidor (token Mercado Pago ausente). No Supabase: Project Settings → Edge Functions → Secrets → MERCADOPAGO_ACCESS_TOKEN.',
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
     }
 
-    const isAnnual = plan === 'annual';
+    const isAnnual = planNorm === 'annual';
     const price = isAnnual ? 358.80 : 47.90;
     const title = isAnnual ? 'Altfood Pro — Anual (12 meses)' : 'Altfood Pro — Mensal';
     const origin = req.headers.get('origin') || 'https://altfood.com.br';
@@ -80,11 +103,11 @@ Deno.serve(async (req) => {
         pending: `${origin}/planos`,
       },
       auto_return: 'approved',
-      external_reference: `${doctor.id}|${plan}`,
+      external_reference: `${doctor.id}|${planNorm}`,
       statement_descriptor: 'ALTFOOD PRO',
       metadata: {
         doctor_id: doctor.id,
-        plan,
+        plan: planNorm,
       },
     };
 
@@ -92,7 +115,7 @@ Deno.serve(async (req) => {
       preference.notification_url = notificationUrl;
     }
 
-    console.log('[create-checkout] Calling MP API for doctor:', doctor.id, 'plan:', plan);
+    console.log('[create-checkout] Calling MP API for doctor:', doctor.id, 'plan:', planNorm);
 
     const mpRes = await fetch('https://api.mercadopago.com/checkout/preferences', {
       method: 'POST',
@@ -108,8 +131,10 @@ Deno.serve(async (req) => {
       console.error('[create-checkout] MP API error status:', mpRes.status, 'body:', errBody);
       // Repassa o erro do MP para o cliente para facilitar debug
       return new Response(
-        JSON.stringify({ error: `MP API ${mpRes.status}: ${errBody.slice(0, 300)}` }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({
+          error: `Mercado Pago recusou a preferência (${mpRes.status}). Verifique o token de produção/teste e as credenciais da conta. Detalhe: ${errBody.slice(0, 280)}`,
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
 
@@ -123,8 +148,8 @@ Deno.serve(async (req) => {
   } catch (err) {
     console.error('[create-checkout] Unexpected error:', err);
     return new Response(
-      JSON.stringify({ error: 'Internal server error', detail: String(err) }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: 'Erro interno ao preparar o pagamento. Tente de novo em instantes.', detail: String(err) }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   }
 });

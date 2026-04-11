@@ -15,9 +15,43 @@ if (mpPublicKey) {
 
 const CREATE_CHECKOUT_TIMEOUT_MS = 28_000;
 
+/** Lê o corpo da Response da edge function. Evita depender de `instanceof` (quebra com duplicata no bundle). */
+async function messageFromInvokeError(error: unknown): Promise<string> {
+  const ctx =
+    error && typeof error === 'object' && 'context' in error
+      ? (error as { context: unknown }).context
+      : null;
+  if (ctx instanceof Response) {
+    const status = ctx.status;
+    const statusHint = status ? ` [HTTP ${status}]` : '';
+    try {
+      const raw = (await ctx.text()).trim();
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw) as { error?: string; detail?: string };
+          if (typeof parsed.error === 'string' && parsed.error.trim()) {
+            return `${parsed.error.trim()}${statusHint}`;
+          }
+          if (typeof parsed.detail === 'string' && parsed.detail.trim()) {
+            return `${parsed.detail.trim()}${statusHint}`;
+          }
+        } catch {
+          return `${raw.slice(0, 400)}${statusHint}`;
+        }
+        return `${raw.slice(0, 400)}${statusHint}`;
+      }
+      return `Resposta vazia da função create-checkout${statusHint}`;
+    } catch {
+      return `Não foi possível ler a resposta da função${statusHint}`;
+    }
+  }
+  if (error instanceof Error && error.message) return error.message;
+  return 'Erro ao chamar função de pagamento';
+}
+
 export default function Checkout() {
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
+  const { user, session, loading: authLoading } = useAuth();
 
   const plan = searchParams.get('plan') === 'annual' ? 'annual' : 'monthly';
   const isAnnual = plan === 'annual';
@@ -31,6 +65,10 @@ export default function Checkout() {
   const priceLabel = isAnnual ? 'R$ 358,80/ano' : 'R$ 47,90/mês';
 
   useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
     if (!user) {
       setPendingCheckoutPlan(plan);
       setPreferenceId(null);
@@ -50,9 +88,17 @@ export default function Checkout() {
         return;
       }
 
+      const accessToken = session?.access_token;
+      if (!accessToken) {
+        setError('Sessão não disponível. Saia e entre de novo, depois volte ao checkout.');
+        setLoading(false);
+        return;
+      }
+
       try {
         const invokePromise = supabase.functions.invoke('create-checkout', {
           body: { plan },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
         const timeoutPromise = new Promise<never>((_, reject) => {
           setTimeout(
@@ -68,12 +114,8 @@ export default function Checkout() {
         const { data, error } = await Promise.race([invokePromise, timeoutPromise]);
 
         if (error) {
-          // Tenta extrair a mensagem real retornada pela Edge Function
-          let detail = error?.message || 'Erro ao chamar função de pagamento';
-          try {
-            const body = await (error as any)?.context?.json?.();
-            if (body?.error) detail = body.error;
-          } catch (_) { /* ignora se não conseguir parsear */ }
+          const detail = await messageFromInvokeError(error);
+          console.error('[checkout] create-checkout falhou:', error, detail);
           throw new Error(detail);
         }
         if (!data?.preference_id) throw new Error('Preferência não gerada');
@@ -86,7 +128,7 @@ export default function Checkout() {
     };
 
     fetchPreference();
-  }, [user, plan]);
+  }, [user, session?.access_token, plan, authLoading]);
 
   const initialization = useMemo(() => {
     return {
