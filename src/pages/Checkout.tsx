@@ -8,7 +8,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { setPendingCheckoutPlan } from '@/lib/checkoutIntent';
 
-initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, { locale: 'pt-BR' });
+const mpPublicKey = import.meta.env.VITE_MP_PUBLIC_KEY?.trim();
+if (mpPublicKey) {
+  initMercadoPago(mpPublicKey, { locale: 'pt-BR' });
+}
+
+const CREATE_CHECKOUT_TIMEOUT_MS = 28_000;
 
 export default function Checkout() {
   const [searchParams] = useSearchParams();
@@ -39,10 +44,28 @@ export default function Checkout() {
       setError(null);
       setPreferenceId(null);
 
+      if (!mpPublicKey) {
+        setError('Chave pública do Mercado Pago ausente. Configure VITE_MP_PUBLIC_KEY no deploy (ex.: Vercel).');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const { data, error } = await supabase.functions.invoke('create-checkout', {
+        const invokePromise = supabase.functions.invoke('create-checkout', {
           body: { plan },
         });
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(
+            () =>
+              reject(
+                new Error(
+                  'Tempo esgotado ao preparar o pagamento. Verifique se a edge function create-checkout está deployada e se o usuário já tem cadastro de profissional (doctor).'
+                )
+              ),
+            CREATE_CHECKOUT_TIMEOUT_MS
+          );
+        });
+        const { data, error } = await Promise.race([invokePromise, timeoutPromise]);
 
         if (error) throw error;
         if (!data?.preference_id) throw new Error('Preferência não gerada');

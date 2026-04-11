@@ -156,6 +156,9 @@ export default function Admin() {
       return data || [];
     },
     enabled: isAdmin,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: 'always',
   });
 
   // Fetch all page views (last 60 days for comparison)
@@ -512,6 +515,10 @@ export default function Admin() {
                 </Select>
               </div>
             </div>
+            <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+              Esta lista usa a tabela <span className="font-medium text-foreground">doctors</span>: o profissional só aparece depois que o onboarding cria o perfil (função{' '}
+              <span className="font-mono text-[11px]">create-doctor-profile</span>). Conta só no login, sem perfil, não entra aqui — use <span className="font-medium">Atualizar</span> após o cadastro ser concluído.
+            </p>
           </CardHeader>
           <CardContent>
             {doctorsLoading ? (

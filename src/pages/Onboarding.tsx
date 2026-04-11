@@ -56,6 +56,8 @@ export default function Onboarding() {
   const [popupAnnual, setPopupAnnual] = useState(true);
   const [showSubscribePopup, setShowSubscribePopup] = useState(false);
   const hasFetchedRef = useRef(false);
+  /** Evita redirect imediato para /dashboard no mesmo tick do refetch após marcar onboarding_completed. */
+  const subscribeOfferBlockingRedirectRef = useRef(false);
 
   // Step 1 fields
   const [specialty, setSpecialty] = useState('');
@@ -165,10 +167,15 @@ export default function Onboarding() {
   }, [doctor]);
 
   useEffect(() => {
-    if (doctor && (doctor as any).onboarding_completed) {
+    if (
+      doctor &&
+      (doctor as any).onboarding_completed &&
+      !showSubscribePopup &&
+      !subscribeOfferBlockingRedirectRef.current
+    ) {
       navigate('/dashboard', { replace: true });
     }
-  }, [doctor, navigate]);
+  }, [doctor, navigate, showSubscribePopup]);
 
   if (isLoading || creatingDoctor) {
     return (
@@ -253,24 +260,30 @@ export default function Onboarding() {
 
   const completeOnboarding = async () => {
     try {
+      subscribeOfferBlockingRedirectRef.current = true;
+      setShowSubscribePopup(true);
       await supabase.from('doctors').update({ onboarding_completed: true } as any).eq('id', doctor.id);
       queryClient.invalidateQueries({ queryKey: ['doctor'] });
-      setShowSubscribePopup(true);
     } catch (err) {
+      subscribeOfferBlockingRedirectRef.current = false;
+      setShowSubscribePopup(false);
       toast({ title: 'Erro', description: 'Não foi possível completar. Tente novamente.', variant: 'destructive' });
     }
   };
 
   const skipToEnd = async () => {
     try {
+      subscribeOfferBlockingRedirectRef.current = true;
+      setShowSubscribePopup(true);
       await supabase.from('doctors').update({
         onboarding_completed: true,
         primary_color: primaryColor,
         secondary_color: primaryColor,
       } as any).eq('id', doctor.id);
       queryClient.invalidateQueries({ queryKey: ['doctor'] });
-      setShowSubscribePopup(true);
     } catch {
+      subscribeOfferBlockingRedirectRef.current = false;
+      setShowSubscribePopup(false);
       toast({ title: 'Erro', variant: 'destructive' });
     }
   };
@@ -283,6 +296,7 @@ export default function Onboarding() {
         trial_ends_at: trialEnd,
       } as any).eq('id', doctor.id);
       queryClient.invalidateQueries({ queryKey: ['doctor'] });
+      subscribeOfferBlockingRedirectRef.current = false;
       setShowSubscribePopup(false);
       navigate('/dashboard', { replace: true });
     } catch {
@@ -606,6 +620,7 @@ export default function Onboarding() {
             <div className="space-y-2.5">
               <Button
                 onClick={() => {
+                  subscribeOfferBlockingRedirectRef.current = false;
                   setShowSubscribePopup(false);
                   const pending = consumePendingCheckoutPlan();
                   const plan = pending ?? (popupAnnual ? 'annual' : 'monthly');

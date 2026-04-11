@@ -57,8 +57,8 @@ Deno.serve(async (req) => {
     }
 
     // Verify user actually exists in auth.users (JWT may be stale)
-    const userId = claimsData.claims.sub as string;
-    const { data: authUser, error: authUserError } = await supabaseAdmin.auth.admin.getUserById(userId);
+    const authSubject = claimsData.claims.sub as string;
+    const { data: authUser, error: authUserError } = await supabaseAdmin.auth.admin.getUserById(authSubject);
     if (authUserError || !authUser?.user) {
       return new Response(
         JSON.stringify({ error: "User not found. Please log out and log in again." }),
