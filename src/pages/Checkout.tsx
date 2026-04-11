@@ -28,9 +28,16 @@ async function messageFromInvokeError(error: unknown): Promise<string> {
       const raw = (await ctx.text()).trim();
       if (raw) {
         try {
-          const parsed = JSON.parse(raw) as { error?: string; detail?: string };
+          const parsed = JSON.parse(raw) as { error?: string; detail?: string; message?: string; code?: number };
           if (typeof parsed.error === 'string' && parsed.error.trim()) {
             return `${parsed.error.trim()}${statusHint}`;
+          }
+          if (typeof parsed.message === 'string' && parsed.message.trim()) {
+            const m = parsed.message.trim();
+            if (m === 'Invalid JWT') {
+              return `Sessão expirada ou inválida. Atualize a página ou entre de novo.${statusHint}`;
+            }
+            return `${m}${statusHint}`;
           }
           if (typeof parsed.detail === 'string' && parsed.detail.trim()) {
             return `${parsed.detail.trim()}${statusHint}`;
@@ -51,7 +58,7 @@ async function messageFromInvokeError(error: unknown): Promise<string> {
 
 export default function Checkout() {
   const [searchParams] = useSearchParams();
-  const { user, session, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const plan = searchParams.get('plan') === 'annual' ? 'annual' : 'monthly';
   const isAnnual = plan === 'annual';
@@ -88,17 +95,18 @@ export default function Checkout() {
         return;
       }
 
-      const accessToken = session?.access_token;
-      if (!accessToken) {
-        setError('Sessão não disponível. Saia e entre de novo, depois volte ao checkout.');
+      const { data: authData, error: authReadError } = await supabase.auth.getSession();
+      if (authReadError || !authData.session?.access_token) {
+        setError('Sessão não disponível ou expirada. Entre de novo e abra o checkout outra vez.');
         setLoading(false);
         return;
       }
 
       try {
+        // Não enviar Authorization manual: o fetch do cliente usa getSession() na hora e evita JWT
+        // desatualizado do React (causa "Invalid JWT" após refresh em background).
         const invokePromise = supabase.functions.invoke('create-checkout', {
           body: { plan },
-          headers: { Authorization: `Bearer ${accessToken}` },
         });
         const timeoutPromise = new Promise<never>((_, reject) => {
           setTimeout(
@@ -128,7 +136,7 @@ export default function Checkout() {
     };
 
     fetchPreference();
-  }, [user, session?.access_token, plan, authLoading]);
+  }, [user, plan, authLoading]);
 
   const initialization = useMemo(() => {
     return {
