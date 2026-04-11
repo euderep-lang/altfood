@@ -55,7 +55,9 @@ export default function Onboarding() {
   const [creationError, setCreationError] = useState<string | null>(null);
   const [popupAnnual, setPopupAnnual] = useState(true);
   const [showSubscribePopup, setShowSubscribePopup] = useState(false);
-  const hasFetchedRef = useRef(false);
+  /** Re-dispara o bootstrap do perfil (ex.: após “Tentar novamente”). */
+  const [bootstrapNonce, setBootstrapNonce] = useState(0);
+  const bootstrapInFlightRef = useRef(false);
   /** Evita redirect imediato para /dashboard no mesmo tick do refetch após marcar onboarding_completed. */
   const subscribeOfferBlockingRedirectRef = useRef(false);
 
@@ -68,10 +70,11 @@ export default function Onboarding() {
   const [slugValue, setSlugValue] = useState('');
 
   useEffect(() => {
-    if (!user || isLoading || doctor || hasFetchedRef.current) return;
-    hasFetchedRef.current = true;
+    if (!user || isLoading || doctor) return;
+    if (bootstrapInFlightRef.current) return;
 
     const createDoctorProfile = async () => {
+      bootstrapInFlightRef.current = true;
       setCreatingDoctor(true);
       setCreationError(null);
 
@@ -144,18 +147,23 @@ export default function Onboarding() {
         }
 
         await queryClient.invalidateQueries({ queryKey: ['doctor', user.id] });
-        await queryClient.refetchQueries({ queryKey: ['doctor', user.id], type: 'active' });
+        const refetchResult = await refetchDoctor();
+        if (!refetchResult.data) {
+          throw new Error(
+            'Perfil não apareceu após criar. Confira se a função create-doctor-profile está deployada no Supabase e recarregue a página (F5).'
+          );
+        }
       } catch (error) {
         console.error('[Onboarding] createDoctorProfile failed:', error);
         setCreationError(error instanceof Error ? error.message : 'Erro inesperado ao concluir cadastro.');
-        hasFetchedRef.current = false;
       } finally {
         setCreatingDoctor(false);
+        bootstrapInFlightRef.current = false;
       }
     };
 
     createDoctorProfile();
-  }, [user, isLoading, doctor, queryClient]);
+  }, [user, isLoading, doctor, queryClient, refetchDoctor, bootstrapNonce]);
 
   useEffect(() => {
     if (doctor) {
@@ -198,7 +206,8 @@ export default function Onboarding() {
               onClick={async () => {
                 setCreationError(null);
                 await queryClient.invalidateQueries({ queryKey: ['doctor', user?.id] });
-                await refetchDoctor();
+                const r = await refetchDoctor();
+                if (!r.data) setBootstrapNonce((n) => n + 1);
               }}
             >
               Tentar novamente
@@ -211,8 +220,14 @@ export default function Onboarding() {
 
   if (!doctor) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 gap-4">
         <Loader2 className="animate-spin h-8 w-8 text-primary" />
+        <p className="text-xs text-muted-foreground text-center max-w-sm">
+          Se ficar muito tempo aqui, a função <span className="font-mono">create-doctor-profile</span> pode não estar respondendo — confira o deploy no Supabase e o console do navegador (F12).
+        </p>
+        <Button variant="outline" size="sm" className="rounded-xl" onClick={() => setBootstrapNonce((n) => n + 1)}>
+          Tentar criar perfil de novo
+        </Button>
       </div>
     );
   }
