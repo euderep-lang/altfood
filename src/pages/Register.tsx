@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { getSafeInternalPath } from '@/lib/safeRedirect';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +31,8 @@ export default function Register() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const nextPath = getSafeInternalPath(searchParams.get('next'));
 
   const update = (field: string, value: string) => {
     setForm(f => ({ ...f, [field]: value }));
@@ -98,13 +101,16 @@ export default function Register() {
           description: 'Este e-mail já está cadastrado. Entre com sua senha ou use recuperar senha.',
           variant: 'destructive',
         });
-        navigate('/login');
+        navigate(nextPath ? `/login?next=${encodeURIComponent(nextPath)}` : '/login', { replace: true });
         return;
       }
 
       if (authData.session) {
         toast({ title: 'Conta criada com sucesso', description: 'Vamos finalizar seu perfil.' });
-        navigate('/onboarding', { replace: true });
+        const onboardingDest = nextPath
+          ? `/onboarding?next=${encodeURIComponent(nextPath)}`
+          : '/onboarding';
+        navigate(onboardingDest, { replace: true });
         return;
       }
 
@@ -113,7 +119,7 @@ export default function Register() {
         description: 'Tente fazer login. Se o projeto ainda exigir confirmação por e-mail, desative em Authentication → Providers → Email no Supabase.',
         variant: 'destructive',
       });
-      navigate('/login');
+      navigate(nextPath ? `/login?next=${encodeURIComponent(nextPath)}` : '/login', { replace: true });
     } catch (err) {
       console.error('[Register] Unexpected error:', err);
       toast({ title: 'Erro inesperado', description: 'Tente novamente.', variant: 'destructive' });
@@ -182,7 +188,12 @@ export default function Register() {
               </Button>
               <p className="text-center text-sm text-muted-foreground pt-1">
                 Já tenho conta{' '}
-                <Link to="/login" className="text-primary hover:underline font-medium">Entrar</Link>
+                <Link
+                  to={nextPath ? `/login?next=${encodeURIComponent(nextPath)}` : '/login'}
+                  className="text-primary hover:underline font-medium"
+                >
+                  Entrar
+                </Link>
               </p>
             </form>
           </CardContent>

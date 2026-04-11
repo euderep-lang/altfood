@@ -102,13 +102,8 @@ export default function Checkout() {
         return;
       }
 
-      const { error: refreshError } = await supabase.auth.refreshSession();
-      if (refreshError) {
-        console.warn('[checkout] refreshSession:', refreshError.message);
-      }
-
       try {
-        // Não enviar Authorization manual: o fetch do cliente injeta o token atual após refreshSession.
+        // Token vem do fetch interno do cliente (getSession na hora do request).
         const invokePromise = supabase.functions.invoke('create-checkout', {
           body: { plan },
         });
@@ -214,7 +209,7 @@ export default function Checkout() {
         </div>
 
         <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-          {!user && (
+          {!authLoading && !user && (
             <div className="text-center py-8 space-y-4">
               <p className="text-sm text-foreground font-medium">Entre ou crie uma conta para concluir o pagamento</p>
               <p className="text-xs text-muted-foreground max-w-sm mx-auto">
@@ -225,20 +220,22 @@ export default function Checkout() {
                   <Link to={`/login?next=${encodeURIComponent(checkoutReturnPath)}`}>Já tenho conta</Link>
                 </Button>
                 <Button asChild variant="outline" className="rounded-xl">
-                  <Link to="/register">Criar conta</Link>
+                  <Link to={`/register?next=${encodeURIComponent(checkoutReturnPath)}`}>Criar conta</Link>
                 </Button>
               </div>
             </div>
           )}
 
-          {user && loading && (
+          {(authLoading || (user && loading)) && (
             <div className="flex flex-col items-center justify-center py-16 gap-3">
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              <p className="text-sm text-muted-foreground">Carregando formas de pagamento...</p>
+              <p className="text-sm text-muted-foreground">
+                {authLoading ? 'Verificando sua sessão...' : 'Carregando formas de pagamento...'}
+              </p>
             </div>
           )}
 
-          {user && error && (
+          {!authLoading && user && error && (
             <div className="text-center py-10">
               <p className="text-sm text-destructive">{error}</p>
               <button onClick={() => window.location.reload()} className="mt-4 text-sm text-primary underline">
@@ -247,7 +244,7 @@ export default function Checkout() {
             </div>
           )}
 
-          {user && !error && preferenceId && (
+          {!authLoading && user && !error && preferenceId && (
             <Payment
               initialization={initialization as any}
               customization={customization as any}

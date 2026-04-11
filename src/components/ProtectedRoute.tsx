@@ -44,8 +44,11 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     );
   }
 
-  // Se não está autenticado, vai pro login
-  if (!user) return <Navigate to="/login" replace />;
+  // Se não está autenticado, preserva destino (ex.: voltar ao onboarding/checkout após entrar)
+  if (!user) {
+    const next = `${location.pathname}${location.search || ''}`;
+    return <Navigate to={`/login?next=${encodeURIComponent(next)}`} replace />;
+  }
 
   // Don't block onboarding, pricing, or admin pages
   const isExempt = EXEMPT_ROUTES.some(r => location.pathname.startsWith(r)) || location.pathname.startsWith('/admin');

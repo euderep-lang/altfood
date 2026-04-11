@@ -60,33 +60,47 @@ export default function Login() {
     setLoading(false);
 
     if (doctorError) {
-      // Se timeout ou erro de rede, navega pro dashboard assim mesmo (ProtectedRoute vai lidar)
       if (doctorError.message?.includes('aborted') || doctorError.message?.includes('timeout')) {
-        navigate('/dashboard');
+        navigate(nextPath || '/dashboard', { replace: true });
         return;
       }
       toast({ title: 'Erro ao carregar perfil', description: 'Tente novamente em instantes.', variant: 'destructive' });
       return;
     }
 
+    const wantsCheckout = Boolean(nextPath?.startsWith('/checkout'));
+    const onboardingWithNext = nextPath
+      ? `/onboarding?next=${encodeURIComponent(nextPath)}`
+      : '/onboarding';
+
     if (!doctor) {
       toast({ title: 'Vamos finalizar seu cadastro', description: 'Complete seu perfil para acessar o painel.' });
-      navigate('/onboarding');
+      navigate(onboardingWithNext, { replace: true });
     } else if (doctor.subscription_status === 'blocked') {
       toast({ title: 'Conta bloqueada', description: 'Entre em contato com o suporte.', variant: 'destructive' });
-      navigate('/planos');
+      navigate('/planos', { replace: true });
     } else if (doctor.subscription_status === 'inactive') {
-      toast({ title: 'Assinatura inativa', description: 'Renove sua assinatura para continuar.', variant: 'destructive' });
-      navigate('/planos');
+      if (wantsCheckout && nextPath) {
+        toast({ title: '✅ Login realizado!', description: 'Continue para renovar sua assinatura.' });
+        navigate(nextPath, { replace: true });
+      } else {
+        toast({ title: 'Assinatura inativa', description: 'Renove sua assinatura para continuar.', variant: 'destructive' });
+        navigate('/planos', { replace: true });
+      }
     } else if (doctor.subscription_status === 'trial' && new Date(doctor.trial_ends_at) <= new Date()) {
-      toast({ title: 'Trial expirado', description: 'Assine para continuar usando o Altfood.' });
-      navigate('/planos');
+      if (wantsCheckout && nextPath) {
+        toast({ title: '✅ Login realizado!', description: 'Continue para assinar o Altfood Pro.' });
+        navigate(nextPath, { replace: true });
+      } else {
+        toast({ title: 'Trial expirado', description: 'Assine para continuar usando o Altfood.' });
+        navigate('/planos', { replace: true });
+      }
     } else {
       toast({ title: '✅ Login realizado!' });
       if (nextPath) {
         navigate(nextPath, { replace: true });
       } else {
-        navigate('/dashboard');
+        navigate('/dashboard', { replace: true });
       }
     }
   };

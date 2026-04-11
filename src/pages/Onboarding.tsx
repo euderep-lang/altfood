@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { getSafeInternalPath } from '@/lib/safeRedirect';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useDoctor } from '@/hooks/useDoctor';
@@ -42,6 +43,8 @@ function ConfettiPiece({ delay, x }: { delay: number; x: number }) {
 
 export default function Onboarding() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const postAuthRedirect = getSafeInternalPath(searchParams.get('next'));
   const { data: doctor, isLoading, error: doctorError, refetch: refetchDoctor } = useDoctor();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -181,9 +184,9 @@ export default function Onboarding() {
       !showSubscribePopup &&
       !subscribeOfferBlockingRedirectRef.current
     ) {
-      navigate('/dashboard', { replace: true });
+      navigate(postAuthRedirect || '/dashboard', { replace: true });
     }
-  }, [doctor, navigate, showSubscribePopup]);
+  }, [doctor, navigate, showSubscribePopup, postAuthRedirect]);
 
   if (isLoading || creatingDoctor) {
     return (
@@ -313,7 +316,7 @@ export default function Onboarding() {
       queryClient.invalidateQueries({ queryKey: ['doctor'] });
       subscribeOfferBlockingRedirectRef.current = false;
       setShowSubscribePopup(false);
-      navigate('/dashboard', { replace: true });
+      navigate(postAuthRedirect || '/dashboard', { replace: true });
     } catch {
       toast({ title: 'Erro', description: 'Não foi possível iniciar o trial.', variant: 'destructive' });
     }
@@ -637,9 +640,13 @@ export default function Onboarding() {
                 onClick={() => {
                   subscribeOfferBlockingRedirectRef.current = false;
                   setShowSubscribePopup(false);
+                  if (postAuthRedirect?.startsWith('/checkout')) {
+                    navigate(postAuthRedirect, { replace: true });
+                    return;
+                  }
                   const pending = consumePendingCheckoutPlan();
                   const plan = pending ?? (popupAnnual ? 'annual' : 'monthly');
-                  navigate(`/checkout?plan=${plan}`);
+                  navigate(`/checkout?plan=${plan}`, { replace: true });
                 }}
                 className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-base font-bold gap-2"
               >
