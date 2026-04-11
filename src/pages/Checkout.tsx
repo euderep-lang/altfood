@@ -67,7 +67,15 @@ export default function Checkout() {
         });
         const { data, error } = await Promise.race([invokePromise, timeoutPromise]);
 
-        if (error) throw error;
+        if (error) {
+          // Tenta extrair a mensagem real retornada pela Edge Function
+          let detail = error?.message || 'Erro ao chamar função de pagamento';
+          try {
+            const body = await (error as any)?.context?.json?.();
+            if (body?.error) detail = body.error;
+          } catch (_) { /* ignora se não conseguir parsear */ }
+          throw new Error(detail);
+        }
         if (!data?.preference_id) throw new Error('Preferência não gerada');
         setPreferenceId(data.preference_id);
       } catch (err: any) {

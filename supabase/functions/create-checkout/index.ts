@@ -13,6 +13,7 @@ Deno.serve(async (req) => {
   try {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
+      console.error('[create-checkout] Missing or invalid Authorization header');
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
@@ -22,14 +23,17 @@ Deno.serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
+    // Obter usuário autenticado via getUser (mais confiável que getClaims em Edge Functions)
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData?.user) {
+      console.error('[create-checkout] getUser failed:', userError?.message);
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
-    const userId = claimsData.claims.sub;
+    const userId = userData.user.id;
+    console.log('[create-checkout] userId:', userId);
 
     const { plan } = await req.json();
+    console.log('[create-checkout] plan:', plan);
 
     // Get doctor
     const { data: doctor, error: docErr } = await supabase
@@ -39,18 +43,21 @@ Deno.serve(async (req) => {
       .single();
 
     if (docErr || !doctor) {
+      console.error('[create-checkout] Doctor not found for userId:', userId, 'error:', docErr?.message);
       return new Response(JSON.stringify({ error: 'Doctor not found' }), { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
+    console.log('[create-checkout] doctor found:', doctor.id);
 
     const accessToken = Deno.env.get('MERCADOPAGO_ACCESS_TOKEN');
     if (!accessToken) {
+      console.error('[create-checkout] MERCADOPAGO_ACCESS_TOKEN not set');
       return new Response(JSON.stringify({ error: 'Payment service not configured' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     const isAnnual = plan === 'annual';
     const price = isAnnual ? 358.80 : 47.90;
     const title = isAnnual ? 'Altfood Pro — Anual (12 meses)' : 'Altfood Pro — Mensal';
-    const origin = req.headers.get('origin') || 'https://altfood.com';
+    const origin = req.headers.get('origin') || 'https://altfood.com.br';
 
     const supabaseUrl = (Deno.env.get('SUPABASE_URL') ?? '').replace(/\/$/, '');
     const notificationUrl = supabaseUrl
@@ -85,6 +92,8 @@ Deno.serve(async (req) => {
       preference.notification_url = notificationUrl;
     }
 
+    console.log('[create-checkout] Calling MP API for doctor:', doctor.id, 'plan:', plan);
+
     const mpRes = await fetch('https://api.mercadopago.com/checkout/preferences', {
       method: 'POST',
       headers: {
@@ -95,21 +104,26 @@ Deno.serve(async (req) => {
     });
 
     if (!mpRes.ok) {
-      const err = await mpRes.text();
-      console.error('MP error:', err);
-      return new Response(JSON.stringify({ error: 'Failed to create checkout' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      const errBody = await mpRes.text();
+      console.error('[create-checkout] MP API error status:', mpRes.status, 'body:', errBody);
+      // Repassa o erro do MP para o cliente para facilitar debug
+      return new Response(
+        JSON.stringify({ error: `MP API ${mpRes.status}: ${errBody.slice(0, 300)}` }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const mpData = await mpRes.json();
+    console.log('[create-checkout] MP preference created:', mpData.id);
 
     return new Response(
       JSON.stringify({ preference_id: mpData.id }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (err) {
-    console.error('Error:', err);
+    console.error('[create-checkout] Unexpected error:', err);
     return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
+      JSON.stringify({ error: 'Internal server error', detail: String(err) }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

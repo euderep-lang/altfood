@@ -50,9 +50,25 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   // Don't block onboarding, pricing, or admin pages
   const isExempt = EXEMPT_ROUTES.some(r => location.pathname.startsWith(r)) || location.pathname.startsWith('/admin');
 
-  // Se houve erro na query (timeout, RLS, rede), não redireciona pro onboarding
+  // Se houve erro na query (ex: coluna inexistente no banco, timeout, RLS),
+  // mostra tela de erro com retry — NÃO redireciona pro login
   if (doctorError && !isExempt) {
-    return <Navigate to="/login?error=profile" replace />;
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background gap-4 p-4">
+        <p className="text-sm text-muted-foreground text-center">
+          Não foi possível carregar seu perfil. Verifique sua conexão e tente novamente.
+        </p>
+        <Button variant="outline" onClick={() => window.location.reload()}>
+          Tentar novamente
+        </Button>
+        <button
+          className="text-xs text-muted-foreground underline"
+          onClick={async () => { await supabase.auth.signOut(); window.location.href = '/login'; }}
+        >
+          Sair da conta
+        </button>
+      </div>
+    );
   }
 
   // No doctor profile exists — redirect to onboarding (exempt pages still allowed)
