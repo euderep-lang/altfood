@@ -42,7 +42,7 @@ function getBadges(doctor: any, pageViewCount: number, referralCount: number) {
 }
 
 export default function Dashboard() {
-  const { data: doctor, isLoading: doctorLoading, isError: doctorError } = useDoctor();
+  const { data: doctor, isLoading: doctorLoading, isError: doctorError, isFetched } = useDoctor();
   const { toast } = useToast();
 
   const { data: pageViews = [] } = useQuery({
@@ -125,9 +125,13 @@ export default function Dashboard() {
     );
   }
 
-  if (!doctor || doctorError) {
+  // Se a query terminou (com erro ou sem dados) e não há doctor, redireciona
+  if (isFetched && (!doctor || doctorError)) {
     return <Navigate to="/onboarding" replace />;
   }
+
+  // Aguarda dados (não deve acontecer se ProtectedRoute funcionou, mas evita crash)
+  if (!doctor) return null;
 
   if (!(doctor as any).onboarding_completed) {
     return <Navigate to="/onboarding" replace />;

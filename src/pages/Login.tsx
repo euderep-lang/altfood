@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
 import { getSafeInternalPath } from '@/lib/safeRedirect';
+import { createTimeoutSignal } from '@/lib/supabaseHelpers';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -48,16 +49,22 @@ export default function Login() {
       return;
     }
 
-    // Check if doctor profile exists
+    // Check if doctor profile exists (timeout de 8s para evitar loading infinito)
     const { data: doctor, error: doctorError } = await supabase
       .from('doctors')
       .select('subscription_status, trial_ends_at')
       .eq('user_id', authData.user.id)
+      .abortSignal(createTimeoutSignal(8000))
       .maybeSingle();
 
     setLoading(false);
 
     if (doctorError) {
+      // Se timeout ou erro de rede, navega pro dashboard assim mesmo (ProtectedRoute vai lidar)
+      if (doctorError.message?.includes('aborted') || doctorError.message?.includes('timeout')) {
+        navigate('/dashboard');
+        return;
+      }
       toast({ title: 'Erro ao carregar perfil', description: 'Tente novamente em instantes.', variant: 'destructive' });
       return;
     }

@@ -17,15 +17,15 @@ export function useDoctor() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1)
-        .abortSignal(createTimeoutSignal(15000));
+        .abortSignal(createTimeoutSignal(8000));
 
       if (error) throw error;
       return data?.[0] ?? null;
     },
     enabled: !!user,
     networkMode: 'always',
-    retry: 3,
-    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
+    retry: 1,
+    retryDelay: 1000,
     staleTime: 1000 * 30,
   });
 }

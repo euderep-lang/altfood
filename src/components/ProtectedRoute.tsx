@@ -26,18 +26,15 @@ const EXEMPT_ROUTES = ['/onboarding', '/planos', '/assinatura/sucesso'];
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  const { data: doctor, isLoading: doctorLoading } = useDoctor();
+  const { data: doctor, isLoading: doctorLoading, isError: doctorError } = useDoctor();
   const location = useLocation();
   const [timedOut, setTimedOut] = useState(false);
 
-  // Timeout: if loading takes more than 10s, stop waiting
+  // Timer inicia UMA VEZ ao montar — evita reset por estados intermediários (ex: loading → false → doctorLoading → true)
   useEffect(() => {
-    if (loading || doctorLoading) {
-      const timer = setTimeout(() => setTimedOut(true), 10000);
-      return () => clearTimeout(timer);
-    }
-    setTimedOut(false);
-  }, [loading, doctorLoading]);
+    const timer = setTimeout(() => setTimedOut(true), 12000);
+    return () => clearTimeout(timer);
+  }, []);
 
   if ((loading || doctorLoading) && !timedOut) {
     return (
@@ -47,14 +44,19 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     );
   }
 
-  // If timed out or not logged in, redirect
+  // Se não está autenticado, vai pro login
   if (!user) return <Navigate to="/login" replace />;
 
   // Don't block onboarding, pricing, or admin pages
   const isExempt = EXEMPT_ROUTES.some(r => location.pathname.startsWith(r)) || location.pathname.startsWith('/admin');
 
+  // Se houve erro na query (timeout, RLS, rede), não redireciona pro onboarding
+  if (doctorError && !isExempt) {
+    return <Navigate to="/login?error=profile" replace />;
+  }
+
   // No doctor profile exists — redirect to onboarding (exempt pages still allowed)
-  if (!doctor && !isExempt) {
+  if (!doctor && !doctorLoading && !isExempt) {
     return <Navigate to="/onboarding" replace />;
   }
 
