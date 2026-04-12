@@ -7,7 +7,7 @@
     <meta name="description" content="Ferramenta de substituição alimentar baseada na Tabela TACO para profissionais de saúde. Crie sua página personalizada e compartilhe com pacientes." />
     <meta name="author" content="Altfood" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#1F6042" />
+    <meta name="theme-color" content="#16A34A" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Altfood" />
@@ -23,8 +23,8 @@
     <meta property="og:title" content="Altfood — Substituição Alimentar Inteligente" />
     <meta property="og:description" content="Seus pacientes perguntam. O Altfood responde. Ferramenta baseada na Tabela TACO para profissionais de saúde." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://altfood.com.br/" />
-    <meta property="og:image" content="https://altfood.com.br/altfood-brand.png" />
+    <meta property="og:url" content="https://altfood.lovable.app/" />
+    <meta property="og:image" content="https://altfood.lovable.app/icon-512.png" />
     <meta property="og:site_name" content="Altfood" />
     <meta property="og:locale" content="pt_BR" />
 
@@ -32,9 +32,9 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Altfood — Substituição Alimentar Inteligente" />
     <meta name="twitter:description" content="Seus pacientes perguntam. O Altfood responde." />
-    <meta name="twitter:image" content="https://altfood.com.br/altfood-brand.png" />
+    <meta name="twitter:image" content="https://altfood.lovable.app/icon-512.png" />
 
-    <link rel="canonical" href="https://altfood.com.br/" />
+    <link rel="canonical" href="https://altfood.lovable.app/" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
@@ -48,7 +48,7 @@
       "applicationCategory": "HealthApplication",
       "operatingSystem": "Web",
       "description": "Ferramenta de substituição alimentar baseada na Tabela TACO para profissionais de saúde.",
-      "url": "https://altfood.com.br",
+      "url": "https://altfood.lovable.app",
       "offers": [
         {
           "@type": "Offer",
@@ -67,8 +67,8 @@
       "publisher": {
         "@type": "Organization",
         "name": "Altfood",
-        "url": "https://altfood.com.br",
-        "logo": "https://altfood.com.br/altfood-brand.png"
+        "url": "https://altfood.lovable.app",
+        "logo": "https://altfood.lovable.app/icon-512.png"
       }
     }
     </script>
@@ -82,7 +82,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #000000;
+        background: #ffffff;
         transition: opacity 0.4s ease-out;
       }
       #splash-screen.fade-out {
@@ -90,12 +90,18 @@
         pointer-events: none;
       }
       #splash-screen .splash-logo {
-        width: min(280px, 85vw);
-        height: auto;
-        display: block;
-        margin: 0 auto;
-        object-fit: contain;
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
         animation: splash-pulse 1.5s ease-in-out infinite;
+      }
+      #splash-screen .splash-text {
+        margin-top: 16px;
+        font-family: 'Raleway', system-ui, -apple-system, sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #0F766E;
+        letter-spacing: -0.5px;
       }
       @keyframes splash-pulse {
         0%, 100% { transform: scale(1); }
@@ -108,7 +114,8 @@
     <!-- PWA Splash Screen -->
     <div id="splash-screen">
       <div style="text-align: center;">
-        <img src="/altfood-brand.png" alt="Altfood" class="splash-logo" />
+        <img src="/altfood-icon.webp" alt="Altfood" class="splash-logo" />
+        <div class="splash-text">Altfood</div>
       </div>
     </div>
 
