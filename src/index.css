@@ -94,15 +94,20 @@
     @apply border-border;
   }
 
+  html {
+    font-family: "Raleway", ui-sans-serif, system-ui, sans-serif;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: "Raleway", ui-sans-serif, system-ui, sans-serif;
     font-size: 14px;
   }
 
-  html {
-    font-family: 'Raleway', system-ui, -apple-system, sans-serif;
-    scroll-behavior: smooth;
-    -webkit-text-size-adjust: 100%;
+  #root {
+    font-family: "Raleway", ui-sans-serif, system-ui, sans-serif;
   }
 
   /* Ensure minimum font size across the app */
@@ -151,7 +156,7 @@
   }
 
   .font-display {
-    font-family: 'Raleway', system-ui, -apple-system, sans-serif;
+    font-family: "Raleway", ui-sans-serif, system-ui, sans-serif;
   }
 
   .premium-border {

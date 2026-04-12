@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Raleway', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['Raleway', 'system-ui', '-apple-system', 'sans-serif'],
-        logo: ['Raleway', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        logo: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
