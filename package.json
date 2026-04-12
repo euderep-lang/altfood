@@ -10,7 +10,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "security:audit": "npm audit",
+    "security:snyk": "npx snyk code test",
+    "security:semgrep": "command -v semgrep >/dev/null 2>&1 && semgrep scan --config=auto ./src || (echo 'Semgrep CLI não encontrado. Instale com: brew install semgrep  ou  pipx install semgrep' >&2; exit 1)",
+    "security": "npm run security:audit && npm run lint"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
