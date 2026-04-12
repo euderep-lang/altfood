@@ -296,10 +296,24 @@ export default function Admin() {
       body: { doctor_id: doctor.id, user_id: doctor.user_id, email: doctor.email },
     });
 
+    let description = typeof data?.error === 'string' ? data.error : undefined;
+    if (!description && error && typeof error === 'object' && 'context' in error) {
+      const ctx = (error as { context?: unknown }).context;
+      if (ctx instanceof Response) {
+        try {
+          const body = (await ctx.clone().json()) as { error?: string };
+          if (typeof body?.error === 'string') description = body.error;
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+    description ||= error?.message || 'Não foi possível excluir o profissional.';
+
     if (error || data?.error) {
       toast({
         title: 'Erro ao excluir',
-        description: error?.message || data?.error || 'Não foi possível excluir o profissional.',
+        description,
         variant: 'destructive',
       });
       return;

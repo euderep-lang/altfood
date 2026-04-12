@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Altfood LP Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--green:#0F766E;--green-dark:#0a1f16;--green-light:#e6f4f3}
+body{font-family:'DM Sans',sans-serif;background:#fff;color:#111;overflow-x:hidden}
+.serif{font-family:'Playfair Display',serif}
+
+/* NAV */
+nav{background:#0a1f16;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-icon{width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:13px}
+.logo-text{color:white;font-weight:700;font-size:17px}
+.nav-links{display:flex;gap:24px}
+.nav-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;transition:.2s}
+.nav-btn{background:var(--green);color:white;border:none;padding:8px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}
+
+/* HERO */
+.hero{background:linear-gradient(180deg,#0b1e14 0%,#0d2518 60%,#0a1c11 100%);padding:72px 2rem 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.03) 1px,transparent 0);background-size:32px 32px}
+.hero-glow{position:absolute;top:-100px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(15,118,110,.25) 0%,transparent 65%);pointer-events:none}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(15,118,110,.4);background:rgba(15,118,110,.12);padding:6px 16px;border-radius:99px;color:var(--green);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(2rem,4vw,3.5rem);font-weight:800;color:white;line-height:1.08;letter-spacing:-.02em;margin-bottom:24px}
+.hero h1 em{font-style:italic;background:linear-gradient(135deg,#0F766E,#22c55e,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{color:rgba(255,255,255,.55);font-size:17px;line-height:1.65;margin-bottom:36px;max-width:480px}
+.hero-sub strong{color:white}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.btn-primary{background:linear-gradient(135deg,#0F766E,#059669);color:white;border:none;padding:14px 28px;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 8px 32px rgba(15,118,110,.35)}
+.btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,.2);color:white;padding:14px 24px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
+.hero-checks{display:flex;gap:20px;flex-wrap:wrap}
+.hero-checks span{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.35);font-size:12px}
+.hero-checks span::before{content:'✓';color:var(--green);font-weight:700}
+
+/* PHONE MOCKUP */
+.phone{background:#111;border-radius:44px;padding:12px;box-shadow:0 32px 80px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.1);position:relative;width:260px;margin:0 auto}
+.phone-notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:80px;height:20px;background:#000;border-radius:10px;z-index:2}
+.phone-screen{border-radius:34px;overflow:hidden;background:#F7FAF9}
+.phone-header{background:var(--green);padding:32px 16px 20px}
+.phone-profile{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.phone-avatar{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:800}
+.phone-name{color:white;font-size:13px;font-weight:600}
+.phone-crn{color:rgba(255,255,255,.6);font-size:10px;margin-top:2px}
+.phone-search{background:white;border-radius:12px;display:flex;align-items:center;gap:8px;padding:10px 12px}
+.phone-search-icon{color:var(--green);font-size:14px}
+.phone-search-text{color:var(--green);font-size:13px;font-weight:600}
+.phone-results{padding:10px 10px 16px;space-y:8px}
+.phone-result-label{font-size:9px;color:#999;font-weight:600;padding:0 4px;margin-bottom:6px}
+.phone-card{background:white;border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid #f0f0f0}
+.phone-card-icon{font-size:18px}
+.phone-card-name{font-size:11px;font-weight:700;color:#1a1a1a}
+.phone-card-sub{font-size:9px;color:#999;margin-top:1px}
+.phone-card-badge{font-size:9px;font-weight:700;color:var(--green);background:rgba(15,118,110,.1);padding:2px 7px;border-radius:99px;margin-left:auto;white-space:nowrap}
+.phone-float{position:absolute;left:-60px;top:35%;background:white;border-radius:14px;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,.15);border:1px solid rgba(15,118,110,.1);animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.phone-float-title{font-size:10px;font-weight:700;color:var(--green)}
+.phone-float-sub{font-size:9px;color:#999;margin-top:1px}
+
+/* TICKER */
+.ticker-wrap{background:var(--green);padding:14px 0;overflow:hidden}
+.ticker-inner{display:flex;gap:0;white-space:nowrap;animation:ticker 20s linear infinite}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.9);font-size:13px;font-weight:500;padding:0 32px}
+.ticker-dot{color:rgba(255,255,255,.25);margin-left:16px}
+
+/* PROBLEM SECTION */
+.section{padding:80px 2rem}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(220,38,38,.6);margin-bottom:12px;display:block}
+.section-label.green{color:var(--green)}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.problem-h2{font-size:clamp(2rem,3.5vw,3rem);font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:24px}
+.problem-text{color:#666;font-size:16px;line-height:1.7;margin-bottom:16px}
+.problem-text strong{color:#111}
+.callout{display:flex;gap:12px;align-items:flex-start;background:#fef2f2;border:1px solid rgba(220,38,38,.12);border-radius:16px;padding:16px 20px;margin-top:20px}
+.callout-icon{color:rgba(220,38,38,.5);font-size:18px;flex-shrink:0;margin-top:2px}
+.callout-text{font-size:13px;color:#666;line-height:1.6}
+.callout-text strong{color:#111}
+
+/* WA PHONE */
+.wa-phone{background:#111;border-radius:40px;padding:10px;box-shadow:0 24px 64px rgba(0,0,0,.25);width:300px;margin:0 auto;position:relative}
+.wa-screen{border-radius:32px;overflow:hidden}
+.wa-header{background:#075E54;padding:28px 16px 12px;display:flex;align-items:center;gap:10px}
+.wa-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700}
+.wa-info{flex:1}
+.wa-name{color:white;font-size:13px;font-weight:700}
+.wa-status{color:rgba(255,255,255,.55);font-size:10px;margin-top:1px}
+.wa-messages{background:#ECE5DD;padding:10px;min-height:220px}
+.wa-msg{background:white;border-radius:14px;border-top-left-radius:3px;padding:8px 12px;margin-bottom:8px;max-width:85%;box-shadow:0 1px 2px rgba(0,0,0,.08);animation:msgIn .4s ease both}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px) scale(.95)}to{opacity:1;transform:none}}
+.wa-msg:nth-child(1){animation-delay:.2s}
+.wa-msg:nth-child(2){animation-delay:.9s}
+.wa-msg:nth-child(3){animation-delay:1.6s}
+.wa-msg:nth-child(4){animation-delay:2.3s}
+.wa-msg:nth-child(5){animation-delay:3s}
+.wa-msg-text{font-size:12px;color:#1a1a1a;line-height:1.45}
+.wa-msg-time{font-size:9px;color:#999;text-align:right;margin-top:3px}
+.wa-input-bar{background:#F0F0F0;padding:8px 12px;display:flex;align-items:center;gap:8px}
+.wa-input{flex:1;background:white;border-radius:20px;padding:6px 12px}
+.wa-input-placeholder{font-size:11px;color:#aaa}
+.wa-badge{position:absolute;top:-8px;right:-8px;background:#ef4444;color:white;font-size:11px;font-weight:700;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(239,68,68,.4);animation:badgePop .3s ease 3.2s both}
+@keyframes badgePop{from{transform:scale(0)}to{transform:scale(1)}}
+
+/* IMPLICATION - CALCULATOR */
+.calc-section{padding:80px 2rem;background:linear-gradient(180deg,#0b1e14 0%,#0d2518 100%);position:relative;overflow:hidden}
+.calc-section::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.025) 1px,transparent 0);background-size:40px 40px}
+.calc-inner{max-width:800px;margin:0 auto;position:relative}
+.calc-title{text-align:center;margin-bottom:48px}
+.calc-title h2{font-size:clamp(1.8rem,3vw,2.8rem);font-weight:800;color:white;line-height:1.15;letter-spacing:-.02em}
+.calc-title p{color:rgba(255,255,255,.45);font-size:15px;margin-top:12px}
+.calc-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:36px 40px}
+.calc-label{color:rgba(255,255,255,.55);font-size:14px;font-weight:500;margin-bottom:16px}
+.calc-label strong{color:white}
+.calc-slider-row{display:flex;align-items:center;gap:20px;margin-bottom:6px}
+.slider-track{flex:1;height:6px;background:rgba(255,255,255,.1);border-radius:3px;position:relative;cursor:pointer}
+.slider-fill{height:100%;width:40%;background:var(--green);border-radius:3px}
+.slider-thumb{position:absolute;right:calc(60% - 8px);top:-5px;width:16px;height:16px;background:white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.calc-number{color:white;font-size:2.5rem;font-weight:800;font-family:'Playfair Display',serif;width:60px;text-align:right}
+.calc-hint{color:rgba(255,255,255,.3);font-size:11px;margin-bottom:32px}
+.calc-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px}
+.calc-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;text-align:center}
+.calc-card.highlight{background:var(--green);border-color:transparent}
+.calc-card-value{font-size:2.2rem;font-weight:800;color:rgba(255,255,255,.9);font-family:'Playfair Display',serif}
+.calc-card.highlight .calc-card-value{color:white}
+.calc-card-label{font-size:10px;color:rgba(255,255,255,.4);line-height:1.4;margin-top:6px}
+.calc-card.highlight .calc-card-label{color:rgba(255,255,255,.7)}
+.calc-note{text-align:center;color:rgba(255,255,255,.4);font-size:13px}
+.calc-note strong{color:white}
+
+/* BEFORE/AFTER */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:860px;margin:0 auto}
+.ba-card{border-radius:24px;padding:32px}
+.ba-card.before{border:2px solid rgba(220,38,38,.15);background:rgba(220,38,38,.02)}
+.ba-card.after{border:2px solid rgba(15,118,110,.25);background:rgba(15,118,110,.03)}
+.ba-badge{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+.ba-dot{width:10px;height:10px;border-radius:50%}
+.ba-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.ba-card.before .ba-dot{background:rgba(220,38,38,.4)}
+.ba-card.before .ba-label{color:rgba(220,38,38,.5)}
+.ba-card.after .ba-dot{background:var(--green)}
+.ba-card.after .ba-label{color:var(--green)}
+.ba-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:13px}
+.ba-card.before .ba-item{color:#777}
+.ba-card.after .ba-item{color:#1a1a1a;font-weight:500}
+.ba-x{color:rgba(220,38,38,.4);font-weight:700;flex-shrink:0}
+.ba-check{color:var(--green);font-weight:700;flex-shrink:0}
+
+/* STEPS */
+.steps-section{padding:80px 2rem;background:#F7FAF9}
+.steps-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;max-width:1000px;margin:0 auto}
+.step-card{background:white;border-radius:24px;padding:32px;text-align:center;border:1px solid rgba(0,0,0,.06);box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.step-img-wrap{width:64px;height:64px;border-radius:16px;background:#F7FAF9;border:1px solid rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:2rem}
+.step-num{font-size:10px;font-weight:800;color:var(--green);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.step-title{font-size:18px;font-weight:800;font-family:'Playfair Display',serif;margin-bottom:8px;color:#111}
+.step-desc{font-size:13px;color:#666;line-height:1.65}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;max-width:1100px;margin:0 auto}
+.testi-card{background:white;border-radius:24px;padding:28px;border:1px solid rgba(0,0,0,.06);box-shadow:0 2px 10px rgba(0,0,0,.04);display:flex;flex-direction:column;gap:16px}
+.stars{display:flex;gap:3px;color:#f59e0b}
+.testi-quote{font-size:13px;color:#444;line-height:1.7;flex:1;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid #f0f0f0}
+.testi-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:700;flex-shrink:0}
+.testi-name{font-size:13px;font-weight:700;color:#111}
+.testi-role{font-size:11px;color:#999;margin-top:1px}
+
+/* PRICING */
+.pricing-section{padding:80px 2rem;background:linear-gradient(180deg,#0b1e14 0%,#0d2518 100%)}
+.pricing-inner{max-width:520px;margin:0 auto;text-align:center}
+.pricing-callout{background:rgba(15,118,110,.12);border:1px solid rgba(15,118,110,.2);border-radius:16px;padding:16px 20px;display:flex;gap:12px;align-items:flex-start;text-align:left;margin-bottom:32px}
+.pricing-callout-title{color:white;font-size:13px;font-weight:700}
+.pricing-callout-sub{color:rgba(255,255,255,.45);font-size:11px;margin-top:3px;line-height:1.5}
+.pricing-card{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);border-radius:28px;padding:36px;position:relative;overflow:hidden}
+.pricing-tag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#d97706,#b45309);color:white;font-size:10px;font-weight:800;padding:6px 18px;border-radius:0 0 12px 12px;letter-spacing:.06em;text-transform:uppercase}
+.pricing-price{margin-top:28px;text-align:center;margin-bottom:6px}
+.pricing-price-big{font-size:64px;font-weight:800;color:white;font-family:'Playfair Display',serif;line-height:1}
+.pricing-price-sub{color:rgba(255,255,255,.35);font-size:14px;margin-top:4px}
+.pricing-features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;text-align:left}
+.pricing-feat{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.6)}
+.pricing-feat-check{width:16px;height:16px;border-radius:50%;background:rgba(15,118,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:var(--green)}
+.btn-pricing{background:linear-gradient(135deg,#0F766E,#059669);color:white;border:none;width:100%;padding:16px;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px}
+.pricing-fine{font-size:10px;color:rgba(255,255,255,.18);margin-top:10px}
+
+/* SECTION HEADERS */
+.section-header{text-align:center;margin-bottom:56px}
+.section-header h2{font-size:clamp(1.8rem,3vw,2.8rem);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-top:10px}
+.gradient-text{background:linear-gradient(135deg,#0F766E,#22c55e,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic}
+.section-header p{color:#666;font-size:15px;margin-top:12px;max-width:480px;margin-left:auto;margin-right:auto}
+
+/* CTA */
+.cta-section{padding:100px 2rem;background:linear-gradient(180deg,#0b1e14,#061009);text-align:center;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.025) 1px,transparent 0);background-size:32px 32px}
+.cta-h2{font-size:clamp(2.2rem,5vw,4rem);font-weight:800;color:white;line-height:1.1;letter-spacing:-.03em;margin-bottom:20px;position:relative}
+.cta-sub{color:rgba(255,255,255,.45);font-size:16px;max-width:520px;margin:0 auto 40px;line-height:1.6}
+.cta-checks{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.cta-check{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.25);font-size:12px}
+.cta-check::before{content:'✓';color:var(--green);font-weight:700}
+
+/* FOOTER */
+footer{background:#060f0a;border-top:1px solid rgba(255,255,255,.05);padding:48px 2rem}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.footer-logo{display:flex;align-items:center;gap:8px}
+.footer-links{display:flex;gap:24px}
+.footer-links a{color:rgba(255,255,255,.3);text-decoration:none;font-size:13px}
+.footer-copy{width:100%;text-align:center;color:rgba(255,255,255,.15);font-size:11px;padding-top:20px;border-top:1px solid rgba(255,255,255,.05);margin-top:12px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">A</div>
+    <span class="logo-text">Altfood</span>
+  </div>
+  <div class="nav-links">
+    <a href="#">Como funciona</a>
+    <a href="#">Depoimentos</a>
+    <a href="#">FAQ</a>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn-outline" style="padding:7px 16px;font-size:13px">Entrar</button>
+    <button class="nav-btn">Começar grátis</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge"><span></span> Mais de 500 profissionais usando</div>
+      <h1 class="serif">Você passou 8 anos se formando pra responder <em>"posso trocar o frango?"</em> no WhatsApp?</h1>
+      <p class="hero-sub">O Altfood cria sua <strong>página personalizada</strong> de substituições alimentares. Seu paciente acessa, encontra a troca, pronto. Sem te chamar. Com a sua marca.</p>
+      <div class="hero-btns">
+        <button class="btn-primary">Quero parar de responder isso <span>→</span></button>
+        <button class="btn-outline">Ver como o paciente vê →</button>
+      </div>
+      <div class="hero-checks">
+        <span>Setup em 2 min</span>
+        <span>Sem instalar app</span>
+        <span>14 dias de garantia</span>
+      </div>
+    </div>
+
+    <!-- Patient page mockup -->
+    <div style="position:relative">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-header">
+            <div class="phone-profile">
+              <div class="phone-avatar">DC</div>
+              <div>
+                <div class="phone-name">Dra. Carine Cassol</div>
+                <div class="phone-crn">Nutricionista · CRN 12345</div>
+              </div>
+            </div>
+            <div class="phone-search">
+              <div class="phone-search-icon">🔍</div>
+              <div class="phone-search-text" id="search-text">Frango</div>
+            </div>
+          </div>
+          <div class="phone-results">
+            <div class="phone-result-label">8 substituições encontradas</div>
+            <div class="phone-card">
+              <span class="phone-card-icon">🥩</span>
+              <div>
+                <div class="phone-card-name">Patinho moído</div>
+                <div class="phone-card-sub">Equivalência proteica</div>
+              </div>
+              <span class="phone-card-badge">100%</span>
+            </div>
+            <div class="phone-card">
+              <span class="phone-card-icon">🐟</span>
+              <div>
+                <div class="phone-card-name">Atum em água</div>
+                <div class="phone-card-sub">Equivalência proteica</div>
+              </div>
+              <span class="phone-card-badge">98%</span>
+            </div>
+            <div class="phone-card">
+              <span class="phone-card-icon">🌱</span>
+              <div>
+                <div class="phone-card-name">Carne de soja</div>
+                <div class="phone-card-sub">Equivalência proteica</div>
+              </div>
+              <span class="phone-card-badge">95%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-float">
+        <div class="phone-float-title">✓ Sem te chamar</div>
+        <div class="phone-float-sub">Em 4 segundos</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span class="ticker-item">👩‍⚕️ 500+ profissionais ativos <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">⚡ 50.000+ substituições/mês <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">⭐ 4.9 de avaliação <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">🕐 1h+ economizada por dia <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">📱 Funciona no celular, sem app <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">🌿 Base TACO — 463 alimentos <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">👩‍⚕️ 500+ profissionais ativos <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">⚡ 50.000+ substituições/mês <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">⭐ 4.9 de avaliação <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">🕐 1h+ economizada por dia <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">📱 Funciona no celular, sem app <span class="ticker-dot">·</span></span>
+    <span class="ticker-item">🌿 Base TACO — 463 alimentos <span class="ticker-dot">·</span></span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="section" style="background:white">
+  <div class="section-inner">
+    <div class="problem-grid">
+      <div>
+        <span class="section-label">Isso te parece familiar?</span>
+        <h2 class="problem-h2 serif">São 18h30.<br>A última consulta<br>acabou.</h2>
+        <p class="problem-text">Mas o WhatsApp não sabe disso.</p>
+        <p class="problem-text">Sete mensagens novas. Todas sobre substituição alimentar. Todas de pacientes diferentes. Todas esperando resposta.</p>
+        <p class="problem-text"><strong>Você não é uma calculadora nutricional disponível 24h. Mas seus pacientes acham que é.</strong></p>
+        <div class="callout">
+          <div class="callout-icon">⏰</div>
+          <p class="callout-text">Cada resposta leva <strong>3 minutos</strong>. Com 20 pacientes ativos, são <strong>1 hora do seu dia</strong> — todo dia — sem cobrar nada por isso.</p>
+        </div>
+      </div>
+      <div>
+        <div class="wa-phone">
+          <div class="wa-screen">
+            <div class="wa-header">
+              <div class="wa-avatar">Dra</div>
+              <div class="wa-info">
+                <div class="wa-name">Dra. Maria Nutricionista</div>
+                <div class="wa-status">online</div>
+              </div>
+            </div>
+            <div class="wa-messages">
+              <div class="wa-msg"><div class="wa-msg-text">Dra., não tem frango aqui. Posso trocar por quê? 🤔</div><div class="wa-msg-time">18:31</div></div>
+              <div class="wa-msg"><div class="wa-msg-text">E 100g de frango é quanto de patinho mesmo?</div><div class="wa-msg-time">18:32</div></div>
+              <div class="wa-msg"><div class="wa-msg-text">Ah e o arroz pode usar quinoa?</div><div class="wa-msg-time">18:33</div></div>
+              <div class="wa-msg"><div class="wa-msg-text">A batata doce acabou tb kkkk</div><div class="wa-msg-time">18:34</div></div>
+              <div class="wa-msg"><div class="wa-msg-text">Dra.? Tá aí? Urgente 😅</div><div class="wa-msg-time">18:36</div></div>
+            </div>
+            <div class="wa-input-bar"><div class="wa-input"><div class="wa-input-placeholder">Mensagem</div></div></div>
+          </div>
+          <div class="wa-badge">5</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPLICATION: CALCULATOR -->
+<section class="calc-section">
+  <div class="calc-inner">
+    <div class="calc-title">
+      <span class="section-label green" style="display:block;text-align:center">Calcule sua perda</span>
+      <h2 class="serif" style="color:white;font-size:clamp(1.8rem,3vw,2.8rem);line-height:1.15;letter-spacing:-.02em;margin-top:10px">Quanto do seu ano vai embora<br><span class="gradient-text">respondendo substituição?</span></h2>
+      <p style="color:rgba(255,255,255,.45);font-size:15px;margin-top:12px">Arraste o controle abaixo e veja o impacto real no seu tempo.</p>
+    </div>
+    <div class="calc-box">
+      <div class="calc-label">Quantas perguntas de substituição você recebe <strong>por semana?</strong></div>
+      <div class="calc-slider-row">
+        <div class="slider-track" id="track" onclick="handleSlider(event)">
+          <div class="slider-fill" id="fill"></div>
+          <div class="slider-thumb" id="thumb"></div>
+        </div>
+        <div class="calc-number" id="calc-num">15</div>
+      </div>
+      <div class="calc-hint">Média: cada resposta leva ~3 minutos</div>
+      <div class="calc-cards">
+        <div class="calc-card">
+          <div class="calc-card-value" id="mins">45</div>
+          <div class="calc-card-label">minutos / semana</div>
+        </div>
+        <div class="calc-card highlight">
+          <div class="calc-card-value" id="hours">36</div>
+          <div class="calc-card-label">horas / ano perdidas</div>
+        </div>
+        <div class="calc-card">
+          <div class="calc-card-value" id="consults">48</div>
+          <div class="calc-card-label">consultas que você perde</div>
+        </div>
+      </div>
+      <div class="calc-note">São <strong id="note-h">36</strong> horas por ano respondendo coisa que uma ferramenta de <strong>R$ 47,90/mês</strong> pode fazer por você.</div>
+    </div>
+    <div style="text-align:center;margin-top:36px">
+      <button class="btn-primary" style="margin:0 auto">Quero essas horas de volta →</button>
+      <p style="color:rgba(255,255,255,.25);font-size:11px;margin-top:10px">14 dias de garantia de reembolso</p>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE/AFTER -->
+<section class="section" style="background:white">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-label green">A solução</span>
+      <h2 class="serif">E se você nunca mais precisasse<br><span class="gradient-text">responder isso?</span></h2>
+      <p>O Altfood cria sua página personalizada com todas as substituições da tabela TACO. Seu paciente acessa, busca, encontra. Sem te chamar. Com a sua marca.</p>
+    </div>
+    <div class="ba-grid">
+      <div class="ba-card before">
+        <div class="ba-badge"><div class="ba-dot"></div><span class="ba-label">Antes do Altfood</span></div>
+        <div class="ba-item"><span class="ba-x">✕</span> WhatsApp explodindo com substituições</div>
+        <div class="ba-item"><span class="ba-x">✕</span> Consultando planilhas ou memória</div>
+        <div class="ba-item"><span class="ba-x">✕</span> 3–5 min por resposta, 10x por dia</div>
+        <div class="ba-item"><span class="ba-x">✕</span> Respondendo nos fins de semana</div>
+        <div class="ba-item"><span class="ba-x">✕</span> Paciente sem autonomia, dependente</div>
+      </div>
+      <div class="ba-card after">
+        <div class="ba-badge"><div class="ba-dot"></div><span class="ba-label">Com o Altfood</span></div>
+        <div class="ba-item"><span class="ba-check">✓</span> Paciente acessa sua página em segundos</div>
+        <div class="ba-item"><span class="ba-check">✓</span> Encontra 8+ substituições com equivalência</div>
+        <div class="ba-item"><span class="ba-check">✓</span> Zero mensagens de substituição no WhatsApp</div>
+        <div class="ba-item"><span class="ba-check">✓</span> Sua marca, seu link, seu visual</div>
+        <div class="ba-item"><span class="ba-check">✓</span> Você consultando. Não respondendo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="steps-section">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-label green">Como funciona</span>
+      <h2 class="serif">3 passos e nunca mais<br>responda substituição</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-img-wrap">📋</div>
+        <div class="step-num">01</div>
+        <h3 class="step-title serif">Crie sua página</h3>
+        <p class="step-desc">Cadastre-se em 2 minutos. Personalize com seu nome, especialidade e cor. Sua página fica online na hora.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-img-wrap">📤</div>
+        <div class="step-num">02</div>
+        <h3 class="step-title serif">Compartilhe o link</h3>
+        <p class="step-desc">Você recebe um link único (altfood.app/seu-nome). Manda pelo WhatsApp, bio do Instagram ou QR Code. Uma vez só.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-img-wrap">✅</div>
+        <div class="step-num">03</div>
+        <h3 class="step-title serif">Paciente resolve sozinho</h3>
+        <p class="step-desc">"Não tem frango?" Ele abre o link, digita, encontra 8 opções com equivalência nutricional. Em 4 segundos. Sem te chamar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" style="background:white">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-label green">Depoimentos reais</span>
+      <h2 class="serif">Quem usa, não volta atrás</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Eu perdia 1h por dia respondendo 'posso trocar o frango?'. Agora meus pacientes resolvem sozinhos. Meu WhatsApp ficou silencioso de substituição."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#0F766E">CS</div>
+          <div><div class="testi-name">Dra. Camila Santos</div><div class="testi-role">Nutricionista Clínica · SP</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"Mandei o link do Altfood para os 80 pacientes da minha agenda. No mesmo dia, parei de receber mensagem de substituição. Simples assim."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#2563EB">RM</div>
+          <div><div class="testi-name">Dr. Ricardo Mendes</div><div class="testi-role">Endocrinologista · RJ</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-quote">"As mães me mandavam áudio de 3 minutos perguntando substituição. Agora elas consultam no Altfood e me mandam só 'obrigada' 😂."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#D97706">PA</div>
+          <div><div class="testi-name">Dra. Patrícia Almeida</div><div class="testi-role">Nutricionista Materno-Infantil · CE</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section">
+  <div class="pricing-inner">
+    <div class="section-header" style="margin-bottom:24px">
+      <span class="section-label green">Investimento</span>
+      <h2 class="serif" style="color:white">Menos que um café por dia.<br><span class="gradient-text">Horas de volta por semana.</span></h2>
+    </div>
+    <div class="pricing-callout">
+      <span style="font-size:22px;flex-shrink:0">🎉</span>
+      <div>
+        <div class="pricing-callout-title">Seu paciente não paga nada</div>
+        <div class="pricing-callout-sub">Só você investe. Seus pacientes acessam gratuitamente, sem conta, sem app.</div>
+      </div>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-tag">✦ Altfood Pro</div>
+      <div class="pricing-price">
+        <div style="display:flex;align-items:flex-end;justify-content:center;gap:4px">
+          <span style="color:rgba(255,255,255,.35);font-size:16px;margin-bottom:12px">R$</span>
+          <span class="pricing-price-big">47</span>
+          <span style="color:rgba(255,255,255,.6);font-size:24px;font-weight:700;margin-bottom:8px">,90</span>
+        </div>
+        <div class="pricing-price-sub">/mês · Cancele quando quiser</div>
+      </div>
+      <div class="pricing-features">
+        <div class="pricing-feat"><div class="pricing-feat-check">✓</div> Substituições ilimitadas</div>
+        <div class="pricing-feat"><div class="pricing-feat-check">✓</div> Base TACO (463+ alimentos)</div>
+        <div class="pricing-feat"><div class="pricing-feat-check">✓</div> Página com sua marca</div>
+        <div class="pricing-feat"><div class="pricing-feat-check">✓</div> Analytics em tempo real</div>
+        <div class="pricing-feat"><div class="pricing-feat-check">✓</div> Link e QR Code exclusivos</div>
+        <div class="pricing-feat"><div class="pricing-feat-check">✓</div> Suporte prioritário</div>
+      </div>
+      <button class="btn-pricing">Assinar Altfood Pro →</button>
+      <div class="pricing-fine">14 dias de garantia de reembolso · Pagamento seguro</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <h2 class="cta-h2 serif">Seu próximo paciente<br>já vai se virar sozinho.</h2>
+  <p class="cta-sub">Configure em 2 minutos. Envie o link pra agenda inteira. A partir de hoje, "posso trocar o frango?" deixa de ser problema seu.</p>
+  <button class="btn-primary" style="margin:0 auto;font-size:18px;padding:18px 40px">Criar minha página agora →</button>
+  <p style="color:rgba(255,255,255,.2);font-size:12px;margin-top:14px">14 dias de garantia · Cancele quando quiser</p>
+  <div class="cta-checks">
+    <span class="cta-check">Setup em 2 minutos</span>
+    <span class="cta-check">Sem contrato</span>
+    <span class="cta-check">Dados da Tabela TACO</span>
+    <span class="cta-check">Suporte humano</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <div class="logo-icon">A</div>
+      <span class="logo-text">Altfood</span>
+    </div>
+    <div class="footer-links">
+      <a href="#">Planos</a>
+      <a href="#">FAQ</a>
+      <a href="#">Contato</a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2025 Altfood. Todos os direitos reservados.</div>
+</footer>
+
+<script>
+// Animated search text
+const searches = ['Frango','Arroz branco','Batata doce','Ovo cozido','Aveia'];
+let si = 0;
+setInterval(()=>{
+  si=(si+1)%searches.length;
+  const el=document.getElementById('search-text');
+  if(el){el.style.opacity='0';setTimeout(()=>{el.textContent=searches[si];el.style.opacity='1';},200)}
+},2200);
+
+// Calculator
+let calcVal = 15;
+function updateCalc(v){
+  calcVal=v;
+  const mins=v*3, hours=Math.round((mins*48)/60), consults=Math.round(hours/0.75);
+  document.getElementById('calc-num').textContent=v;
+  document.getElementById('mins').textContent=mins;
+  document.getElementById('hours').textContent=hours;
+  document.getElementById('consults').textContent=consults;
+  document.getElementById('note-h').textContent=hours;
+  const pct=((v-1)/59)*100;
+  document.getElementById('fill').style.width=pct+'%';
+  document.getElementById('thumb').style.right='calc('+( 100-pct)+'% - 8px)';
+  document.getElementById('thumb').style.left='auto';
+}
+updateCalc(15);
+
+function handleSlider(e){
+  const track=document.getElementById('track');
+  const rect=track.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+  const v=Math.round(1+pct*59);
+  updateCalc(v);
+}
+
+const track=document.getElementById('track');
+let dragging=false;
+track.addEventListener('mousedown',e=>{dragging=true;handleSlider(e)});
+document.addEventListener('mousemove',e=>{if(dragging)handleSlider(e)});
+document.addEventListener('mouseup',()=>{dragging=false});
+</script>
+</body>
+</html>

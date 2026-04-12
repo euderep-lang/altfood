@@ -16,6 +16,7 @@ type DoctorRow = {
   user_id: string;
   email: string;
   logo_url: string | null;
+  favicon_url?: string | null;
 };
 
 const AUTH_USER_NOT_FOUND_MESSAGES = ["User not found", "not found"];
@@ -39,6 +40,8 @@ function getLogoPathFromPublicUrl(logoUrl: string | null): string | null {
   return path ? decodeURIComponent(path) : null;
 }
 
+const DOCTOR_SELECT = "id, user_id, email, logo_url, favicon_url" as const;
+
 async function findAuthUserIdsByEmails(
   supabaseAdmin: ReturnType<typeof createClient>,
   emails: Set<string>
@@ -47,6 +50,9 @@ async function findAuthUserIdsByEmails(
   const result = new Map<string, string[]>();
 
   if (normalizedEmails.size === 0) return result;
+
+  /** Emails we still need to resolve to at least one auth user id */
+  const pending = new Set(normalizedEmails);
 
   let page = 1;
   const perPage = 200;
@@ -57,13 +63,15 @@ async function findAuthUserIdsByEmails(
 
     for (const user of data.users) {
       const userEmail = user.email?.toLowerCase();
-      if (!userEmail || !normalizedEmails.has(userEmail)) continue;
+      if (!userEmail || !pending.has(userEmail)) continue;
 
       const existing = result.get(userEmail) ?? [];
       existing.push(user.id);
       result.set(userEmail, existing);
+      pending.delete(userEmail);
     }
 
+    if (pending.size === 0) break;
     if (data.users.length < perPage) break;
     page += 1;
   }
@@ -169,7 +177,7 @@ Deno.serve(async (req) => {
     if (doctorId) {
       const { data: doctorById, error: doctorByIdError } = await supabaseAdmin
         .from("doctors")
-        .select("id, user_id, email, logo_url")
+        .select(DOCTOR_SELECT)
         .eq("id", doctorId)
         .maybeSingle();
 
@@ -186,7 +194,7 @@ Deno.serve(async (req) => {
     if (userIdsToDelete.size > 0) {
       const { data: doctorsByUser, error: doctorsByUserError } = await supabaseAdmin
         .from("doctors")
-        .select("id, user_id, email, logo_url")
+        .select(DOCTOR_SELECT)
         .in("user_id", Array.from(userIdsToDelete));
 
       if (doctorsByUserError) {
@@ -207,7 +215,7 @@ Deno.serve(async (req) => {
       if (orFilter) {
         const { data: doctorsByEmail, error: doctorsByEmailError } = await supabaseAdmin
           .from("doctors")
-          .select("id, user_id, email, logo_url")
+          .select(DOCTOR_SELECT)
           .or(orFilter);
 
         if (doctorsByEmailError) {
@@ -221,15 +229,18 @@ Deno.serve(async (req) => {
       }
     }
 
-    const authUserIdsByEmail = await findAuthUserIdsByEmails(supabaseAdmin, emailsToDelete);
-    for (const ids of authUserIdsByEmail.values()) {
-      for (const userId of ids) userIdsToDelete.add(userId);
+    // Só varre Auth por email quando ainda não temos nenhum user_id (ex.: limpeza só com email).
+    if (emailsToDelete.size > 0 && userIdsToDelete.size === 0) {
+      const authUserIdsByEmail = await findAuthUserIdsByEmails(supabaseAdmin, emailsToDelete);
+      for (const ids of authUserIdsByEmail.values()) {
+        for (const userId of ids) userIdsToDelete.add(userId);
+      }
     }
 
     if (userIdsToDelete.size > 0) {
       const { data: additionalDoctors, error: additionalDoctorsError } = await supabaseAdmin
         .from("doctors")
-        .select("id, user_id, email, logo_url")
+        .select(DOCTOR_SELECT)
         .in("user_id", Array.from(userIdsToDelete));
 
       if (additionalDoctorsError) {
@@ -247,7 +258,10 @@ Deno.serve(async (req) => {
     const allUserIds = unique(Array.from(userIdsToDelete));
     const logoPaths = unique(
       doctorRows
-        .map((row) => getLogoPathFromPublicUrl(row.logo_url))
+        .flatMap((row) => [
+          getLogoPathFromPublicUrl(row.logo_url),
+          getLogoPathFromPublicUrl(row.favicon_url),
+        ])
         .filter((path): path is string => Boolean(path))
     );
 
@@ -266,6 +280,7 @@ Deno.serve(async (req) => {
         "nps_responses",
         "page_views",
         "patient_feedback",
+        "patient_profiles",
         "payments",
         "substitution_queries",
         "support_tickets",
@@ -365,17 +380,6 @@ Deno.serve(async (req) => {
     for (const userId of allUserIds) {
       await hardDeleteAuthUser(supabaseAdmin, userId);
       deletedAuthUserIds.push(userId);
-    }
-
-    if (emailsToDelete.size > 0) {
-      const remainingAuthUsers = await findAuthUserIdsByEmails(supabaseAdmin, emailsToDelete);
-      const remainingIds = unique(Array.from(remainingAuthUsers.values()).flat());
-
-      for (const userId of remainingIds) {
-        if (deletedAuthUserIds.includes(userId)) continue;
-        await hardDeleteAuthUser(supabaseAdmin, userId);
-        deletedAuthUserIds.push(userId);
-      }
     }
 
     return new Response(
