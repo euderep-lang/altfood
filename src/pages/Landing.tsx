@@ -40,6 +40,22 @@ const testimonials = [
   { name: 'Dra. Patrícia Almeida', role: 'Nutricionista Materno-Infantil · CE', color: '#D97706', text: 'As mães me mandavam áudio de 3 minutos perguntando substituição. Agora elas consultam no Altfood e me mandam só "obrigada" 😂.' },
 ];
 
+/* ─────────────── “Como funciona”: print dentro de moldura celular ─────────────── */
+function StepPhoneScreenshot({ src, alt }: { src: string; alt: string }) {
+  return (
+    <figure className="relative mx-auto w-[118px] sm:w-[132px] md:w-[146px] aspect-[9/18.5]">
+      <div
+        className="absolute inset-0 rounded-[1.7rem] bg-gradient-to-b from-zinc-600 via-zinc-800 to-zinc-950 shadow-[0_20px_48px_-14px_rgba(0,0,0,0.42)] border border-white/[0.12] ring-1 ring-black/25"
+        aria-hidden
+      />
+      <div className="pointer-events-none absolute left-1/2 top-[9px] z-10 h-[10px] w-10 -translate-x-1/2 rounded-full bg-black shadow-inner" aria-hidden />
+      <div className="absolute inset-[6px] top-[22px] overflow-hidden rounded-[1.05rem] bg-zinc-950 ring-1 ring-black/40">
+        <img src={src} alt={alt} className="h-full w-full object-cover object-top" loading="lazy" decoding="async" />
+      </div>
+    </figure>
+  );
+}
+
 /* ─────────────── WhatsApp sim ─────────────── */
 function WhatsAppSim() {
   const [visible, setVisible] = useState(1);
@@ -53,14 +69,14 @@ function WhatsAppSim() {
   }, [inView]);
 
   return (
-    <div ref={ref} className="relative max-w-sm mx-auto">
-      {/* Phone shell */}
-      <div className="relative bg-[#1a1a2e] rounded-[2.5rem] p-3 shadow-2xl border border-white/10">
-        {/* notch */}
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-10" />
-        <div className="rounded-[2rem] overflow-hidden bg-[#ECE5DD]">
-          {/* WA header */}
-          <div className="bg-[#075E54] px-4 pt-8 pb-3 flex items-center gap-3">
+    <div ref={ref} className="relative mx-auto w-[min(100%,286px)]">
+      {/* Phone shell — ~9:19 portrait, bezel fino */}
+      <div className="relative bg-gradient-to-b from-[#2a2a3e] to-[#12121c] rounded-[2.85rem] p-[10px] shadow-[0_28px_70px_-14px_rgba(0,0,0,0.55)] border border-white/[0.12] ring-1 ring-black/40">
+        {/* Dynamic island */}
+        <div className="absolute top-[11px] left-1/2 -translate-x-1/2 w-[72px] h-[26px] bg-black rounded-full z-20 shadow-inner" />
+        <div className="rounded-[2.25rem] overflow-hidden bg-[#ECE5DD] shadow-inner">
+          {/* WA header — safe area abaixo da ilha */}
+          <div className="bg-[#075E54] px-3.5 pt-10 pb-3 flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold shrink-0">Dra</div>
             <div>
               <p className="text-white text-sm font-semibold leading-none">Dra. Maria Nutricionista</p>
@@ -68,7 +84,7 @@ function WhatsAppSim() {
             </div>
           </div>
           {/* Messages */}
-          <div className="px-3 pt-3 pb-3 min-h-[260px] space-y-2 bg-[url('data:image/svg+xml,%3Csvg width=\'300\' height=\'300\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ECE5DD\'/%3E%3C/svg%3E')]">
+          <div className="px-3 pt-3 pb-3 min-h-[min(52vh,340px)] sm:min-h-[360px] space-y-2 bg-[url('data:image/svg+xml,%3Csvg width=\'300\' height=\'300\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Crect width=\'300\' height=\'300\' fill=\'%23ECE5DD\'/%3E%3C/svg%3E')]">
             {waMsgs.slice(0, visible).map((msg, i) => (
               <motion.div
                 key={i}
@@ -92,11 +108,14 @@ function WhatsAppSim() {
               </div>
             )}
           </div>
-          {/* Input bar */}
-          <div className="bg-[#F0F0F0] px-3 py-2 flex items-center gap-2">
+          {/* Input bar — home indicator */}
+          <div className="bg-[#F0F0F0] px-3 py-2 flex items-center gap-2 pb-3">
             <div className="flex-1 bg-white rounded-full h-9 px-3 flex items-center">
               <span className="text-gray-400 text-[11px]">Mensagem</span>
             </div>
+          </div>
+          <div className="h-1.5 flex justify-center pb-1.5 bg-[#F0F0F0]">
+            <div className="w-28 h-1 rounded-full bg-black/15" aria-hidden />
           </div>
         </div>
       </div>
@@ -177,13 +196,13 @@ function PatientMockup() {
   }, []);
 
   return (
-    <div className="relative max-w-xs mx-auto">
-      {/* Phone shell */}
-      <div className="bg-[#111] rounded-[2.8rem] p-3 shadow-2xl ring-1 ring-white/10">
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-10" />
-        <div className="rounded-[2.2rem] overflow-hidden bg-[#F7FAF9]">
+    <div className="relative mx-auto w-[min(100%,278px)]">
+      {/* Phone shell — proporção smartphone (~9:19), bezel fino */}
+      <div className="relative bg-gradient-to-b from-zinc-800 to-zinc-950 rounded-[2.85rem] p-[10px] shadow-[0_28px_70px_-14px_rgba(0,0,0,0.55)] ring-1 ring-white/10">
+        <div className="absolute top-[11px] left-1/2 -translate-x-1/2 w-[72px] h-[26px] bg-black rounded-full z-20 shadow-inner" />
+        <div className="rounded-[2.25rem] overflow-hidden bg-[#F7FAF9] shadow-inner">
           {/* Header */}
-          <div className="bg-[#0F766E] px-4 pt-8 pb-5">
+          <div className="bg-[#0F766E] px-3.5 pt-10 pb-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white font-bold text-sm shrink-0">DC</div>
               <div>
@@ -208,7 +227,7 @@ function PatientMockup() {
             </div>
           </div>
           {/* Results */}
-          <div className="px-3 py-3 space-y-2">
+          <div className="px-3 py-3 space-y-2 min-h-[200px]">
             <p className="text-[10px] text-gray-400 font-medium px-1">8 substituições encontradas</p>
             {[
               { name: 'Patinho moído', pct: '100%', icon: '🥩' },
@@ -225,7 +244,9 @@ function PatientMockup() {
               </div>
             ))}
           </div>
-          <div className="h-10 bg-[#F7FAF9]" />
+          <div className="bg-[#F7FAF9] pt-1 pb-2 flex justify-center">
+            <div className="w-28 h-1 rounded-full bg-black/12" aria-hidden />
+          </div>
         </div>
       </div>
 
@@ -233,7 +254,7 @@ function PatientMockup() {
       <motion.div
         animate={{ y: [0, -6, 0] }}
         transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-        className="absolute -left-6 top-1/3 bg-white rounded-2xl shadow-xl px-4 py-3 border border-[#0F766E]/10"
+        className="absolute -left-4 sm:-left-6 top-1/3 bg-white rounded-2xl shadow-xl px-3 py-2.5 sm:px-4 sm:py-3 border border-[#0F766E]/10 max-sm:scale-90 max-sm:-left-2"
       >
         <p className="text-[11px] font-bold text-[#0F766E]">✓ Sem te chamar</p>
         <p className="text-[10px] text-gray-400">Em 4 segundos</p>
@@ -587,9 +608,9 @@ export default function Landing() {
                 {i < 2 && (
                   <div className="hidden md:block absolute top-12 left-full w-full h-px border-t-2 border-dashed border-[#0F766E]/20 z-0" style={{ width: 'calc(100% - 2rem)', left: 'calc(100% - 0.5rem)' }} />
                 )}
-                <div className="bg-white rounded-3xl p-8 shadow-sm border border-border/50 hover:shadow-md hover:border-[#0F766E]/20 transition-all duration-300 text-center space-y-5 h-full relative z-10">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mx-auto overflow-hidden bg-[#F7FAF9] border border-border/40">
-                    <img src={s.img} alt={s.title} className="w-12 h-12 object-contain" />
+                <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-border/50 hover:shadow-md hover:border-[#0F766E]/20 transition-all duration-300 text-center space-y-5 h-full relative z-10">
+                  <div className="flex justify-center pt-1">
+                    <StepPhoneScreenshot src={s.img} alt={s.title} />
                   </div>
                   <div>
                     <span className="text-gradient text-xs font-black tracking-widest uppercase">{s.step}</span>
