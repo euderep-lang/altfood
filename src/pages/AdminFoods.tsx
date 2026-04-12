@@ -171,10 +171,9 @@ export default function AdminFoods() {
     setImporting(true);
 
     try {
-      const XLSX = await import('xlsx');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      const { default: ExcelJS } = await import('exceljs');
+      const wb = new ExcelJS.Workbook();
+      await wb.xlsx.load(await file.arrayBuffer());
 
       const SHEET_TO_CATEGORY: Record<string, string> = {
         '🥩 Proteínas': 'Proteínas Animais',
@@ -192,7 +191,8 @@ export default function AdminFoods() {
       const { data: freshCategories } = await supabase.from('food_categories').select('*').order('sort_order');
       const cats = (freshCategories || []) as FoodCategory[];
 
-      for (const sheetName of workbook.SheetNames) {
+      for (const ws of wb.worksheets) {
+        const sheetName = ws.name;
         if (SKIP_SHEETS.includes(sheetName)) continue;
 
         const categoryName = SHEET_TO_CATEGORY[sheetName] || sheetName.replace(/^[^\w]+/, '').trim();
@@ -215,16 +215,22 @@ export default function AdminFoods() {
           cats.push(category);
         }
 
-        const ws = workbook.Sheets[sheetName];
-        const rows: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
-
+        const rows: unknown[][] = [];
+        ws.eachRow({ includeEmpty: true }, (row) => {
+          const maxC = Math.max(row.cellCount, 12);
+          const r: unknown[] = [];
+          for (let c = 1; c <= maxC; c++) {
+            r.push(row.getCell(c).value ?? null);
+          }
+          rows.push(r);
+        });
         const dataRows = rows.slice(4);
 
         const foodRows: any[] = [];
         for (const row of dataRows) {
-          const name = row[1];
-          if (!name || typeof name !== 'string') continue;
-          const trimmedName = name.trim();
+          const rawName = row[1];
+          if (rawName == null || rawName === '') continue;
+          const trimmedName = String(rawName).trim();
           if (!trimmedName || trimmedName.startsWith('Total de alimentos') || trimmedName === '#') continue;
 
           const porcao = row[2] ? String(row[2]).trim() : '';
