@@ -9,6 +9,17 @@ const corsHeaders = {
 const BOT_UA =
   /whatsapp|telegrambot|twitterbot|facebookexternalhit|linkedinbot|slackbot|discordbot|googlebot|bingbot|yandexbot|baiduspider|duckduckbot|pinterest|embedly|quora|showyoubot|outbrain|vkshare|tumblr|skypeuripreview|nuzzel|w3c_validator/i;
 
+function doctorFaviconHref(
+  d: { favicon_mode?: string | null; favicon_url?: string | null; logo_url?: string | null },
+  base: string,
+): string {
+  const mode = d.favicon_mode || "default";
+  const fallback = `${base}/icon-192.png`;
+  if (mode === "logo" && d.logo_url?.trim()) return d.logo_url.trim();
+  if (mode === "custom" && d.favicon_url?.trim()) return d.favicon_url.trim();
+  return fallback;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -40,7 +51,7 @@ Deno.serve(async (req: Request) => {
 
   const { data: doctor } = await sb
     .from("doctors")
-    .select("name, specialty, bio, logo_url, slug, primary_color")
+    .select("name, specialty, bio, logo_url, favicon_mode, favicon_url, slug, primary_color")
     .eq("slug", slug)
     .single();
 
@@ -56,6 +67,7 @@ Deno.serve(async (req: Request) => {
     ? doctor.bio.slice(0, 155)
     : `${doctor.name} é ${doctor.specialty} e usa o Altfood para oferecer substituições alimentares personalizadas aos seus pacientes.`;
   const image = doctor.logo_url || `${base}/icon-512.png`;
+  const favicon = doctorFaviconHref(doctor, base);
 
   const html = `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -76,6 +88,9 @@ Deno.serve(async (req: Request) => {
   <meta name="twitter:title" content="${escapeHtml(title)}"/>
   <meta name="twitter:description" content="${escapeHtml(description)}"/>
   <meta name="twitter:image" content="${escapeHtml(image)}"/>
+
+  <link rel="icon" href="${escapeHtml(favicon)}" type="image/png"/>
+  <link rel="apple-touch-icon" href="${escapeHtml(favicon)}"/>
 
   <link rel="canonical" href="${escapeHtml(targetUrl)}"/>
   <meta http-equiv="refresh" content="0;url=${escapeHtml(targetUrl)}"/>

@@ -59,6 +59,8 @@ export type Database = {
           email_tips: boolean
           email_weekly_summary: boolean
           featured_food_id: string | null
+          favicon_mode: string
+          favicon_url: string | null
           id: string
           instagram_link: string | null
           logo_url: string | null
@@ -93,6 +95,8 @@ export type Database = {
           email_tips?: boolean
           email_weekly_summary?: boolean
           featured_food_id?: string | null
+          favicon_mode?: string
+          favicon_url?: string | null
           id?: string
           instagram_link?: string | null
           logo_url?: string | null
@@ -127,6 +131,8 @@ export type Database = {
           email_tips?: boolean
           email_weekly_summary?: boolean
           featured_food_id?: string | null
+          favicon_mode?: string
+          favicon_url?: string | null
           id?: string
           instagram_link?: string | null
           logo_url?: string | null

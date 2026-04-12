@@ -16,6 +16,7 @@ type DoctorRow = {
   user_id: string;
   email: string;
   logo_url: string | null;
+  favicon_url: string | null;
 };
 
 const AUTH_USER_NOT_FOUND_MESSAGES = ["User not found", "not found"];
@@ -169,7 +170,7 @@ Deno.serve(async (req) => {
     if (doctorId) {
       const { data: doctorById, error: doctorByIdError } = await supabaseAdmin
         .from("doctors")
-        .select("id, user_id, email, logo_url")
+        .select("id, user_id, email, logo_url, favicon_url")
         .eq("id", doctorId)
         .maybeSingle();
 
@@ -186,7 +187,7 @@ Deno.serve(async (req) => {
     if (userIdsToDelete.size > 0) {
       const { data: doctorsByUser, error: doctorsByUserError } = await supabaseAdmin
         .from("doctors")
-        .select("id, user_id, email, logo_url")
+        .select("id, user_id, email, logo_url, favicon_url")
         .in("user_id", Array.from(userIdsToDelete));
 
       if (doctorsByUserError) {
@@ -207,7 +208,7 @@ Deno.serve(async (req) => {
       if (orFilter) {
         const { data: doctorsByEmail, error: doctorsByEmailError } = await supabaseAdmin
           .from("doctors")
-          .select("id, user_id, email, logo_url")
+          .select("id, user_id, email, logo_url, favicon_url")
           .or(orFilter);
 
         if (doctorsByEmailError) {
@@ -229,7 +230,7 @@ Deno.serve(async (req) => {
     if (userIdsToDelete.size > 0) {
       const { data: additionalDoctors, error: additionalDoctorsError } = await supabaseAdmin
         .from("doctors")
-        .select("id, user_id, email, logo_url")
+        .select("id, user_id, email, logo_url, favicon_url")
         .in("user_id", Array.from(userIdsToDelete));
 
       if (additionalDoctorsError) {
@@ -247,7 +248,10 @@ Deno.serve(async (req) => {
     const allUserIds = unique(Array.from(userIdsToDelete));
     const logoPaths = unique(
       doctorRows
-        .map((row) => getLogoPathFromPublicUrl(row.logo_url))
+        .flatMap((row) => [
+          getLogoPathFromPublicUrl(row.logo_url),
+          getLogoPathFromPublicUrl(row.favicon_url),
+        ])
         .filter((path): path is string => Boolean(path))
     );
 

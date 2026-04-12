@@ -16,12 +16,39 @@ import { t, getSavedLang, saveLang, type Lang } from '@/lib/i18n';
 import type { Database } from '@/integrations/supabase/types';
 import { toast } from 'sonner';
 import { translateFoodName, translateCategoryName, translatePreparation } from '@/lib/foodTranslations';
+import { resolveDoctorFaviconHref } from '@/lib/doctorFavicon';
 
 type Food = Database['public']['Tables']['foods']['Row'];
 type FoodCategory = Database['public']['Tables']['food_categories']['Row'];
 type Doctor = Database['public']['Tables']['doctors']['Row'];
 
 const QUICK_WEIGHTS = [100, 150, 200, 250];
+
+const faviconHrefBackup = { captured: false as boolean, icon: null as string | null, apple: null as string | null };
+
+function applyDoctorFaviconHref(href: string) {
+  const icon = document.querySelector('link[rel="icon"]') as HTMLLinkElement | null;
+  const apple = document.querySelector('link[rel="apple-touch-icon"]') as HTMLLinkElement | null;
+  if (!faviconHrefBackup.captured) {
+    faviconHrefBackup.icon = icon?.getAttribute('href') ?? null;
+    faviconHrefBackup.apple = apple?.getAttribute('href') ?? null;
+    faviconHrefBackup.captured = true;
+  }
+  if (icon) icon.setAttribute('href', href);
+  if (apple) apple.setAttribute('href', href);
+}
+
+function restoreDoctorFaviconHref() {
+  const icon = document.querySelector('link[rel="icon"]') as HTMLLinkElement | null;
+  const apple = document.querySelector('link[rel="apple-touch-icon"]') as HTMLLinkElement | null;
+  if (faviconHrefBackup.captured) {
+    if (icon && faviconHrefBackup.icon != null) icon.setAttribute('href', faviconHrefBackup.icon);
+    if (apple && faviconHrefBackup.apple != null) apple.setAttribute('href', faviconHrefBackup.apple);
+  }
+  faviconHrefBackup.captured = false;
+  faviconHrefBackup.icon = null;
+  faviconHrefBackup.apple = null;
+}
 
 // Translation helpers bound to current lang
 const fn = (lang: Lang, name: string) => lang === 'en' ? translateFoodName(name) : name;
@@ -35,6 +62,8 @@ function setDoctorMeta(doctor: {
   logo_url: string | null;
   slug: string;
   primary_color: string;
+  favicon_mode?: string | null;
+  favicon_url?: string | null;
 }) {
   const baseUrl = window.location.origin;
   const pageUrl = `${baseUrl}/${doctor.slug}`;
@@ -57,6 +86,9 @@ function setDoctorMeta(doctor: {
   };
 
   document.title = title;
+
+  const faviconHref = resolveDoctorFaviconHref(doctor, baseUrl);
+  applyDoctorFaviconHref(faviconHref);
 
   setMeta('meta[name="description"]', 'content', description);
   setMeta('meta[name="theme-color"]', 'content', doctor.primary_color);
@@ -110,6 +142,7 @@ function setDoctorMeta(doctor: {
 
 function resetMeta() {
   document.title = 'Altfood — Substituição Alimentar para Profissionais de Saúde';
+  restoreDoctorFaviconHref();
   const canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
   if (canonical) canonical.href = window.location.origin + '/';
   const jsonLd = document.getElementById('doctor-jsonld');
@@ -143,7 +176,10 @@ export default function PatientPage() {
           id: '00000000-0000-0000-0000-000000000000', name: 'Altfood', slug: 'altfood',
           primary_color: '#0EA5E9', secondary_color: '#38BDF8', bio: 'Encontre substituições alimentares seguras.',
           onboarding_completed: true, theme_layout: 'minimal', specialty: 'Nutrição',
-          logo_url: null, welcome_message: null, whatsapp_link: null, instagram_link: null,
+          logo_url: null,
+          favicon_mode: 'default',
+          favicon_url: null,
+          welcome_message: null, whatsapp_link: null, instagram_link: null,
           email: '', phone: null, document_number: null, document_type: 'CRN',
           subscription_status: 'active', user_id: '', referral_code: null, referred_by: null,
           email_weekly_summary: false, email_tips: false, featured_food_id: null,
@@ -273,6 +309,8 @@ export default function PatientPage() {
         logo_url: doctor.logo_url ?? null,
         slug: doctor.slug,
         primary_color: doctor.primary_color ?? '#0F766E',
+        favicon_mode: doctor.favicon_mode ?? null,
+        favicon_url: doctor.favicon_url ?? null,
       });
     }
     return () => { resetMeta(); };

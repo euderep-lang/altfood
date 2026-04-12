@@ -12,6 +12,7 @@ import { motion } from 'framer-motion';
 import { getSafeInternalPath } from '@/lib/safeRedirect';
 import { createTimeoutSignal } from '@/lib/supabaseHelpers';
 import { hasPaidAppAccess } from '@/lib/subscriptionAccess';
+import { CHECKOUT_MONTHLY_PATH } from '@/lib/checkoutIntent';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -86,7 +87,7 @@ export default function Login() {
         navigate(nextPath, { replace: true });
       } else {
         toast({ title: 'Assinatura inativa', description: 'Renove sua assinatura para continuar.', variant: 'destructive' });
-        navigate('/planos', { replace: true });
+        navigate(CHECKOUT_MONTHLY_PATH, { replace: true });
       }
     } else if (!hasPaidAppAccess(doctor)) {
       if (wantsCheckout && nextPath) {
@@ -94,7 +95,7 @@ export default function Login() {
         navigate(nextPath, { replace: true });
       } else {
         toast({ title: 'Assinatura necessária', description: 'Assine o Altfood Pro para acessar o painel.' });
-        navigate('/planos', { replace: true });
+        navigate(CHECKOUT_MONTHLY_PATH, { replace: true });
       }
     } else {
       toast({ title: '✅ Login realizado!' });

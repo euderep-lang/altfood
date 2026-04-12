@@ -11,6 +11,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { motion } from 'framer-motion';
 import { Link, Navigate } from 'react-router-dom';
 import { useMemo } from 'react';
+import { CHECKOUT_MONTHLY_PATH } from '@/lib/checkoutIntent';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -237,7 +238,7 @@ export default function Dashboard() {
                   <p className="text-2xl font-bold text-foreground">{s.value}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">{s.label}</p>
                   {s.isCta && (
-                    <Link to="/planos">
+                    <Link to={CHECKOUT_MONTHLY_PATH}>
                       <Button size="sm" className="mt-2 rounded-lg text-xs h-7 gap-1 bg-primary hover:bg-primary/90">
                         <Sparkles className="w-3 h-3" /> Fazer upgrade
                       </Button>

@@ -5,6 +5,7 @@ import { Loader2, Crown, Check, Clock, LogOut, Sparkles, Zap } from 'lucide-reac
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { formatProMonthlyMoney } from '@/lib/subscriptionPricing';
+import { CHECKOUT_MONTHLY_PATH } from '@/lib/checkoutIntent';
 import { hasPaidAppAccess, type DoctorAccessFields } from '@/lib/subscriptionAccess';
 import { supabase } from '@/integrations/supabase/client';
 import { motion } from 'framer-motion';
@@ -184,7 +185,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                   transition={{ delay: 0.6 }}
                   className="space-y-2.5"
                 >
-                  <Link to="/planos">
+                  <Link to={CHECKOUT_MONTHLY_PATH}>
                     <Button className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-base font-bold gap-2 shadow-lg shadow-primary/20">
                       <Zap className="w-5 h-5" />
                       Parar de responder no WhatsApp — {formatProMonthlyMoney()}

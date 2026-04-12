@@ -21,8 +21,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link } from 'react-router-dom';
+import { CHECKOUT_MONTHLY_PATH } from '@/lib/checkoutIntent';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { resolveDoctorFaviconHref, normalizeFaviconMode } from '@/lib/doctorFavicon';
 
 const COLOR_PRESETS = [
   '#0F766E', '#0D9488', '#059669', '#16A34A',
@@ -36,6 +39,7 @@ export default function Profile() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
+  const faviconFileRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
 
   const [saving, setSaving] = useState(false);
@@ -44,6 +48,8 @@ export default function Profile() {
   const [emailPrefs, setEmailPrefs] = useState({ email_weekly_summary: true, email_tips: true });
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [faviconFile, setFaviconFile] = useState<File | null>(null);
+  const [faviconPreview, setFaviconPreview] = useState<string | null>(null);
   const [slugValue, setSlugValue] = useState('');
   const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null);
   const [checkingSlug, setCheckingSlug] = useState(false);
@@ -114,6 +120,20 @@ export default function Profile() {
   const patientUrl = `${window.location.origin}/${slugValue || doctor.slug}`;
   const bioLength = (getField('bio') || '').length;
 
+  const hasLogo = Boolean(logoPreview || (getField('logo_url') !== '' && doctor.logo_url));
+  const faviconModeDraft = normalizeFaviconMode(getField('favicon_mode') || doctor.favicon_mode);
+  const logoForFavicon = logoPreview || (getField('logo_url') !== '' && doctor.logo_url ? doctor.logo_url : null);
+  const customFaviconEffective =
+    faviconPreview || (getField('favicon_url') !== '' && doctor.favicon_url ? doctor.favicon_url : null);
+  const faviconPreviewHref = resolveDoctorFaviconHref(
+    {
+      favicon_mode: faviconModeDraft,
+      favicon_url: customFaviconEffective,
+      logo_url: logoForFavicon,
+    },
+    typeof window !== 'undefined' ? window.location.origin : '',
+  );
+
   const handleLogoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -130,6 +150,26 @@ export default function Profile() {
     setLogoFile(null);
     setLogoPreview(null);
     update('logo_url', '');
+    setSaved(false);
+  };
+
+  const handleFaviconSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 1024 * 1024) {
+      toast({ title: 'Arquivo muito grande', description: 'Máximo 1MB para o favicon.', variant: 'destructive' });
+      return;
+    }
+    setFaviconFile(file);
+    setFaviconPreview(URL.createObjectURL(file));
+    update('favicon_mode', 'custom');
+    setSaved(false);
+  };
+
+  const removeFaviconCustom = () => {
+    setFaviconFile(null);
+    setFaviconPreview(null);
+    update('favicon_url', '');
     setSaved(false);
   };
 
@@ -166,6 +206,30 @@ export default function Profile() {
         logoUrl = urlData.publicUrl;
       }
 
+      let faviconModeSave = normalizeFaviconMode(getField('favicon_mode') || doctor.favicon_mode);
+      let faviconUrlOut: string | null = null;
+      if (faviconModeSave === 'custom') {
+        faviconUrlOut = getField('favicon_url') === '' ? null : doctor.favicon_url ?? null;
+        if (faviconFile && user) {
+          const ext = faviconFile.name.split('.').pop() || 'png';
+          const path = `${user.id}/favicon.${ext}`;
+          const favUploadPromise = supabase.storage.from('doctor-logos').upload(path, faviconFile, { upsert: true });
+          const favUploadTimeout = new Promise<{ error: Error }>((_, reject) =>
+            setTimeout(() => reject(new Error('Upload do favicon demorou demais. Verifique sua conexão.')), 15000),
+          );
+          const { error: favUploadErr } = await Promise.race([favUploadPromise, favUploadTimeout]) as {
+            error: Error | null;
+          };
+          if (favUploadErr) {
+            toast({ title: 'Erro ao enviar favicon', description: favUploadErr.message, variant: 'destructive' });
+            return;
+          }
+          const { data: favUrlData } = supabase.storage.from('doctor-logos').getPublicUrl(path);
+          faviconUrlOut = favUrlData.publicUrl;
+        }
+      }
+      if (faviconModeSave === 'logo' && !logoUrl) faviconModeSave = 'default';
+
       const updateData: Record<string, any> = {
         name: nameValue,
         specialty: getField('specialty') || doctor.specialty,
@@ -173,6 +237,8 @@ export default function Profile() {
         primary_color: primaryColor,
         secondary_color: getField('secondary_color') || doctor.secondary_color,
         logo_url: logoUrl,
+        favicon_mode: faviconModeSave,
+        favicon_url: faviconModeSave === 'custom' ? faviconUrlOut : null,
         bio: getField('bio') || null,
         whatsapp_link: getField('whatsapp_link') || null,
         instagram_link: getField('instagram_link') || null,
@@ -205,6 +271,8 @@ export default function Profile() {
       setSaved(true);
       toast({ title: 'Salvo! ✓' });
       queryClient.invalidateQueries({ queryKey: ['doctor'] });
+      setFaviconFile(null);
+      setFaviconPreview(null);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
       console.error('[Profile] handleSave error:', err);
@@ -292,7 +360,7 @@ export default function Profile() {
       <div className="relative">
         <div className="opacity-40 pointer-events-none select-none">{children}</div>
         <div className="absolute inset-0 flex items-center justify-center">
-          <Link to="/planos">
+          <Link to={CHECKOUT_MONTHLY_PATH}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-1.5 bg-card border border-border rounded-xl px-3 py-2 shadow-sm cursor-pointer hover:bg-muted transition-colors">
@@ -342,6 +410,84 @@ export default function Profile() {
               </div>
             </div>
             <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleLogoSelect} />
+          </CardContent>
+        </Card>
+      </ProLock>
+
+      <ProLock>
+        <Card className="rounded-2xl shadow-sm">
+          <CardContent className="p-5 space-y-4">
+            <div>
+              <Label className="text-sm font-semibold">Ícone da aba (favicon)</Label>
+              <p className="text-xs text-muted-foreground mt-1">
+                Na página pública{' '}
+                <span className="font-mono text-[10px] break-all">{patientUrl}</span>, o ícone da aba do navegador pode ser o
+                padrão Altfood, a mesma imagem da sua logo ou um arquivo que você enviar (PNG, JPG ou WebP; idealmente quadrado,
+                ex. 192×192).
+              </p>
+            </div>
+
+            <RadioGroup
+              value={faviconModeDraft}
+              onValueChange={(v) => {
+                update('favicon_mode', v);
+                if (v !== 'custom') {
+                  setFaviconFile(null);
+                  setFaviconPreview(null);
+                }
+                setSaved(false);
+              }}
+              className="space-y-3"
+            >
+              <div className="flex items-start gap-3 rounded-xl border border-border/60 p-3">
+                <RadioGroupItem value="default" id="favicon-default" className="mt-0.5" />
+                <Label htmlFor="favicon-default" className="font-normal cursor-pointer space-y-0.5 flex-1 leading-snug">
+                  <span className="text-sm font-medium">Padrão Altfood</span>
+                  <span className="block text-xs text-muted-foreground">Ícone verde do Altfood.</span>
+                </Label>
+              </div>
+              <div className={`flex items-start gap-3 rounded-xl border border-border/60 p-3 ${!hasLogo ? 'opacity-60' : ''}`}>
+                <RadioGroupItem value="logo" id="favicon-logo" className="mt-0.5" disabled={!hasLogo} />
+                <Label htmlFor="favicon-logo" className={`font-normal space-y-0.5 flex-1 leading-snug ${hasLogo ? 'cursor-pointer' : ''}`}>
+                  <span className="text-sm font-medium">Igual à logo</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {hasLogo ? 'Usa a mesma imagem da foto de perfil acima.' : 'Envie uma logo primeiro para usar esta opção.'}
+                  </span>
+                </Label>
+              </div>
+              <div className="flex items-start gap-3 rounded-xl border border-border/60 p-3">
+                <RadioGroupItem value="custom" id="favicon-custom" className="mt-0.5" />
+                <Label htmlFor="favicon-custom" className="font-normal cursor-pointer space-y-0.5 flex-1 leading-snug">
+                  <span className="text-sm font-medium">Outro ícone</span>
+                  <span className="block text-xs text-muted-foreground">Envie um arquivo só para o favicon (máx. 1MB).</span>
+                </Label>
+              </div>
+            </RadioGroup>
+
+            {faviconModeDraft === 'custom' && (
+              <div className="flex flex-wrap items-center gap-3">
+                <Button type="button" variant="outline" size="sm" className="rounded-lg text-xs" onClick={() => faviconFileRef.current?.click()}>
+                  <Upload className="w-3.5 h-3.5 mr-1" /> Enviar ícone
+                </Button>
+                {(faviconPreview || (getField('favicon_url') !== '' && doctor.favicon_url)) && (
+                  <Button type="button" variant="ghost" size="sm" className="rounded-lg text-xs text-destructive" onClick={removeFaviconCustom}>
+                    <X className="w-3.5 h-3.5 mr-1" /> Remover ícone
+                  </Button>
+                )}
+                <input
+                  ref={faviconFileRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={handleFaviconSelect}
+                />
+              </div>
+            )}
+
+            <div className="flex items-center gap-3 pt-2 border-t border-border">
+              <span className="text-xs text-muted-foreground shrink-0">Prévia</span>
+              <img src={faviconPreviewHref} alt="" className="h-8 w-8 rounded-lg border border-border object-cover" width={32} height={32} />
+            </div>
           </CardContent>
         </Card>
       </ProLock>

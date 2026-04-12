@@ -17,6 +17,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { formatNumber } from '@/lib/helpers';
 import { hasPaidAppAccess } from '@/lib/subscriptionAccess';
+import { CHECKOUT_MONTHLY_PATH } from '@/lib/checkoutIntent';
 
 const SOURCE_COLORS: Record<string, string> = {
   whatsapp: '#25D366',
@@ -51,7 +52,7 @@ function ProLockOverlay() {
       </div>
       <p className="text-sm font-semibold text-foreground text-center">Recurso exclusivo Pro</p>
       <p className="text-xs text-muted-foreground text-center">Pare de responder substituições — R$ 19,90/mês</p>
-      <Link to="/planos">
+      <Link to={CHECKOUT_MONTHLY_PATH}>
         <Button size="sm" className="rounded-xl gap-2 bg-primary hover:bg-primary/90">
           <Crown className="w-4 h-4" /> Fazer upgrade
         </Button>

@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { hasRefundGuaranteeActive } from '@/lib/subscriptionAccess';
 import { formatRefundGuaranteeShort } from '@/lib/subscriptionPricing';
+import { CHECKOUT_MONTHLY_PATH } from '@/lib/checkoutIntent';
 
 interface Payment {
   id: string;
@@ -182,7 +183,7 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
           {/* Action buttons */}
           <div className="flex flex-wrap gap-2">
             {!hasProAccess && isExpired && (
-              <Link to="/planos" className="flex-1">
+              <Link to={CHECKOUT_MONTHLY_PATH} className="flex-1">
                 <Button className="w-full rounded-xl h-10 text-sm bg-primary hover:bg-primary/90 gap-1.5">
                   <Crown className="w-4 h-4" />
                   Fazer upgrade para Pro

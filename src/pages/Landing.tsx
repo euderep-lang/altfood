@@ -139,7 +139,7 @@ export default function Landing() {
           </Link>
           <div className="hidden md:flex items-center gap-6 text-sm">
             <a href="#como-funciona" className="text-muted-foreground hover:text-foreground transition-colors">Como funciona</a>
-            <a href="#planos" className="text-muted-foreground hover:text-foreground transition-colors">Planos</a>
+            <Link to={CHECKOUT_MONTHLY_PATH} className="text-muted-foreground hover:text-foreground transition-colors">Planos</Link>
             <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
           </div>
           <div className="flex items-center gap-1.5">
@@ -554,7 +554,7 @@ export default function Landing() {
               <span className="font-logo font-bold text-foreground tracking-tight">Altfood</span>
             </div>
             <div className="flex items-center gap-6 text-sm">
-              <a href="#planos" className="text-muted-foreground hover:text-foreground transition-colors">Planos</a>
+              <Link to={CHECKOUT_MONTHLY_PATH} className="text-muted-foreground hover:text-foreground transition-colors">Planos</Link>
               <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
               <Link to="/dashboard/support" className="text-muted-foreground hover:text-foreground transition-colors">Contato</Link>
             </div>
