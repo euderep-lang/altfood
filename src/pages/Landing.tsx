@@ -368,7 +368,7 @@ export default function Landing() {
 
       {/* ── SOCIAL PROOF TICKER ─────────────────────────────────── */}
       <div className="bg-[#0F766E] py-4 px-4 overflow-hidden">
-        <div className="flex items-center gap-12 animate-[ticker_20s_linear_infinite]" style={{ width: 'max-content' }}>
+        <div className="flex items-center gap-12 animate-[ticker_50s_linear_infinite]" style={{ width: 'max-content' }}>
           {[...Array(4)].flatMap(() => [
             { icon: '👩‍⚕️', text: '500+ profissionais ativos' },
             { icon: '⚡', text: '50.000+ substituições/mês' },
