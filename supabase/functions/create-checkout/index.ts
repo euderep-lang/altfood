@@ -117,10 +117,16 @@ Deno.serve(async (req) => {
 
     if (!abRes.ok) {
       console.error("[create-checkout] Abacate API error:", abRes.status, rawText.slice(0, 500));
+      const abMsg = String(
+        json.error ?? json.message ?? rawText,
+      ).slice(0, 280);
+      let error = `Abacate Pay (${abRes.status}): ${abMsg}`;
+      const hint =
+        /version mismatch|api key/i.test(abMsg)
+          ? " Crie no painel Abacate (Integração → API) uma chave nova com permissão CHECKOUT:CREATE, compatível com a API v2, e atualize o secret ABACATEPAY_API_KEY no Supabase (sem aspas nem espaços no início/fim). Chaves antigas podem ser só da API v1."
+          : "";
       return new Response(
-        JSON.stringify({
-          error: `Abacate Pay (${abRes.status}): ${String(json.error || rawText).slice(0, 280)}`,
-        }),
+        JSON.stringify({ error: error + hint }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
