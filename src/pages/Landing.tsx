@@ -209,7 +209,7 @@ function PatientMockup() {
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#2a5540] bg-[#1a3d2e] shadow-sm"
                   aria-hidden
                 >
-                  <span className="font-serif text-[22px] font-normal leading-none text-[#d4a574]">C</span>
+                  <span className="font-sans text-[22px] font-normal leading-none text-[#d4a574]">C</span>
                 </div>
                 <div className="min-w-0 flex-1 pt-0.5">
                   <h2 className="truncate text-sm font-bold leading-tight text-foreground">Dra. Carine Cassol</h2>
@@ -369,9 +369,11 @@ export default function Landing() {
               </motion.div>
 
               <motion.h1 variants={fadeUp} custom={1} className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.12] tracking-tight">
-                <span className="block">Você passou 5 anos se estudando pra responder:</span>
-                <span className="text-gradient mt-1 block italic md:mt-2">&ldquo;posso trocar o frango?&rdquo;</span>
-                <span className="mt-1 block md:mt-2">no WhatsApp?</span>
+                Você passou 5 anos estudando pra responder:
+                <br />
+                <span className="text-gradient italic">{'"posso trocar o frango?"'}</span>
+                <br />
+                no WhatsApp?
               </motion.h1>
 
               <motion.p variants={fadeUp} custom={2} className="text-white/60 text-lg leading-relaxed max-w-lg">

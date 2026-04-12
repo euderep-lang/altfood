@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['Playfair Display', 'Georgia', 'serif'],
-        logo: ['Raleway', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Raleway', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Raleway', 'system-ui', '-apple-system', 'sans-serif'],
+        logo: ['Raleway', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
