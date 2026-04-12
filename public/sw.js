@@ -1,7 +1,8 @@
-const CACHE_NAME = 'altfood-v2';
+const CACHE_NAME = 'altfood-v3';
 const STATIC_ASSETS = [
   '/icon-192.png',
   '/icon-512.png',
+  '/altfood-brand.png',
 ];
 
 self.addEventListener('install', (event) => {

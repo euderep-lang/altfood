@@ -71,7 +71,7 @@ function setDoctorMeta(doctor: {
   const description = doctor.bio
     ? `${doctor.bio.slice(0, 155)}...`
     : `${doctor.name} é ${doctor.specialty} e usa o Altfood para oferecer substituições alimentares personalizadas aos seus pacientes. Acesse e descubra alternativas para os alimentos do seu plano.`;
-  const image = doctor.logo_url || `${baseUrl}/icon-512.png`;
+  const image = doctor.logo_url || `${baseUrl}/altfood-brand.png`;
 
   const setMeta = (selector: string, attr: string, value: string) => {
     let el = document.querySelector(selector) as HTMLMetaElement | null;

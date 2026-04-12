@@ -27,7 +27,7 @@ Deno.serve(async (req: Request) => {
 
   const url = new URL(req.url);
   const slug = url.searchParams.get("slug");
-  const base = url.searchParams.get("base") || "https://altfood.lovable.app";
+  const base = url.searchParams.get("base") || "https://altfood.com.br";
 
   if (!slug) {
     return new Response("Missing slug", { status: 400, headers: corsHeaders });
@@ -51,7 +51,7 @@ Deno.serve(async (req: Request) => {
 
   const { data: doctor } = await sb
     .from("doctors")
-    .select("name, specialty, bio, logo_url, slug, primary_color")
+    .select("name, specialty, bio, logo_url, slug, primary_color, favicon_mode, favicon_url")
     .eq("slug", slug)
     .single();
 
@@ -66,7 +66,7 @@ Deno.serve(async (req: Request) => {
   const description = doctor.bio
     ? doctor.bio.slice(0, 155)
     : `${doctor.name} é ${doctor.specialty} e usa o Altfood para oferecer substituições alimentares personalizadas aos seus pacientes.`;
-  const image = doctor.logo_url || `${base}/icon-512.png`;
+  const image = doctor.logo_url || `${base}/altfood-brand.png`;
   const favicon = doctorFaviconHref(doctor, base);
 
   const html = `<!DOCTYPE html>

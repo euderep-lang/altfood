@@ -4,7 +4,7 @@
   "description": "Substituição alimentar inteligente para profissionais de saúde",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#16A34A",
+  "theme_color": "#1F6042",
   "background_color": "#ffffff",
   "orientation": "portrait-primary",
   "icons": [
