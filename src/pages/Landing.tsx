@@ -317,7 +317,7 @@ export default function Landing() {
                   </Button>
                 </Link>
                 <a href={`${window.location.origin}/dracarinecassol`} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="lg" className="rounded-xl h-14 text-base border-white/20 text-white hover:bg-white/10 hover:text-white px-8">
+                  <Button size="lg" className="rounded-xl h-14 text-base bg-[#0F766E] hover:bg-[#0d6b64] text-white border-0 px-8 font-semibold">
                     Ver como o paciente vê →
                   </Button>
                 </a>
