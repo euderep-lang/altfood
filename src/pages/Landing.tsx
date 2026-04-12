@@ -5,11 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ArrowRight, Check, Star, Clock, Search } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useId } from 'react';
 import { formatRefundGuaranteeShort, PRO_MONTHLY_PRICE_BRL, formatProMonthlyWithPeriod } from '@/lib/subscriptionPricing';
-import stepCreatePageImg from '@/assets/step-create-page.png';
-import stepShareLinkImg from '@/assets/step-share-link.png';
-import stepPatientImg from '@/assets/step-patient-autonomous.png';
 
 /* ─────────────── animation presets ─────────────── */
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
@@ -40,19 +37,88 @@ const testimonials = [
   { name: 'Dra. Patrícia Almeida', role: 'Nutricionista Materno-Infantil · CE', color: '#D97706', text: 'As mães me mandavam áudio de 3 minutos perguntando substituição. Agora elas consultam no Altfood e me mandam só "obrigada" 😂.' },
 ];
 
-/* ─────────────── “Como funciona”: print dentro de moldura celular ─────────────── */
-function StepPhoneScreenshot({ src, alt }: { src: string; alt: string }) {
+/* ─────────────── “Como funciona”: ícones simples (SVG), sem moldura de celular ─────────────── */
+function StepIllustration({ variant, accent }: { variant: 1 | 2 | 3; accent: string }) {
+  const uid = useId().replace(/:/g, '');
+  const g = (n: string) => `${uid}-${n}`;
+
   return (
-    <figure className="relative mx-auto w-[118px] sm:w-[132px] md:w-[146px] aspect-[9/18.5]">
-      <div
-        className="absolute inset-0 rounded-[1.7rem] bg-gradient-to-b from-zinc-600 via-zinc-800 to-zinc-950 shadow-[0_20px_48px_-14px_rgba(0,0,0,0.42)] border border-white/[0.12] ring-1 ring-black/25"
-        aria-hidden
-      />
-      <div className="pointer-events-none absolute left-1/2 top-[9px] z-10 h-[10px] w-10 -translate-x-1/2 rounded-full bg-black shadow-inner" aria-hidden />
-      <div className="absolute inset-[6px] top-[22px] overflow-hidden rounded-[1.05rem] bg-zinc-950 ring-1 ring-black/40">
-        <img src={src} alt={alt} className="h-full w-full object-cover object-top" loading="lazy" decoding="async" />
-      </div>
-    </figure>
+    <div
+      className="mx-auto flex h-[118px] w-[118px] shrink-0 items-center justify-center sm:h-[128px] sm:w-[128px] drop-shadow-[0_14px_28px_rgba(15,118,110,0.12)]"
+      aria-hidden
+    >
+      <svg viewBox="0 0 120 120" className="h-full w-full overflow-visible">
+        <defs>
+          <linearGradient id={g('a')} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f8fafc" />
+            <stop offset="100%" stopColor="#ecfdf5" />
+          </linearGradient>
+          <linearGradient id={g('b')} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#d1fae5" />
+            <stop offset="100%" stopColor="#a7f3d0" />
+          </linearGradient>
+        </defs>
+
+        {variant === 1 && (
+          <>
+            <ellipse cx="60" cy="102" rx="38" ry="8" fill="currentColor" className="text-[#0F766E]/10" />
+            <rect x="22" y="24" width="76" height="68" rx="18" fill={`url(#${g('a')})`} stroke="currentColor" strokeWidth="1.5" className="text-[#0F766E]/15" />
+            <circle cx="42" cy="46" r="12" fill={accent} opacity="0.9" />
+            <path d="M38 46h8" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <path d="M42 42v8" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <rect x="58" y="40" width="34" height="6" rx="3" fill="currentColor" className="text-[#0F766E]/20" />
+            <rect x="58" y="52" width="28" height="6" rx="3" fill="currentColor" className="text-[#0F766E]/12" />
+            <rect x="58" y="64" width="32" height="6" rx="3" fill="currentColor" className="text-[#0F766E]/12" />
+            <circle cx="86" cy="34" r="10" fill={accent} opacity="0.25" />
+            <path d="M86 30v8M82 34h8" stroke={accent} strokeWidth="2" strokeLinecap="round" />
+          </>
+        )}
+
+        {variant === 2 && (
+          <>
+            <ellipse cx="60" cy="102" rx="40" ry="8" fill="currentColor" className="text-emerald-600/10" />
+            <path
+              d="M34 64 C34 44 86 44 86 64 C86 84 34 84 34 64"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              className="text-[#0F766E]/18"
+            />
+            <circle cx="36" cy="64" r="16" fill={`url(#${g('b')})`} stroke="currentColor" strokeWidth="1.5" className="text-[#0F766E]/20" />
+            <circle cx="84" cy="64" r="16" fill="#f0fdf4" stroke="currentColor" strokeWidth="1.5" className="text-[#25D366]/35" />
+            <path
+              d="M52 64h16"
+              stroke={accent}
+              strokeWidth="3"
+              strokeLinecap="round"
+              opacity="0.45"
+            />
+            <path d="M36 58v12M84 58v12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-[#0F766E]/15" />
+            <rect x="44" y="30" width="52" height="26" rx="12" fill="white" stroke="currentColor" strokeWidth="1.5" className="text-[#0F766E]/12" />
+            <rect x="52" y="40" width="28" height="4" rx="2" fill="currentColor" className="text-[#0F766E]/18" />
+            <rect x="52" y="48" width="20" height="3" rx="1.5" fill="currentColor" className="text-[#0F766E]/15" />
+            <circle cx="72" cy="43" r="4" fill="#25D366" opacity="0.7" />
+          </>
+        )}
+
+        {variant === 3 && (
+          <>
+            <ellipse cx="60" cy="102" rx="36" ry="7" fill="currentColor" className="text-emerald-600/10" />
+            <circle cx="56" cy="56" r="34" fill={`url(#${g('a')})`} stroke="currentColor" strokeWidth="1.5" className="text-[#0F766E]/15" />
+            <circle cx="50" cy="50" r="20" fill="none" stroke={accent} strokeWidth="3.5" strokeLinecap="round" opacity="0.9" />
+            <line x1="64" y1="64" x2="78" y2="78" stroke={accent} strokeWidth="3.5" strokeLinecap="round" opacity="0.9" />
+            <path
+              d="M44 78c6-10 14-14 24-12 5 1 9 5 10 10-8 3-16 5-24 8-6-2-10-4-10-6z"
+              fill={`url(#${g('b')})`}
+              opacity="0.92"
+            />
+            <circle cx="86" cy="80" r="13" fill={accent} />
+            <path d="M81.5 80l3.5 3.5 7-8.5" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          </>
+        )}
+      </svg>
+    </div>
   );
 }
 
@@ -628,21 +694,21 @@ export default function Landing() {
                 step: '01',
                 title: 'Crie sua página',
                 desc: 'Cadastre-se em 2 minutos. Coloque seu nome, especialidade e escolha a cor da sua identidade visual. Sua página fica online na hora.',
-                img: stepCreatePageImg,
+                variant: 1 as const,
                 color: '#0F766E',
               },
               {
                 step: '02',
                 title: 'Compartilhe o link',
                 desc: 'Você recebe um link único (altfood.app/seu-nome). Manda pelo WhatsApp, coloca na bio do Instagram, gera QR Code. Uma vez só.',
-                img: stepShareLinkImg,
-                color: '#2563EB',
+                variant: 2 as const,
+                color: '#0d9488',
               },
               {
                 step: '03',
                 title: 'Paciente resolve sozinho',
                 desc: '"Não tem frango?" Ele abre o link, digita frango, encontra 8 opções com equivalência nutricional. Em 4 segundos. Sem te chamar.',
-                img: stepPatientImg,
+                variant: 3 as const,
                 color: '#059669',
               },
             ].map((s, i) => (
@@ -656,11 +722,11 @@ export default function Landing() {
               >
                 {/* Connector line */}
                 {i < 2 && (
-                  <div className="hidden md:block absolute top-12 left-full w-full h-px border-t-2 border-dashed border-[#0F766E]/20 z-0" style={{ width: 'calc(100% - 2rem)', left: 'calc(100% - 0.5rem)' }} />
+                  <div className="hidden md:block absolute top-[4.75rem] left-full w-full h-px border-t-2 border-dashed border-[#0F766E]/20 z-0" style={{ width: 'calc(100% - 2rem)', left: 'calc(100% - 0.5rem)' }} />
                 )}
                 <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-border/50 hover:shadow-md hover:border-[#0F766E]/20 transition-all duration-300 text-center space-y-5 h-full relative z-10">
                   <div className="flex justify-center pt-1">
-                    <StepPhoneScreenshot src={s.img} alt={s.title} />
+                    <StepIllustration variant={s.variant} accent={s.color} />
                   </div>
                   <div>
                     <span className="text-gradient text-xs font-black tracking-widest uppercase">{s.step}</span>
