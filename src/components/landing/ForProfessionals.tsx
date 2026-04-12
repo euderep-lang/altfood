@@ -9,7 +9,8 @@
  */
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Link2, Database, Smartphone, ArrowRight, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Database, Smartphone, ArrowRight, TrendingUp, Target, ShieldQuestion } from 'lucide-react';
 
 const T = {
   forest:  '#1a3c2e',
@@ -26,19 +27,28 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 const features = [
   {
-    Icon: Link2,
-    title: 'Link com sua Marca',
-    description: 'Logo, cores e nome personalizados. Seus pacientes veem só a sua identidade — nenhuma menção à Altfood.',
+    Icon: Target,
+    title: 'Perguntas de situação viram roteiro, não improviso',
+    description:
+      'No SPIN, você primeiro alinha contexto. No Altfood, o contexto já está na interface: alimento, gramas, categoria TACO — o paciente “faz as perguntas certas” sozinho, guiado pelo layout.',
+  },
+  {
+    Icon: ShieldQuestion,
+    title: 'Problemas explícitos saem do ar ambíguo do WhatsApp',
+    description:
+      'Em vez de “acho que pode”, o paciente vê opções ranqueadas com similaridade e equivalente em gramas. Você reduz a ambiguidade que gera retrabalho e segunda mensagem.',
   },
   {
     Icon: Database,
-    title: '463 Alimentos da Tabela TACO',
-    description: 'Banco de dados oficial brasileiro com informações nutricionais completas e confiáveis.',
+    title: 'Implicação financeira e de tempo — endereçada de uma vez',
+    description:
+      'Cada consulta de substituição que não vira agenda faturada é custo. Quanto mais o paciente resolve no link, mais sobra tempo para o que só você faz: julgar, priorizar, ajustar plano.',
   },
   {
     Icon: Smartphone,
-    title: 'Paciente Independente',
-    description: 'O paciente acessa pelo celular, escolhe o alimento e a quantidade, e vê as opções de substituição na hora.',
+    title: 'Need-payoff: “e se eu pudesse parar de ser o Google da dieta?”',
+    description:
+      'Esse é o ganho emocional que fecha venda consultiva. O Altfood entrega: link com sua marca, paciente no celular, TACO por trás — você vira referência sem estar online 24h.',
   },
 ];
 
@@ -154,7 +164,7 @@ export function ForProfessionals() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section ref={ref} className="py-24 px-5 md:px-16 font-sans" style={{ background: T.offWhite }}>
+    <section id="para-profissionais" ref={ref} className="py-24 px-5 md:px-16 font-sans" style={{ background: T.offWhite }}>
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
 
         {/* Left — text (mobile: order-1 = first) */}
@@ -167,7 +177,7 @@ export function ForProfessionals() {
               className="text-xs font-semibold uppercase tracking-[0.12em]"
               style={{ color: T.forest }}
             >
-              Para Profissionais de Saúde
+              Diagnóstico comercial (SPIN)
             </motion.span>
 
             <motion.h2
@@ -177,8 +187,8 @@ export function ForProfessionals() {
               className="text-4xl md:text-5xl font-extrabold leading-tight"
               style={{ color: T.textDark }}
             >
-              Seu app, sua marca,<br />
-              <span style={{ color: T.forest }}>seus pacientes conectados</span>
+              Menos conversa solta.<br />
+              <span style={{ color: T.forest }}>Mais decisão estruturada.</span>
             </motion.h2>
 
             <motion.p
@@ -188,8 +198,9 @@ export function ForProfessionals() {
               className="text-lg leading-relaxed"
               style={{ color: T.textMute }}
             >
-              Médicos, nutricionistas e personal trainers assinam o Altfood por R$19,90/mês
-              e entregam para cada paciente um link gratuito com sua identidade visual.
+              Rackham ensina que grandes pedidos vêm depois que o cliente verbaliza o valor. Abaixo estão os ganhos que
+              ouvimos de quem já migrou do “me manda uma foto do rótulo” para o link Altfood: autoridade preservada, escala
+              no acompanhamento e paciente mais autônomo — sem você sumir do processo.
             </motion.p>
           </div>
 
@@ -230,17 +241,20 @@ export function ForProfessionals() {
           </ul>
 
           {/* CTA */}
-          <motion.a
-            href="#"
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.45, ease, delay: 0.5 }}
-            className="self-start inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-base font-bold transition-all hover:opacity-90 hover:scale-105 active:scale-95"
-            style={{ background: T.forest, color: '#ffffff' }}
           >
-            Assinar por R$19,90/mês
-            <ArrowRight size={15} aria-hidden />
-          </motion.a>
+            <Link
+              to="/planos"
+              className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-base font-bold text-white transition-all hover:opacity-90 hover:scale-105 active:scale-95 self-start"
+              style={{ background: T.forest }}
+            >
+              Ver planos e simular o retorno
+              <ArrowRight size={15} aria-hidden />
+            </Link>
+          </motion.div>
         </div>
 
         {/* Right — mockup (mobile: order-2 = second, below text) */}

@@ -9,7 +9,8 @@
  */
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { CreditCard, Link2, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Stethoscope, MessagesSquare, Link2 } from 'lucide-react';
 
 const T = {
   forest:     '#1a3c2e',
@@ -22,25 +23,25 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 const steps = [
   {
-    number: '01',
-    Icon: CreditCard,
-    title: 'Você Assina o App',
+    number: 'S',
+    Icon: Stethoscope,
+    title: 'Situação — o que já funciona',
     description:
-      'Por R$19,90/mês você cria sua conta, adiciona sua logo, escolhe suas cores e personaliza seu perfil profissional.',
+      'Você faz anamnese, prescreve e educa. O paciente sai com um plano que faz sentido na sua mesa. Até aqui, o processo é sólido — o gargalo vem depois, fora do consultório.',
   },
   {
-    number: '02',
+    number: 'P',
+    Icon: MessagesSquare,
+    title: 'Problema — onde a venda se perde',
+    description:
+      'No mercado, a dúvida não é “se” vai surgir, e sim “quando”: trocas, porções, equivalências. Se a resposta depende só de você no WhatsApp, o paciente espera — ou chuta.',
+  },
+  {
+    number: 'N',
     Icon: Link2,
-    title: 'Compartilha seu Link',
+    title: 'Necessidade satisfeita — o payoff',
     description:
-      'Receba um link único com a sua identidade visual e envie para seus pacientes. O acesso deles é completamente gratuito.',
-  },
-  {
-    number: '03',
-    Icon: Search,
-    title: 'Paciente Consulta',
-    description:
-      'O paciente escolhe o alimento e a quantidade, e vê as melhores opções de substituição com base nos 463 alimentos da Tabela TACO.',
+      'Um link seu com a sua marca: o paciente busca o alimento, ajusta os gramas e vê substituições TACO com selo de similaridade — sozinho. Você deixa de ser o gargalo sem perder a autoridade.',
   },
 ];
 
@@ -75,7 +76,7 @@ function StepCard({
         <span
           className="inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-black shrink-0"
           style={{ background: T.lime, color: T.forest }}
-          aria-label={`Passo ${step.number}`}
+          aria-label={`Etapa ${step.number}`}
         >
           {step.number}
         </span>
@@ -133,18 +134,30 @@ export function HowItWorks() {
             transition={{ duration: 0.45, ease }}
             className="text-xs font-semibold uppercase tracking-[0.12em]"
             style={{ color: T.lime }}
-            aria-label="Seção: Como funciona"
+            aria-label="Seção: método SPIN"
           >
-            Como Funciona
+            Implicação + fechamento
           </motion.span>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, ease, delay: 0.05 }}
+            className="max-w-2xl text-sm leading-relaxed md:text-base"
+            style={{ color: T.bodyOnDark }}
+          >
+            Em vendas consultivas, a <strong className="text-white">Implicação</strong> responde: “se nada mudar, o que isso
+            custa para você e para o paciente?”. Para muitos profissionais, o custo é tempo clínico perdido, paciente menos
+            aderente e sensação de estar sempre “apagando incêndio”. O Altfood endereça exatamente esse ponto — antes do
+            paciente precisar te acionar.
+          </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.55, ease, delay: 0.08 }}
-            className="text-4xl md:text-5xl font-extrabold leading-tight text-white"
+            className="text-4xl font-extrabold leading-tight text-white md:text-5xl"
           >
-            Simples assim:<br />
-            3 passos, você no controle
+            Do diagnóstico da conversa<br />
+            <span style={{ color: T.lime }}>à execução no link</span>
           </motion.h2>
         </div>
 
@@ -152,7 +165,7 @@ export function HowItWorks() {
         <div
           className="w-full grid grid-cols-1 md:grid-cols-3 gap-4"
           role="list"
-          aria-label="Passos da plataforma"
+          aria-label="Etapas SPIN e resposta Altfood"
         >
           {steps.map((step, i) => (
             <div key={step.number} role="listitem">
@@ -162,16 +175,19 @@ export function HowItWorks() {
         </div>
 
         {/* CTA */}
-        <motion.a
-          href="#"
+        <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.55, ease, delay: 0.5 }}
-          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
-          style={{ background: T.lime, color: T.textDark }}
         >
-          Assinar por R$19,90/mês
-        </motion.a>
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
+            style={{ background: T.lime, color: T.textDark }}
+          >
+            Criar minha página e testar com pacientes
+          </Link>
+        </motion.div>
       </div>
     </section>
   );

@@ -49,7 +49,7 @@ function ScrollProgressBar() {
 // ─── SEO head helper (Vite: we manage via index.html + this sets page-level meta) ──
 function PageMeta() {
   useEffect(() => {
-    document.title = 'Altfood — Substituição Alimentar Inteligente para Nutricionistas';
+    document.title = 'Altfood — SPIN na prática clínica: link TACO para o paciente';
     const setMeta = (name: string, content: string, property?: boolean) => {
       const selector = property
         ? `meta[property="${name}"]`
@@ -63,9 +63,16 @@ function PageMeta() {
       el.setAttribute('content', content);
     };
 
-    setMeta('description', 'Plataforma de substituição alimentar inteligente para nutricionistas. Mais de 10.000 alimentos. Prescrição digital. Acompanhamento de pacientes.');
-    setMeta('og:title', 'Altfood — Substituição Alimentar Inteligente', true);
-    setMeta('og:description', 'A plataforma que conecta nutricionistas a alternativas alimentares personalizadas.', true);
+    setMeta(
+      'description',
+      'Altfood aplica vendas consultivas (SPIN) à rotina nutricional: situamos o paciente no mercado, nomeamos o problema das trocas soltas, mostramos a implicação do WhatsApp 24h e entregamos o payoff — link seu com TACO no bolso dele.'
+    );
+    setMeta('og:title', 'Altfood — Menos improviso, mais decisão com TACO', true);
+    setMeta(
+      'og:description',
+      'Página do paciente como no iPhone real: busca, gramas, similaridade. Sua marca. Evidência oficial.',
+      true
+    );
     setMeta('og:image', '/images/og-image.jpg', true);
     setMeta('twitter:card', 'summary_large_image');
     setMeta('twitter:image', '/images/og-image.jpg');
@@ -92,12 +99,10 @@ function AnnouncementBanner() {
       />
       <span className="hidden sm:inline">✨</span>
       <span>
-        R$19,90/mês · Link personalizado com sua marca · Pacientes acessam de graça —{' '}
-        <Link
-          to="/planos"
-          className="underline underline-offset-2 font-semibold hover:opacity-80 transition-opacity"
-        >
-          Assinar agora
+        <span className="hidden sm:inline">Pergunta de necessidade: </span>O que mudaria se o paciente parasse de te
+        interromper fora do horário? —{' '}
+        <Link to="/register" className="underline underline-offset-2 font-semibold hover:opacity-80 transition-opacity">
+          Ver o link em ação
         </Link>
       </span>
     </div>
@@ -126,9 +131,10 @@ function ProfessionalsImageBreak() {
       {/* Pull-quote */}
       <div className="absolute inset-0 flex items-center px-8 md:px-20 font-sans">
         <div className="max-w-xl">
-          <p className="text-3xl md:text-4xl font-bold leading-snug mb-4 text-white">
-            "Você assina. Seus pacientes<br />
-            <em>consultam de graça, quando quiserem.</em>"
+          <p className="mb-4 text-3xl font-bold leading-snug text-white md:text-4xl">
+            “Se cada troca no mercado virasse um minuto faturado,
+            <br />
+            <em>quanto você já deixou na mesa?”</em>
           </p>
           <div className="w-12 h-1 rounded-full" style={{ background: T.lime }} />
         </div>
@@ -143,19 +149,17 @@ function HowItWorksImageAccent() {
     <div className="relative overflow-hidden py-10 font-sans" style={{ background: T.offWhite }}>
       <div className="max-w-4xl mx-auto px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
-          <span
-            className="text-xs font-semibold uppercase tracking-[0.12em] block mb-3"
-            style={{ color: T.forest }}
-          >
-            Tabela TACO
+          <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
+            Need-payoff + prova
           </span>
-          <h3 className="text-3xl md:text-4xl font-bold leading-tight mb-4" style={{ color: T.dark }}>
-            463 alimentos.<br />
-            <span style={{ color: T.forest }}>Base oficial brasileira.</span>
+          <h3 className="mb-4 text-3xl font-bold leading-tight md:text-4xl" style={{ color: T.dark }}>
+            O que o paciente ganha<br />
+            <span style={{ color: T.forest }}>quando a resposta vem com fonte?</span>
           </h3>
-          <p className="text-base leading-relaxed mb-6" style={{ color: T.muted }}>
-            Todos os alimentos são da Tabela Brasileira de Composição de Alimentos (TACO) —
-            a referência oficial do Brasil, com dados nutricionais completos e confiáveis.
+          <p className="mb-6 text-base leading-relaxed" style={{ color: T.muted }}>
+            Confiança. Menos idas e vindas. Ele verbaliza para si mesmo: &quot;preciso de algo parecido com frango, na
+            mesma faixa de proteína&quot; — e a TACO responde com número, não com achismo. Você vende segurança, não
+            troca de mensagem.
           </p>
           <Link
             to="/planos"
@@ -191,14 +195,15 @@ function CTAStrip() {
         className="max-w-2xl mx-auto flex flex-col items-center gap-6"
       >
         <span className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
-          Pronto para começar?
+          Fechamento consultivo
         </span>
         <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: T.dark }}>
-          R$19,90/mês.<br />Seu link. Seus pacientes.
+          Se o payoff fosse<br />
+          <span style={{ color: T.forest }}>1 hora sua por semana?</span>
         </h2>
         <p className="text-lg leading-relaxed" style={{ color: T.muted }}>
-          Assine hoje, personalize seu perfil com sua marca e compartilhe o link
-          com seus pacientes — eles acessam de graça, sempre.
+          O Altfood não é “mais um app”. É o lugar onde o paciente executa o plano sem te desestabilizar — e onde você
+          recoloca o foco no que só o profissional faz: julgar, priorizar, acompanhar evolução.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
@@ -206,7 +211,7 @@ function CTAStrip() {
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
             style={{ background: T.lime, color: T.dark }}
           >
-            Assinar por R$19,90/mês
+            Quero testar na minha base
           </Link>
           <Link
             to="/planos"
@@ -217,7 +222,7 @@ function CTAStrip() {
           </Link>
         </div>
         <p className="text-sm" style={{ color: T.muted }}>
-          Recorrência mensal · Cancele quando quiser · Sem taxa de adesão
+          Depois que o valor está claro, o preço vira detalhe — veja planos e o que entra no link.
         </p>
       </motion.div>
     </section>

@@ -90,7 +90,8 @@ export function FooterNewsletter() {
           <div className="flex flex-col gap-5">
             <AltfoodLogoFooterDark className="h-11 max-w-[220px]" />
             <p className="text-sm leading-relaxed" style={{ color: T.bodyOnDark }}>
-              Substituição Alimentar Inteligente
+              Ferramenta consultiva: ajudamos o profissional a levar o paciente da dúvida solta (problema) para a decisão
+              informada (payoff) — com a TACO por baixo do capô e a sua marca na vitrine.
             </p>
             <div className="flex gap-2">
               {/* LinkedIn */}

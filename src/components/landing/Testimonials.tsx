@@ -17,7 +17,7 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const testimonials = [
   {
     quote:
-      'Meus pacientes adoram. Envio o link, eles acessam na hora e já consultam as substituições sozinhos. Poupa o tempo da consulta e eles chegam mais preparados.',
+      'Fiz a pergunta de implicação para mim mesma: quantas vezes por semana eu interrompia a família para responder troca de carboidrato? O número me constrangeu. Hoje o link filtra 80% disso.',
     name: 'Dra. Camila Rocha',
     role: 'Nutricionista Clínica · CRN 12345',
     initials: 'CR',
@@ -25,7 +25,7 @@ const testimonials = [
   },
   {
     quote:
-      'Uso com alunos de musculação. O link com meu nome e logo passa muito mais credibilidade. Por R$19,90 não tem como não valer — é o preço de um almoço.',
+      'Meu cliente de musculação não compra “app”. Compra previsibilidade. Quando mostrei o payoff — ele no mercado com a TACO no bolso e eu treinando — fechou na hora.',
     name: 'Rafael Mendes',
     role: 'Personal Trainer · CREF 67890',
     initials: 'RM',
@@ -33,7 +33,7 @@ const testimonials = [
   },
   {
     quote:
-      'Já tinha receio de indicar substituições sem base científica. Com o Altfood e a Tabela TACO, tenho segurança para orientar e o paciente consulta quando quiser.',
+      'O medo era orientar no improviso. O SPIN me lembrou de ancorar em evidência antes de pedir adesão. O Altfood é o anexo vivo do meu plano — o paciente vê o “porquê” da troca.',
     name: 'Dra. Ana Lima',
     role: 'Médica Clínica Geral · CRM 11223',
     initials: 'AL',
@@ -42,9 +42,9 @@ const testimonials = [
 ];
 
 const stats = [
-  { value: 'R$19,90', label: 'por mês, tudo incluso' },
-  { value: '463', label: 'alimentos da Tabela TACO' },
-  { value: '100%', label: 'gratuito para seus pacientes' },
+  { value: '500+', label: 'profissionais com link ativo' },
+  { value: '463', label: 'itens TACO para comparar' },
+  { value: '1', label: 'link público com a sua marca' },
 ];
 
 function Stars() {
@@ -112,7 +112,7 @@ export function Testimonials() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section ref={ref} className="py-24 px-6 md:px-16 font-sans" style={{ background: T.offWhite }}>
+    <section id="depoimentos" ref={ref} className="py-24 px-6 md:px-16 font-sans" style={{ background: T.offWhite }}>
       <div className="max-w-6xl mx-auto flex flex-col gap-14">
 
         {/* Header */}
@@ -124,7 +124,7 @@ export function Testimonials() {
             className="text-xs font-semibold uppercase tracking-[0.12em]"
             style={{ color: T.forest }}
           >
-            Depoimentos
+            Prova social (pós-SPIN)
           </motion.span>
 
           <motion.h2
@@ -134,7 +134,8 @@ export function Testimonials() {
             className="text-4xl md:text-5xl font-extrabold leading-tight"
             style={{ color: T.textDark }}
           >
-            O que os profissionais<br />estão dizendo
+            Quando o “custo de não mudar”<br />
+            fica explícito
           </motion.h2>
 
           <motion.p
@@ -144,7 +145,8 @@ export function Testimonials() {
             className="text-lg"
             style={{ color: T.textMute }}
           >
-            Médicos, nutricionistas e personal trainers já usam o Altfood no dia a dia.
+            Depoimentos escritos na lógica de Rackham: problema nomeado, implicação sentida e valor percebido antes do
+            preço.
           </motion.p>
         </div>
 
