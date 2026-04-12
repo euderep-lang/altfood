@@ -69,7 +69,7 @@ function DashboardMockup({ inView }: { inView: boolean }) {
             <div>
               <p
                 className="text-sm font-semibold"
-                style={{ color: T.textDark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                style={{ color: T.textDark }}
               >
                 Joana Silva
               </p>
@@ -164,11 +164,7 @@ export function ForProfessionals() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section
-      ref={ref}
-      className="py-24 px-5 md:px-16"
-      style={{ background: T.offWhite, fontFamily: 'Inter, sans-serif' }}
-    >
+    <section ref={ref} className="py-24 px-5 md:px-16 font-sans" style={{ background: T.offWhite }}>
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
 
         {/* Left — text (mobile: order-1 = first) */}
@@ -189,7 +185,7 @@ export function ForProfessionals() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.55, ease, delay: 0.08 }}
               className="text-4xl md:text-5xl font-extrabold leading-tight"
-              style={{ color: T.textDark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              style={{ color: T.textDark }}
             >
               Ferramentas criadas<br />
               <span style={{ color: T.forest }}>para quem cuida de vidas</span>
@@ -231,7 +227,7 @@ export function ForProfessionals() {
                 <div>
                   <p
                     className="font-semibold mb-0.5"
-                    style={{ color: T.textDark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                    style={{ color: T.textDark }}
                   >
                     {title}
                   </p>

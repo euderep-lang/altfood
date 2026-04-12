@@ -91,10 +91,7 @@ function StepCard({
 
       {/* Text */}
       <div className="flex flex-col gap-2">
-        <h3
-          className="text-[1.1rem] font-bold leading-snug"
-          style={{ color: '#ffffff', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-        >
+        <h3 className="text-[1.1rem] font-bold leading-snug text-white">
           {step.title}
         </h3>
         {/* #b0c4b8 on #1a3c2e = 6.8:1 — WCAG AA large + normal text ✓ */}
@@ -114,8 +111,8 @@ export function HowItWorks() {
     <section
       id="como-funciona"
       ref={ref}
-      className="relative py-24 px-5 md:px-16 overflow-hidden"
-      style={{ background: T.forest, fontFamily: 'Inter, sans-serif' }}
+      className="relative py-24 px-5 md:px-16 overflow-hidden font-sans"
+      style={{ background: T.forest }}
     >
       {/* Top lime glow */}
       <div
@@ -144,8 +141,7 @@ export function HowItWorks() {
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.55, ease, delay: 0.08 }}
-            className="text-4xl md:text-5xl font-extrabold leading-tight"
-            style={{ color: '#ffffff', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            className="text-4xl md:text-5xl font-extrabold leading-tight text-white"
           >
             Prescrição inteligente<br />
             em 3 passos simples

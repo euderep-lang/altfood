@@ -95,10 +95,7 @@ function TestimonialCard({
           {t.initials}
         </div>
         <div>
-          <p
-            className="text-sm font-semibold"
-            style={{ color: T.textDark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-          >
+          <p className="text-sm font-semibold" style={{ color: T.textDark }}>
             {t.name}
           </p>
           <p className="text-xs" style={{ color: T.textMute }}>
@@ -115,11 +112,7 @@ export function Testimonials() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section
-      ref={ref}
-      className="py-24 px-6 md:px-16"
-      style={{ background: T.offWhite, fontFamily: 'Inter, sans-serif' }}
-    >
+    <section ref={ref} className="py-24 px-6 md:px-16 font-sans" style={{ background: T.offWhite }}>
       <div className="max-w-6xl mx-auto flex flex-col gap-14">
 
         {/* Header */}
@@ -139,7 +132,7 @@ export function Testimonials() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, ease, delay: 0.08 }}
             className="text-4xl md:text-5xl font-extrabold leading-tight"
-            style={{ color: T.textDark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            style={{ color: T.textDark }}
           >
             O que os profissionais<br />estão dizendo
           </motion.h2>
@@ -178,7 +171,7 @@ export function Testimonials() {
             >
               <span
                 className="text-5xl font-extrabold"
-                style={{ color: T.forest, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                style={{ color: T.forest }}
               >
                 {s.value}
               </span>

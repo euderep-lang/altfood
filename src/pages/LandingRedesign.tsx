@@ -2,7 +2,7 @@
  * Altfood — Homepage Redesign
  * Framework: Vite + React 18 + TypeScript
  * Design: DESIGN.md tokens (forest #1a3c2e · lime #c8f044 · off-white #f5f0e8)
- * Fonts: Playfair Display (display) · DM Sans (body) · Plus Jakarta Sans (heads)
+ * Tipografia: Raleway (site inteiro; @fontsource em main.tsx)
  * Images: public/images/ (Unsplash placeholders; swap with nano-banana AI images)
  */
 
@@ -16,6 +16,7 @@ import {
   Testimonials,
   FooterNewsletter,
 } from '@/components/landing';
+import { BRAND_MARK_SRC } from '@/components/AltfoodLogo';
 
 // ─── Design tokens (mirrors DESIGN.md) ───────────────────────────────────────
 const T = {
@@ -77,9 +78,18 @@ function PageMeta() {
 function AnnouncementBanner() {
   return (
     <div
-      className="relative z-40 flex items-center justify-center gap-3 py-2.5 px-4 text-sm font-medium text-center"
+      className="relative z-40 flex items-center justify-center gap-3 py-2.5 px-4 text-sm font-medium text-center font-sans"
       style={{ background: T.forest, color: T.lime }}
     >
+      <img
+        src={BRAND_MARK_SRC}
+        alt=""
+        width={22}
+        height={22}
+        className="h-5 w-5 shrink-0 rounded-lg object-cover opacity-95 hidden sm:block"
+        decoding="async"
+        aria-hidden
+      />
       <span className="hidden sm:inline">✨</span>
       <span>
         Novo: Prescrição digital agora disponível para todos os planos —{' '}
@@ -114,15 +124,9 @@ function ProfessionalsImageBreak() {
         }}
       />
       {/* Pull-quote */}
-      <div className="absolute inset-0 flex items-center px-8 md:px-20">
+      <div className="absolute inset-0 flex items-center px-8 md:px-20 font-sans">
         <div className="max-w-xl">
-          <p
-            className="text-3xl md:text-4xl font-bold leading-snug mb-4"
-            style={{
-              color: '#fff',
-              fontFamily: '"Playfair Display", Georgia, serif',
-            }}
-          >
+          <p className="text-3xl md:text-4xl font-bold leading-snug mb-4 text-white">
             "A ciência da nutrição,<br />
             <em>na palma da mão dos seus pacientes.</em>"
           </p>
@@ -136,32 +140,20 @@ function ProfessionalsImageBreak() {
 // ─── How-it-works image accent ───────────────────────────────────────────────
 function HowItWorksImageAccent() {
   return (
-    <div
-      className="relative overflow-hidden py-10"
-      style={{ background: T.offWhite }}
-    >
+    <div className="relative overflow-hidden py-10 font-sans" style={{ background: T.offWhite }}>
       <div className="max-w-4xl mx-auto px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
           <span
             className="text-xs font-semibold uppercase tracking-[0.12em] block mb-3"
-            style={{ color: T.forest, fontFamily: '"Inter", sans-serif' }}
+            style={{ color: T.forest }}
           >
             Banco de Dados
           </span>
-          <h3
-            className="text-3xl md:text-4xl font-bold leading-tight mb-4"
-            style={{
-              color: T.dark,
-              fontFamily: '"Playfair Display", Georgia, serif',
-            }}
-          >
+          <h3 className="text-3xl md:text-4xl font-bold leading-tight mb-4" style={{ color: T.dark }}>
             10.000+ alimentos.<br />
             <span style={{ color: T.forest }}>Infinitas possibilidades.</span>
           </h3>
-          <p
-            className="text-base leading-relaxed mb-6"
-            style={{ color: T.muted, fontFamily: '"DM Sans", sans-serif' }}
-          >
+          <p className="text-base leading-relaxed mb-6" style={{ color: T.muted }}>
             Dados nutricionais completos baseados na Tabela TACO e fontes internacionais,
             atualizados continuamente pela equipe Altfood.
           </p>
@@ -190,10 +182,7 @@ function HowItWorksImageAccent() {
 // ─── CTA strip ───────────────────────────────────────────────────────────────
 function CTAStrip() {
   return (
-    <section
-      className="py-20 px-6 md:px-16 text-center"
-      style={{ background: T.offWhite }}
-    >
+    <section className="py-20 px-6 md:px-16 text-center font-sans" style={{ background: T.offWhite }}>
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -201,25 +190,13 @@ function CTAStrip() {
         transition={{ duration: 0.7, ease }}
         className="max-w-2xl mx-auto flex flex-col items-center gap-6"
       >
-        <span
-          className="text-xs font-semibold uppercase tracking-[0.12em]"
-          style={{ color: T.forest, fontFamily: '"Inter", sans-serif' }}
-        >
+        <span className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
           Pronto para começar?
         </span>
-        <h2
-          className="text-4xl md:text-5xl font-bold leading-tight"
-          style={{
-            color: T.dark,
-            fontFamily: '"Playfair Display", Georgia, serif',
-          }}
-        >
+        <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: T.dark }}>
           Transforme sua prática nutricional hoje
         </h2>
-        <p
-          className="text-lg leading-relaxed"
-          style={{ color: T.muted, fontFamily: '"DM Sans", sans-serif' }}
-        >
+        <p className="text-lg leading-relaxed" style={{ color: T.muted }}>
           Junte-se a mais de 500 nutricionistas que já prescrevem substituições
           com inteligência e eficiência.
         </p>
@@ -239,10 +216,7 @@ function CTAStrip() {
             Ver planos
           </Link>
         </div>
-        <p
-          className="text-sm"
-          style={{ color: T.muted, fontFamily: '"DM Sans", sans-serif' }}
-        >
+        <p className="text-sm" style={{ color: T.muted }}>
           Sem cartão de crédito · Cancele quando quiser
         </p>
       </motion.div>

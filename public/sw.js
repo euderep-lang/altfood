@@ -1,5 +1,6 @@
-const CACHE_NAME = 'altfood-v2';
+const CACHE_NAME = 'altfood-v3';
 const STATIC_ASSETS = [
+  '/logo-altfood-mark.png',
   '/icon-192.png',
   '/icon-512.png',
 ];

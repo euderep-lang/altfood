@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { AltfoodLogoFooterDark } from '@/components/AltfoodLogo';
 
 const T = {
   forest:     '#1a3c2e',
@@ -70,11 +71,7 @@ export function FooterNewsletter() {
   }
 
   return (
-    <footer
-      ref={ref}
-      className="relative overflow-hidden"
-      style={{ background: T.forest, fontFamily: 'Inter, sans-serif' }}
-    >
+    <footer ref={ref} className="relative overflow-hidden font-sans" style={{ background: T.forest }}>
       {/* Subtle top glow */}
       <div
         className="pointer-events-none absolute top-0 left-0 right-0 h-px"
@@ -91,12 +88,7 @@ export function FooterNewsletter() {
         >
           {/* Col 1 — Brand */}
           <div className="flex flex-col gap-5">
-            <span
-              className="text-2xl font-bold tracking-tight"
-              style={{ color: '#ffffff', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-            >
-              altfood
-            </span>
+            <AltfoodLogoFooterDark className="h-11 max-w-[220px]" />
             <p className="text-sm leading-relaxed" style={{ color: T.bodyOnDark }}>
               Substituição Alimentar Inteligente
             </p>

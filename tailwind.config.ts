@@ -17,11 +17,11 @@ export default {
         sans: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         display: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         logo: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        // Altfood redesign
-        'altfood-display': ['"Playfair Display"', 'Georgia', 'ui-serif', 'serif'],
-        'altfood-body':    ['"DM Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        'altfood-head':    ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        'altfood-label':   ['"Inter"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Redesign: tudo em Raleway (alinhado ao resto do produto)
+        'altfood-display': ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        'altfood-body':    ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        'altfood-head':    ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        'altfood-label':   ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

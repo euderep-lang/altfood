@@ -9,6 +9,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, CheckCircle2, Menu, X } from 'lucide-react';
+import { AltfoodLogoNavLight } from '@/components/AltfoodLogo';
 
 const T = {
   forest:  '#1a3c2e',
@@ -72,11 +73,14 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
           >
             <button
               onClick={onClose}
-              className="self-end mb-8 p-2 rounded-lg transition-colors hover:bg-black/5"
+              className="self-end mb-4 p-2 rounded-lg transition-colors hover:bg-black/5"
               aria-label="Fechar menu"
             >
               <X size={22} style={{ color: T.forest }} />
             </button>
+            <div className="mb-6">
+              <AltfoodLogoNavLight href="/" />
+            </div>
             <nav className="flex flex-col gap-2">
               {navLinks.map((item) => (
                 <a
@@ -160,10 +164,7 @@ export function HeroSection() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <section
-      className="relative flex flex-col"
-      style={{ background: T.offWhite, fontFamily: 'Inter, sans-serif' }}
-    >
+    <section className="relative flex flex-col font-sans" style={{ background: T.offWhite }}>
       {/* Background texture */}
       <div
         className="pointer-events-none absolute inset-0 opacity-30"
@@ -182,14 +183,7 @@ export function HeroSection() {
         className="relative z-20 flex items-center justify-between px-5 md:px-16 py-4"
         aria-label="Navegação principal"
       >
-        <a
-          href="/"
-          className="text-2xl font-bold tracking-tight"
-          style={{ color: T.forest, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-          aria-label="Altfood — página inicial"
-        >
-          altfood
-        </a>
+        <AltfoodLogoNavLight href="/" />
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-7">
@@ -247,7 +241,7 @@ export function HeroSection() {
           <motion.h1
             {...fadeUp(0.15)}
             className="text-5xl md:text-6xl xl:text-7xl font-extrabold leading-[1.05] tracking-tight"
-            style={{ color: T.textDark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            style={{ color: T.textDark }}
           >
             Substituição<br />
             Alimentar<br />
