@@ -121,10 +121,15 @@ export default function Profile() {
   const bioLength = (getField('bio') || '').length;
 
   const hasLogo = Boolean(logoPreview || (getField('logo_url') !== '' && doctor.logo_url));
-  const faviconModeDraft = normalizeFaviconMode(getField('favicon_mode') || doctor.favicon_mode);
+  /** Sem colunas no Postgres (migração não aplicada), não enviamos favicon no update nem mostramos o bloco. */
+  const doctorHasFaviconColumns = Object.prototype.hasOwnProperty.call(doctor, 'favicon_mode');
+  const faviconModeDraft = doctorHasFaviconColumns
+    ? normalizeFaviconMode(getField('favicon_mode') || doctor.favicon_mode)
+    : 'default';
   const logoForFavicon = logoPreview || (getField('logo_url') !== '' && doctor.logo_url ? doctor.logo_url : null);
-  const customFaviconEffective =
-    faviconPreview || (getField('favicon_url') !== '' && doctor.favicon_url ? doctor.favicon_url : null);
+  const customFaviconEffective = doctorHasFaviconColumns
+    ? faviconPreview || (getField('favicon_url') !== '' && doctor.favicon_url ? doctor.favicon_url : null)
+    : null;
   const faviconPreviewHref = resolveDoctorFaviconHref(
     {
       favicon_mode: faviconModeDraft,
@@ -206,29 +211,33 @@ export default function Profile() {
         logoUrl = urlData.publicUrl;
       }
 
-      let faviconModeSave = normalizeFaviconMode(getField('favicon_mode') || doctor.favicon_mode);
+      const doctorHasFavicon = Object.prototype.hasOwnProperty.call(doctor, 'favicon_mode');
+      let faviconModeSave = normalizeFaviconMode('default');
       let faviconUrlOut: string | null = null;
-      if (faviconModeSave === 'custom') {
-        faviconUrlOut = getField('favicon_url') === '' ? null : doctor.favicon_url ?? null;
-        if (faviconFile && user) {
-          const ext = faviconFile.name.split('.').pop() || 'png';
-          const path = `${user.id}/favicon.${ext}`;
-          const favUploadPromise = supabase.storage.from('doctor-logos').upload(path, faviconFile, { upsert: true });
-          const favUploadTimeout = new Promise<{ error: Error }>((_, reject) =>
-            setTimeout(() => reject(new Error('Upload do favicon demorou demais. Verifique sua conexão.')), 15000),
-          );
-          const { error: favUploadErr } = await Promise.race([favUploadPromise, favUploadTimeout]) as {
-            error: Error | null;
-          };
-          if (favUploadErr) {
-            toast({ title: 'Erro ao enviar favicon', description: favUploadErr.message, variant: 'destructive' });
-            return;
+      if (doctorHasFavicon) {
+        faviconModeSave = normalizeFaviconMode(getField('favicon_mode') || doctor.favicon_mode);
+        if (faviconModeSave === 'custom') {
+          faviconUrlOut = getField('favicon_url') === '' ? null : doctor.favicon_url ?? null;
+          if (faviconFile && user) {
+            const ext = faviconFile.name.split('.').pop() || 'png';
+            const path = `${user.id}/favicon.${ext}`;
+            const favUploadPromise = supabase.storage.from('doctor-logos').upload(path, faviconFile, { upsert: true });
+            const favUploadTimeout = new Promise<{ error: Error }>((_, reject) =>
+              setTimeout(() => reject(new Error('Upload do favicon demorou demais. Verifique sua conexão.')), 15000),
+            );
+            const { error: favUploadErr } = await Promise.race([favUploadPromise, favUploadTimeout]) as {
+              error: Error | null;
+            };
+            if (favUploadErr) {
+              toast({ title: 'Erro ao enviar favicon', description: favUploadErr.message, variant: 'destructive' });
+              return;
+            }
+            const { data: favUrlData } = supabase.storage.from('doctor-logos').getPublicUrl(path);
+            faviconUrlOut = favUrlData.publicUrl;
           }
-          const { data: favUrlData } = supabase.storage.from('doctor-logos').getPublicUrl(path);
-          faviconUrlOut = favUrlData.publicUrl;
         }
+        if (faviconModeSave === 'logo' && !logoUrl) faviconModeSave = 'default';
       }
-      if (faviconModeSave === 'logo' && !logoUrl) faviconModeSave = 'default';
 
       const updateData: Record<string, any> = {
         name: nameValue,
@@ -237,8 +246,6 @@ export default function Profile() {
         primary_color: primaryColor,
         secondary_color: getField('secondary_color') || doctor.secondary_color,
         logo_url: logoUrl,
-        favicon_mode: faviconModeSave,
-        favicon_url: faviconModeSave === 'custom' ? faviconUrlOut : null,
         bio: getField('bio') || null,
         whatsapp_link: getField('whatsapp_link') || null,
         instagram_link: getField('instagram_link') || null,
@@ -247,6 +254,11 @@ export default function Profile() {
         email_tips: emailPrefs.email_tips,
         theme_layout: themeLayout,
       };
+
+      if (doctorHasFavicon) {
+        updateData.favicon_mode = faviconModeSave;
+        updateData.favicon_url = faviconModeSave === 'custom' ? faviconUrlOut : null;
+      }
 
       if (slugValue && slugValue !== doctor.slug && slugAvailable !== false) {
         updateData.slug = slugValue;
@@ -414,6 +426,7 @@ export default function Profile() {
         </Card>
       </ProLock>
 
+      {doctorHasFaviconColumns && (
       <ProLock>
         <Card className="rounded-2xl shadow-sm">
           <CardContent className="p-5 space-y-4">
@@ -491,6 +504,7 @@ export default function Profile() {
           </CardContent>
         </Card>
       </ProLock>
+      )}
 
       {/* Personal info */}
       <Card className="rounded-2xl shadow-sm">

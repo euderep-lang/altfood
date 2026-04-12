@@ -51,7 +51,7 @@ Deno.serve(async (req: Request) => {
 
   const { data: doctor } = await sb
     .from("doctors")
-    .select("name, specialty, bio, logo_url, favicon_mode, favicon_url, slug, primary_color")
+    .select("name, specialty, bio, logo_url, slug, primary_color")
     .eq("slug", slug)
     .single();
 

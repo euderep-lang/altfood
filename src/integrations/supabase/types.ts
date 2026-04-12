@@ -59,8 +59,9 @@ export type Database = {
           email_tips: boolean
           email_weekly_summary: boolean
           featured_food_id: string | null
-          favicon_mode: string
-          favicon_url: string | null
+          /** Presente após migração `doctor_favicon` */
+          favicon_mode?: string
+          favicon_url?: string | null
           id: string
           instagram_link: string | null
           logo_url: string | null

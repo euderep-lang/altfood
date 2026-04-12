@@ -13,7 +13,8 @@ export function useDoctor() {
 
       const { data, error } = await supabase
         .from('doctors')
-        .select('id, user_id, name, email, phone, document_number, document_type, specialty, logo_url, favicon_mode, favicon_url, slug, primary_color, secondary_color, subscription_status, subscription_end_date, mp_subscription_id, mp_payer_email, stripe_customer_id, stripe_subscription_id, trial_ends_at, created_at, updated_at, bio, whatsapp_link, instagram_link, welcome_message, onboarding_completed, email_weekly_summary, email_tips, referral_code, referred_by, theme_layout, featured_food_id')
+        // select('*') evita erro 42703 se favicon_mode/favicon_url ainda não existirem (migração pendente).
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1)
