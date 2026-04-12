@@ -53,6 +53,8 @@ async function messageFromInvokeError(error: unknown): Promise<string> {
 export default function Checkout() {
   const [searchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
+  /** Evita re-disparar create-checkout quando `user` troca de referência após refresh de sessão (causava piscar / loop). */
+  const userId = user?.id;
 
   const plan = searchParams.get('plan') === 'annual' ? 'annual' : 'monthly';
   const checkoutReturnPath = `/checkout?plan=${plan}`;
@@ -68,38 +70,36 @@ export default function Checkout() {
       return;
     }
 
-    if (!user) {
+    if (!userId) {
       setPendingCheckoutPlan('monthly');
       setError(null);
       setLoading(false);
       return;
     }
 
+    let cancelled = false;
+
     const fetchCheckout = async () => {
       setLoading(true);
       setError(null);
 
-      let { data: authData, error: authReadError } = await supabase.auth.getSession();
+      const { data: authData, error: authReadError } = await supabase.auth.getSession();
+      if (cancelled) return;
       if (authReadError || !authData.session?.access_token) {
         setError('Sessão não disponível ou expirada. Entre de novo e abra o checkout outra vez.');
         setLoading(false);
         return;
       }
 
-      // Renova access_token antes do invoke (evita 401 "Invalid JWT" no gateway com sessão antiga).
-      const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
-      if (!refreshErr && refreshed.session?.access_token) {
-        authData = refreshed;
+      const { error: refreshErr } = await supabase.auth.refreshSession();
+      if (cancelled) return;
+      if (refreshErr) {
+        console.warn('[checkout] refreshSession:', refreshErr.message);
       }
-
-      const accessToken = authData.session!.access_token;
 
       try {
         const invokePromise = supabase.functions.invoke('create-checkout', {
           body: { plan: 'monthly' },
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
         });
         const timeoutPromise = new Promise<never>((_, reject) => {
           setTimeout(
@@ -114,6 +114,8 @@ export default function Checkout() {
         });
         const { data, error } = await Promise.race([invokePromise, timeoutPromise]);
 
+        if (cancelled) return;
+
         if (error) {
           const detail = await messageFromInvokeError(error);
           console.error('[checkout] create-checkout falhou:', error, detail);
@@ -123,17 +125,26 @@ export default function Checkout() {
           ? (data as { checkout_url: string }).checkout_url
           : '';
         if (!url) throw new Error('Link de pagamento não retornado pela Abacate Pay.');
+        if (cancelled) return;
         window.location.assign(url);
         return;
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Erro ao carregar checkout');
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : 'Erro ao carregar checkout');
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
-    fetchCheckout();
-  }, [user, authLoading]);
+    void fetchCheckout();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authLoading, userId]);
 
   return (
     <div className="min-h-screen bg-background">

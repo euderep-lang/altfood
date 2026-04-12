@@ -126,8 +126,14 @@ Deno.serve(async (req) => {
     }
 
     const data = json.data as Record<string, unknown> | undefined;
-    const checkoutUrl = data?.url ? String(data.url) : "";
-    const billId = data?.id ? String(data.id) : "";
+    const checkoutUrl = data?.url
+      ? String(data.url)
+      : typeof json.url === "string"
+      ? json.url
+      : "";
+    const billId = data?.id != null
+      ? String(data.id)
+      : (json.id != null ? String(json.id) : "");
 
     if (!checkoutUrl) {
       console.error("[create-checkout] Missing url in response:", rawText.slice(0, 400));
