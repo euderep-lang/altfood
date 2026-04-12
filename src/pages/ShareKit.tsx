@@ -182,7 +182,7 @@ export default function ShareKit() {
               <div className="space-y-3">
                 {[
                   { step: '1', text: 'Compartilhe seu link de indicação com colegas profissionais.' },
-                  { step: '2', text: 'Quando eles se cadastrarem pelo seu link, ganham 14 dias de trial gratuito.' },
+                  { step: '2', text: 'Quando se cadastrarem pelo seu link, criam a conta; o painel Pro libera após o pagamento (14 dias de garantia com reembolso integral se cancelar nesse período).' },
                   { step: '3', text: 'Quando o indicado comprar um plano Pro, você ganha 1 mês de Pro grátis automaticamente!' },
                 ].map(s => (
                   <div key={s.step} className="flex items-start gap-3">

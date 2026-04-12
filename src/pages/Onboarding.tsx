@@ -13,9 +13,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { generateSlug, getShareableUrl } from '@/lib/helpers';
 import { consumePendingCheckoutPlan } from '@/lib/checkoutIntent';
+import { formatProMonthlyWithPeriod, formatRefundGuaranteeShort } from '@/lib/subscriptionPricing';
 import {
   ArrowRight, Copy, Check, Share2, Loader2, Palette,
-  MessageCircle, ExternalLink, Crown, Sparkles, Clock,
+  MessageCircle, ExternalLink, Crown, Sparkles,
 } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import AltfoodIcon from '@/components/AltfoodIcon';
@@ -56,7 +57,6 @@ export default function Onboarding() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [creatingDoctor, setCreatingDoctor] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
-  const [popupAnnual, setPopupAnnual] = useState(true);
   const [showSubscribePopup, setShowSubscribePopup] = useState(false);
   /** Re-dispara o bootstrap do perfil (ex.: após “Tentar novamente”). */
   const [bootstrapNonce, setBootstrapNonce] = useState(0);
@@ -303,22 +303,6 @@ export default function Onboarding() {
       subscribeOfferBlockingRedirectRef.current = false;
       setShowSubscribePopup(false);
       toast({ title: 'Erro', variant: 'destructive' });
-    }
-  };
-
-  const startTrial = async () => {
-    try {
-      const trialEnd = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
-      await supabase.from('doctors').update({
-        subscription_status: 'trial',
-        trial_ends_at: trialEnd,
-      } as any).eq('id', doctor.id);
-      queryClient.invalidateQueries({ queryKey: ['doctor'] });
-      subscribeOfferBlockingRedirectRef.current = false;
-      setShowSubscribePopup(false);
-      navigate(postAuthRedirect || '/dashboard', { replace: true });
-    } catch {
-      toast({ title: 'Erro', description: 'Não foi possível iniciar o trial.', variant: 'destructive' });
     }
   };
 
@@ -613,28 +597,6 @@ export default function Onboarding() {
               </ul>
             </div>
 
-            {/* Plan toggle */}
-            <div className="flex items-center justify-center gap-3">
-              <button
-                onClick={() => setPopupAnnual(false)}
-                className={`text-sm font-medium transition-colors ${!popupAnnual ? 'text-foreground' : 'text-muted-foreground'}`}
-              >
-                Mensal
-              </button>
-              <button
-                onClick={() => setPopupAnnual(!popupAnnual)}
-                className={`relative w-12 h-6 rounded-full transition-colors ${popupAnnual ? 'bg-primary' : 'bg-muted'}`}
-              >
-                <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${popupAnnual ? 'translate-x-6' : 'translate-x-0.5'}`} />
-              </button>
-              <button
-                onClick={() => setPopupAnnual(true)}
-                className={`text-sm font-medium transition-colors ${popupAnnual ? 'text-foreground' : 'text-muted-foreground'}`}
-              >
-                Anual <span className="text-xs text-primary font-bold ml-1">-37%</span>
-              </button>
-            </div>
-
             <div className="space-y-2.5">
               <Button
                 onClick={() => {
@@ -645,29 +607,17 @@ export default function Onboarding() {
                     return;
                   }
                   const pending = consumePendingCheckoutPlan();
-                  const plan = pending ?? (popupAnnual ? 'annual' : 'monthly');
+                  const plan = pending ?? 'monthly';
                   navigate(`/checkout?plan=${plan}`, { replace: true });
                 }}
                 className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-base font-bold gap-2"
               >
                 <Crown className="w-5 h-5" />
-                {popupAnnual
-                  ? 'Assinar Pro — R$ 29,90/mês'
-                  : 'Assinar Pro — R$ 47,90/mês'}
+                Pagar e liberar o painel — {formatProMonthlyWithPeriod()}
               </Button>
-              {popupAnnual && (
-                <p className="text-xs text-center text-muted-foreground">
-                  Cobrado anualmente R$ 358,80 · Economia de R$ 216/ano
-                </p>
-              )}
-              <Button
-                onClick={startTrial}
-                variant="outline"
-                className="w-full rounded-xl h-11 text-sm gap-2 border-primary/20 hover:bg-primary/5"
-              >
-                <Clock className="w-4 h-4" />
-                Testar grátis por 14 dias
-              </Button>
+              <p className="text-center text-[11px] text-muted-foreground leading-relaxed px-1">
+                {formatRefundGuaranteeShort()}. O acesso ao app é liberado após a confirmação do pagamento.
+              </p>
             </div>
           </div>
         </DialogContent>

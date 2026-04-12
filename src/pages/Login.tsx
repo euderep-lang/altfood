@@ -11,6 +11,7 @@ import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
 import { getSafeInternalPath } from '@/lib/safeRedirect';
 import { createTimeoutSignal } from '@/lib/supabaseHelpers';
+import { hasPaidAppAccess } from '@/lib/subscriptionAccess';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -52,7 +53,7 @@ export default function Login() {
     // Check if doctor profile exists (timeout de 8s para evitar loading infinito)
     const { data: doctor, error: doctorError } = await supabase
       .from('doctors')
-      .select('subscription_status, trial_ends_at')
+      .select('subscription_status, trial_ends_at, subscription_end_date')
       .eq('user_id', authData.user.id)
       .abortSignal(createTimeoutSignal(8000))
       .maybeSingle();
@@ -87,12 +88,12 @@ export default function Login() {
         toast({ title: 'Assinatura inativa', description: 'Renove sua assinatura para continuar.', variant: 'destructive' });
         navigate('/planos', { replace: true });
       }
-    } else if (doctor.subscription_status === 'trial' && new Date(doctor.trial_ends_at) <= new Date()) {
+    } else if (!hasPaidAppAccess(doctor)) {
       if (wantsCheckout && nextPath) {
-        toast({ title: '✅ Login realizado!', description: 'Continue para assinar o Altfood Pro.' });
+        toast({ title: '✅ Login realizado!', description: 'Continue para assinar e liberar o painel.' });
         navigate(nextPath, { replace: true });
       } else {
-        toast({ title: 'Trial expirado', description: 'Assine para continuar usando o Altfood.' });
+        toast({ title: 'Assinatura necessária', description: 'Assine o Altfood Pro para acessar o painel.' });
         navigate('/planos', { replace: true });
       }
     } else {

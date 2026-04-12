@@ -23,8 +23,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useAuth } from '@/hooks/useAuth';
 
 const PER_PAGE = 20;
-const PRO_PRICE_MONTHLY = 47.90;
-const PRO_PRICE_ANNUAL = 358.80; // R$ 29,90/mês × 12
+const PRO_PRICE_MONTHLY = 19.9;
 
 function MaintenanceToggle() {
   const { toast } = useToast();
@@ -144,7 +143,6 @@ export default function Admin() {
   const [doctorToDelete, setDoctorToDelete] = useState<any>(null);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [doctorToUpgrade, setDoctorToUpgrade] = useState<any>(null);
-  const [upgradePlan, setUpgradePlan] = useState<'monthly' | 'annual'>('monthly');
   const [upgradeRegisterPayment, setUpgradeRegisterPayment] = useState(true);
 
   // Fetch all doctors
@@ -275,7 +273,7 @@ export default function Admin() {
     }
     if (insertPayment && newStatus === 'active') {
       const doctor = doctors.find((d: any) => d.id === doctorId);
-      const amount = plan === 'annual' ? PRO_PRICE_ANNUAL : PRO_PRICE_MONTHLY;
+      const amount = PRO_PRICE_MONTHLY;
       await supabase.from('payments').insert({
         doctor_id: doctorId,
         amount,
@@ -640,28 +638,10 @@ export default function Admin() {
               <div className="space-y-4">
                 <p>Escolha o plano para <strong>{doctorToUpgrade?.name}</strong>:</p>
                 
-                {/* Plan selection */}
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => setUpgradePlan('monthly')}
-                    className={`p-3 rounded-xl border-2 text-left transition-colors ${
-                      upgradePlan === 'monthly' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground'
-                    }`}
-                  >
-                    <p className="text-sm font-semibold text-foreground">Mensal</p>
-                    <p className="text-lg font-bold text-foreground">R$ {PRO_PRICE_MONTHLY.toFixed(2).replace('.', ',')}</p>
-                    <p className="text-xs text-muted-foreground">/mês</p>
-                  </button>
-                  <button
-                    onClick={() => setUpgradePlan('annual')}
-                    className={`p-3 rounded-xl border-2 text-left transition-colors ${
-                      upgradePlan === 'annual' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground'
-                    }`}
-                  >
-                    <p className="text-sm font-semibold text-foreground">Anual</p>
-                    <p className="text-lg font-bold text-foreground">R$ {PRO_PRICE_ANNUAL.toFixed(2).replace('.', ',')}</p>
-                    <p className="text-xs text-muted-foreground">R$ {(PRO_PRICE_ANNUAL / 12).toFixed(2).replace('.', ',')}/mês</p>
-                  </button>
+                <div className="p-3 rounded-xl border-2 border-primary bg-primary/5 text-left">
+                  <p className="text-sm font-semibold text-foreground">Assinatura mensal (recorrente)</p>
+                  <p className="text-lg font-bold text-foreground">R$ {PRO_PRICE_MONTHLY.toFixed(2).replace('.', ',')}</p>
+                  <p className="text-xs text-muted-foreground">/mês</p>
                 </div>
 
                 {/* Register payment toggle */}
@@ -670,7 +650,7 @@ export default function Admin() {
                     <p className="text-sm font-medium text-foreground">Registrar no financeiro?</p>
                     <p className="text-xs text-muted-foreground">
                       {upgradeRegisterPayment
-                        ? `Será registrado R$ ${(upgradePlan === 'annual' ? PRO_PRICE_ANNUAL : PRO_PRICE_MONTHLY).toFixed(2).replace('.', ',')}`
+                        ? `Será registrado R$ ${PRO_PRICE_MONTHLY.toFixed(2).replace('.', ',')}`
                         : 'Nenhum valor será registrado'}
                     </p>
                   </div>
@@ -681,7 +661,7 @@ export default function Admin() {
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col sm:flex-row gap-2">
             <AlertDialogCancel className="rounded-xl">Cancelar</AlertDialogCancel>
-            <Button size="sm" className="rounded-xl gap-1" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', upgradePlan, upgradeRegisterPayment)}>
+            <Button size="sm" className="rounded-xl gap-1" onClick={() => doctorToUpgrade && changePlan(doctorToUpgrade.id, 'active', 'monthly', upgradeRegisterPayment)}>
               <Crown className="w-3 h-3" /> Confirmar Upgrade
             </Button>
           </AlertDialogFooter>

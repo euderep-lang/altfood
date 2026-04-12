@@ -6,11 +6,13 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useQueryClient } from '@tanstack/react-query';
-import { Crown, CreditCard, Calendar, AlertTriangle, Loader2, Check, X, ArrowUpRight, History, Shield } from 'lucide-react';
+import { Crown, CreditCard, Calendar, AlertTriangle, Loader2, Check, X, History, Shield } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { formatDate, daysRemaining } from '@/lib/helpers';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { hasRefundGuaranteeActive } from '@/lib/subscriptionAccess';
+import { formatRefundGuaranteeShort } from '@/lib/subscriptionPricing';
 
 interface Payment {
   id: string;
@@ -50,22 +52,17 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
     isActiveSubscription ||
     (doctor.subscription_status === 'cancelled' && periodStillValid);
   const isPro = hasProAccess;
-  const isTrial = doctor.subscription_status === 'trial';
   const isCancelled = doctor.subscription_status === 'cancelled';
 
-  const endDate = isPro || isCancelled
-    ? doctor.subscription_end_date
-    : isTrial
-    ? doctor.trial_ends_at
-    : null;
+  const endDate = isPro || isCancelled ? doctor.subscription_end_date : null;
 
   const daysLeft = endDate ? daysRemaining(endDate) : 0;
   const isExpired = daysLeft <= 0;
 
   // Determine current plan type from last payment
   const lastPayment = payments[0];
-  const currentPlan = lastPayment?.plan === 'annual' ? 'Anual' : 'Mensal';
-  const currentPrice = lastPayment?.plan === 'annual' ? 'R$ 29,90/mês (R$ 358,80/ano)' : 'R$ 47,90/mês';
+  const currentPlan = lastPayment?.plan === 'annual' ? 'Anual (legado)' : 'Mensal';
+  const currentPrice = lastPayment?.plan === 'annual' ? 'Plano anual (legado)' : 'R$ 19,90/mês';
 
   useEffect(() => {
     loadPayments();
@@ -135,7 +132,7 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-foreground">
-                  {isPro ? `Plano Pro ${currentPlan}` : isTrial ? 'Período de teste' : isCancelled ? 'Plano Pro (cancelado)' : 'Plano Gratuito'}
+                  {isPro ? `Plano Pro ${currentPlan}` : isCancelled ? 'Plano Pro (cancelado)' : 'Sem assinatura ativa'}
                 </p>
                 {(isPro || isCancelled) && lastPayment && (
                   <p className="text-xs text-muted-foreground mt-0.5">{currentPrice}</p>
@@ -162,11 +159,14 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
               </div>
             )}
 
-            {isTrial && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                <p className="text-xs text-amber-700">
-                  Seu teste grátis {isExpired ? 'expirou' : `expira em ${daysLeft} ${daysLeft === 1 ? 'dia' : 'dias'}`}.{' '}
-                  {!isExpired && 'Faça upgrade para não perder acesso.'}
+            {isActiveSubscription && hasRefundGuaranteeActive(doctor) && (
+              <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg p-3">
+                <p className="text-xs text-emerald-900 dark:text-emerald-100">
+                  <strong>Garantia de satisfação:</strong> {formatRefundGuaranteeShort()}. Para reembolso integral nesse período, fale com o{' '}
+                  <Link to="/dashboard/support" className="underline font-medium">
+                    suporte
+                  </Link>
+                  .
                 </p>
               </div>
             )}
@@ -181,20 +181,11 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
 
           {/* Action buttons */}
           <div className="flex flex-wrap gap-2">
-            {(isTrial || (!hasProAccess && isExpired)) && (
+            {!hasProAccess && isExpired && (
               <Link to="/planos" className="flex-1">
                 <Button className="w-full rounded-xl h-10 text-sm bg-primary hover:bg-primary/90 gap-1.5">
                   <Crown className="w-4 h-4" />
                   Fazer upgrade para Pro
-                </Button>
-              </Link>
-            )}
-
-            {isActiveSubscription && lastPayment?.plan === 'monthly' && (
-              <Link to="/planos" className="flex-1">
-                <Button variant="outline" className="w-full rounded-xl h-10 text-sm gap-1.5">
-                  <ArrowUpRight className="w-4 h-4" />
-                  Trocar para Anual (economize 11%)
                 </Button>
               </Link>
             )}
@@ -280,6 +271,12 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
                   </DialogDescription>
                 </DialogHeader>
 
+                {hasRefundGuaranteeActive(doctor) && (
+                  <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+                    Você está na garantia de 14 dias: se quiser desistir com <strong>reembolso integral</strong>, use o suporte em vez de cancelar a renovação aqui — assim processamos a devolução do valor pago.
+                  </p>
+                )}
+
                 <div className="bg-muted/50 rounded-xl p-4 space-y-2.5">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Seu WhatsApp sem o Altfood:</p>
                   {[
@@ -309,18 +306,6 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
                       <span className="text-xs text-foreground">{item}</span>
                     </div>
                   ))}
-                </div>
-
-                <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
-                  <p className="text-sm font-medium text-foreground">💡 Que tal trocar para o plano anual?</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Por apenas R$ 29,90/mês (menos de R$ 1 por dia) você continua livre de responder substituição no WhatsApp. Economize 38%.
-                  </p>
-                  <Link to="/planos">
-                    <Button size="sm" className="mt-3 rounded-lg text-xs bg-primary hover:bg-primary/90 w-full">
-                      Ver plano anual
-                    </Button>
-                  </Link>
                 </div>
 
                 <div className="flex gap-2 pt-2">
@@ -356,6 +341,12 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
                     Ao cancelar, seu plano Pro ficará ativo até{' '}
                     <strong>{endDate ? new Date(endDate).toLocaleDateString('pt-BR') : 'o fim do período atual'}</strong>.
                     Após essa data, você perderá acesso aos recursos Pro.
+                    {hasRefundGuaranteeActive(doctor) && (
+                      <>
+                        {' '}
+                        Dentro da garantia de 14 dias, o reembolso integral é tratado pelo suporte.
+                      </>
+                    )}
                   </DialogDescription>
                 </DialogHeader>
 

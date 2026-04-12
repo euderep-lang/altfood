@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,9 @@ import { useDoctor } from '@/hooks/useDoctor';
 import { Check, Crown, X } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
+import { formatProMonthlyWithPeriod, formatRefundGuaranteeShort, PRO_MONTHLY_PRICE_BRL } from '@/lib/subscriptionPricing';
+import { hasPaidAppAccess } from '@/lib/subscriptionAccess';
+import { CHECKOUT_MONTHLY_PATH, hrefRegisterThenProCheckout } from '@/lib/checkoutIntent';
 
 const FREE_FEATURES = [
   { text: 'Página pública com marca Altfood', included: true },
@@ -35,32 +37,22 @@ const PRO_FEATURES = [
 ];
 
 export default function Pricing() {
-  const [annual, setAnnual] = useState(true);
   const { user } = useAuth();
   const { data: doctor } = useDoctor();
   const navigate = useNavigate();
 
-  const monthlyPrice = 47.90;
-  const annualPricePerMonth = 29.90;
-  const annualTotal = 358.80;
-  const savingsPerYear = ((monthlyPrice * 12) - annualTotal).toFixed(0);
-
-  const price = annual ? annualPricePerMonth : monthlyPrice;
-  const period = '/mês';
-
   const handleSubscribe = () => {
-    navigate(`/checkout?plan=${annual ? 'annual' : 'monthly'}`);
+    if (user) {
+      navigate(CHECKOUT_MONTHLY_PATH);
+    } else {
+      navigate(hrefRegisterThenProCheckout());
+    }
   };
 
-  const hasProAccess =
-    doctor?.subscription_status === 'active' ||
-    (doctor?.subscription_status === 'cancelled' &&
-      doctor?.subscription_end_date &&
-      new Date(doctor.subscription_end_date) > new Date());
+  const hasProAccess = hasPaidAppAccess(doctor ?? null);
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
@@ -82,26 +74,13 @@ export default function Pricing() {
       <main className="max-w-4xl mx-auto px-4 py-12 md:py-20">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground">Pare de responder substituições no WhatsApp</h1>
-          <p className="text-muted-foreground mt-3 text-base">Seus pacientes se viram sozinhos. Teste grátis por 14 dias.</p>
-
-          {/* Toggle */}
-          <div className="flex items-center justify-center gap-3 mt-6">
-            <span className={`text-sm font-medium ${!annual ? 'text-foreground' : 'text-muted-foreground'}`}>Mensal</span>
-            <button
-              onClick={() => setAnnual(!annual)}
-              className="relative w-14 h-7 rounded-full transition-colors"
-              style={{ backgroundColor: annual ? 'hsl(var(--primary))' : 'hsl(var(--muted))' }}
-            >
-              <div className={`absolute top-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform ${annual ? 'translate-x-7' : 'translate-x-0.5'}`} />
-            </button>
-            <span className={`text-sm font-medium ${annual ? 'text-foreground' : 'text-muted-foreground'}`}>
-              Anual <Badge className="ml-1 bg-primary/10 text-primary border-primary/20 text-[10px]">Economize R${savingsPerYear}</Badge>
-            </span>
-          </div>
+          <p className="text-muted-foreground mt-3 text-base">
+            Acesso ao painel após o pagamento. {formatRefundGuaranteeShort()}.
+          </p>
+          <p className="text-sm text-primary font-medium mt-4">{formatProMonthlyWithPeriod()} — assinatura mensal recorrente</p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Free Plan */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <Card className="rounded-2xl shadow-sm border border-border relative overflow-hidden h-full">
               <CardContent className="p-6 flex flex-col h-full">
@@ -134,7 +113,6 @@ export default function Pricing() {
             </Card>
           </motion.div>
 
-          {/* Pro Plan */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
             <Card className="rounded-2xl shadow-lg border-2 border-primary/30 relative overflow-hidden h-full">
               <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
@@ -144,10 +122,17 @@ export default function Pricing() {
                   <Badge className="bg-primary/10 text-primary border-primary/20 rounded-lg text-[10px]">Mais popular</Badge>
                 </div>
                 <div className="mb-6 text-center">
-                  <span className="text-4xl font-bold text-foreground">R$ {price.toFixed(2).replace('.', ',')}</span>
-                  <span className="text-muted-foreground">{period}</span>
-                  {annual && <p className="text-xs text-primary font-medium mt-1">R$ {annualTotal.toFixed(2).replace('.', ',')} cobrados anualmente (12 meses)</p>}
-                  {!annual && <p className="text-xs text-muted-foreground mt-1">Cobrado mensalmente. Cancele quando quiser.</p>}
+                  {(() => {
+                    const [reais, centavos] = PRO_MONTHLY_PRICE_BRL.toFixed(2).split('.');
+                    return (
+                      <span className="text-4xl font-bold text-foreground">
+                        R$ {reais}
+                        <span className="text-2xl">,{centavos}</span>
+                      </span>
+                    );
+                  })()}
+                  <span className="text-muted-foreground">/mês</span>
+                  <p className="text-xs text-muted-foreground mt-1">Cobrado todo mês. Cancele quando quiser.</p>
                 </div>
                 <ul className="space-y-3 flex-1">
                   {PRO_FEATURES.map(f => (
@@ -170,7 +155,7 @@ export default function Pricing() {
                     className="w-full rounded-xl h-12 text-sm font-semibold mt-6 bg-primary hover:bg-primary/90"
                   >
                     <Crown className="w-4 h-4 mr-2" />
-                    {user ? 'Assinar Pro' : 'Testar 14 dias grátis'}
+                    Assinar Pro
                   </Button>
                 )}
               </CardContent>

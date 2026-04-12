@@ -9,6 +9,9 @@ enable_confirmations = false
 [functions.mp-webhook]
 verify_jwt = false
 
+[functions.abacatepay-webhook]
+verify_jwt = false
+
 [functions.stripe-webhook]
 verify_jwt = false
 

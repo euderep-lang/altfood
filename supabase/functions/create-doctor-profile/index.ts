@@ -184,6 +184,8 @@ Deno.serve(async (req) => {
       document_number: documentNumber || null,
       specialty,
       slug: slugAttempt,
+      subscription_status: "inactive",
+      trial_ends_at: new Date().toISOString(),
     };
 
     if (referredBy) {

@@ -5,8 +5,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, Search, Leaf, Crown, Copy, Share2, ExternalLink, Palette, Users, Loader2, Sparkles, ArrowUpRight, Gift, Lightbulb } from 'lucide-react';
-import { formatDateTime, formatNumber, daysRemaining, getShareableUrl } from '@/lib/helpers';
+import { Eye, Search, Leaf, Crown, Copy, Share2, ExternalLink, Palette, Users, Loader2, Sparkles, Gift, Lightbulb } from 'lucide-react';
+import { formatDateTime, formatNumber, getShareableUrl } from '@/lib/helpers';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
 import { Link, Navigate } from 'react-router-dom';
@@ -142,9 +142,10 @@ export default function Dashboard() {
   const referralCode = (doctor as any).referral_code || '';
   const referralUrl = `${window.location.origin}/ref/${referralCode}`;
   const initials = doctor.name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
-  const isTrial = doctor.subscription_status === 'trial';
-  const isInactive = doctor.subscription_status === 'inactive';
-  const trialDays = isTrial ? daysRemaining(doctor.trial_ends_at) : 0;
+  const cancelledButValid =
+    doctor.subscription_status === 'cancelled' &&
+    doctor.subscription_end_date &&
+    new Date(doctor.subscription_end_date) > new Date();
 
   const completedReferrals = referrals.filter((r: any) => r.status === 'completed');
   const monthsEarned = completedReferrals.length;
@@ -190,14 +191,14 @@ export default function Dashboard() {
   }).length;
 
   const uniqueVisitors = new Set(pageViews.map(pv => pv.ip_hash).filter(Boolean)).size;
-  const planLabel = isTrial ? 'Trial' : isInactive ? 'Gratuito' : 'Ativo';
-  const planColor = isTrial ? 'text-warning' : isInactive ? 'text-muted-foreground' : 'text-primary';
+  const planLabel = cancelledButValid ? 'Pro (cancelado)' : 'Pro ativo';
+  const planColor = cancelledButValid ? 'text-amber-600' : 'text-primary';
 
   const stats = [
     { label: 'Visitantes únicos', value: formatNumber(uniqueVisitors), icon: Users, bg: 'bg-primary/10', iconColor: 'text-primary' },
     { label: 'Visualizações este mês', value: formatNumber(thisMonthViews), icon: Eye, bg: 'bg-secondary/10', iconColor: 'text-secondary' },
     { label: 'Alimentos no banco', value: formatNumber(foodCount), icon: Leaf, bg: 'bg-accent', iconColor: 'text-accent-foreground' },
-    { label: 'Plano atual', value: planLabel, icon: Crown, bg: isTrial ? 'bg-warning/10' : isInactive ? 'bg-muted' : 'bg-primary/10', iconColor: planColor, isCta: isTrial || isInactive },
+    { label: 'Plano atual', value: planLabel, icon: Crown, bg: cancelledButValid ? 'bg-amber-50' : 'bg-primary/10', iconColor: planColor, isCta: false },
   ];
 
   return (
@@ -528,33 +529,6 @@ export default function Dashboard() {
           </Card>
         </motion.div>
 
-        {/* Plan Status */}
-        {(isTrial || isInactive) && (
-          <motion.div initial="hidden" animate="visible" custom={10} variants={fadeUp}>
-            <Card className="rounded-2xl shadow-sm border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-              <CardContent className="p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <Crown className="w-6 h-6 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-foreground">
-                    {isTrial ? `Trial — ${trialDays} dias restantes` : 'Você está no plano Gratuito'}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-0.5">
-                    {isTrial
-                      ? 'Faça upgrade para o plano Pro e mantenha seus pacientes com acesso ilimitado.'
-                      : 'Faça upgrade para desbloquear substituições ilimitadas, sua marca e analytics.'}
-                  </p>
-                </div>
-                <Link to="/planos">
-                  <Button className="rounded-xl gap-2 bg-primary hover:bg-primary/90 shrink-0">
-                    <ArrowUpRight className="w-4 h-4" /> Fazer upgrade
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
       </div>
     </DashboardLayout>
   );

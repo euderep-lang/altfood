@@ -1,4 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { CHECKOUT_MONTHLY_PATH, hrefRegisterThenProCheckout } from '@/lib/checkoutIntent';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -6,6 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { ArrowRight, Check, Sparkles, Star, Crown } from 'lucide-react';
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { useState, useEffect, useCallback } from 'react';
+import { formatProMonthlyWithPeriod, formatRefundGuaranteeShort, PRO_MONTHLY_PRICE_BRL } from '@/lib/subscriptionPricing';
 import stepCreatePageImg from '@/assets/step-create-page.png';
 import stepShareLinkImg from '@/assets/step-share-link.png';
 import stepPatientImg from '@/assets/step-patient-autonomous.png';
@@ -114,10 +117,16 @@ function useRotatingTestimonials(count: number, intervalMs: number) {
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
   const testimonials = useRotatingTestimonials(3, 6000);
+  const registerProHref = hrefRegisterThenProCheckout();
 
-  const goToCheckout = (plan: 'monthly' | 'annual') => {
-    navigate(`/checkout?plan=${plan}`);
+  const goToCheckout = () => {
+    if (user) {
+      navigate(CHECKOUT_MONTHLY_PATH);
+    } else {
+      navigate(registerProHref);
+    }
   };
 
   useEffect(() => {
@@ -125,11 +134,6 @@ export default function Landing() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  const monthlyPrice = 47.9;
-  const annualTotal = 358.8;
-  const annualPricePerMonth = (annualTotal / 12);
-  const savingsPerYear = ((monthlyPrice * 12) - annualTotal).toFixed(0);
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -149,8 +153,8 @@ export default function Landing() {
             <Link to="/login">
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">Entrar</Button>
             </Link>
-            <Link to="/register">
-              <Button size="sm" className="gradient-hero shadow-md">Testar 14 dias grátis</Button>
+            <Link to={registerProHref}>
+              <Button size="sm" className="gradient-hero shadow-md">Começar com o Pro</Button>
             </Link>
           </div>
         </div>
@@ -180,9 +184,9 @@ export default function Landing() {
           </motion.p>
 
           <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
-            <Link to="/register">
+            <Link to={registerProHref}>
               <Button variant="premium" size="xl" className="w-full sm:w-auto group">
-                Testar 14 dias grátis
+                Começar com o Pro
                 <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
@@ -196,7 +200,7 @@ export default function Landing() {
 
           <motion.p variants={fadeUp} custom={3.5} className="text-xs text-muted-foreground text-center">
             Sem cadastro. Veja agora como seu paciente vai usar. <br className="sm:hidden" />
-            Ou comece grátis, sem cartão de crédito.
+            {formatRefundGuaranteeShort()}.
           </motion.p>
 
           <motion.div variants={fadeUp} custom={4} className="flex items-center justify-center gap-6 pt-4 flex-wrap">
@@ -262,7 +266,7 @@ export default function Landing() {
               Quanto do seu dia vai embora respondendo substituição?
             </motion.p>
             <motion.div variants={fadeUp} custom={1}>
-              <Link to="/register">
+              <Link to={registerProHref}>
                 <Button variant="premium" size="xl" className="group">
                   Resolver isso agora
                   <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -407,7 +411,7 @@ export default function Landing() {
               Escolha o plano ideal para você
             </motion.h2>
             <motion.p variants={fadeUp} custom={2} className="text-sm text-primary-foreground/40 max-w-md mx-auto">
-              Teste grátis por 14 dias. Sem compromisso — cancele quando quiser.
+              Pagamento para liberar o painel. {formatRefundGuaranteeShort()}.
             </motion.p>
           </motion.div>
 
@@ -418,24 +422,36 @@ export default function Landing() {
               <div>
                 <p className="text-sm font-bold text-primary-foreground">Seu paciente não paga nada!</p>
                 <p className="text-xs text-primary-foreground/60 mt-1 leading-relaxed">
-                  Só você investe — menos de <strong className="text-primary-foreground/80">R$ 1 por dia</strong>. Seus pacientes acessam sua página personalizada de graça, sem criar conta, sem instalar nada.
+                  Só você investe — <strong className="text-primary-foreground/80">{formatProMonthlyWithPeriod()}</strong> com renovação mensal. Seus pacientes acessam sua página personalizada de graça, sem criar conta, sem instalar nada.
                 </p>
               </div>
             </motion.div>
           </motion.div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-2 gap-8 items-stretch">
-            {/* Mensal */}
-            <motion.div variants={scaleIn} custom={0} className="pt-5">
-              <div className="rounded-3xl bg-white/[0.05] backdrop-blur-xl border border-white/10 relative h-full flex flex-col overflow-hidden">
-                <div className="p-8 flex flex-col flex-1">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="max-w-lg mx-auto">
+            <motion.div variants={scaleIn} custom={0} className="relative pt-5">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
+                <span className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full gradient-gold text-primary-foreground text-xs font-bold shadow-lg tracking-wide whitespace-nowrap">
+                  <Crown className="w-3.5 h-3.5" /> Altfood Pro
+                </span>
+              </div>
+              <div className="rounded-3xl bg-white/[0.08] backdrop-blur-xl border-2 border-primary/40 shimmer relative flex flex-col shadow-[0_0_60px_-10px_hsl(170_60%_30%/0.25)] overflow-hidden">
+                <div className="p-8 flex flex-col flex-1 pt-10">
                   <div className="text-center space-y-2 mb-6">
-                    <p className="text-xs font-semibold tracking-widest uppercase text-primary-foreground/40">Mensal</p>
+                    <p className="text-xs font-semibold tracking-widest uppercase text-primary/80">Assinatura mensal</p>
                     <div>
-                      <span className="text-4xl font-display font-bold text-primary-foreground">R$ 47<span className="text-2xl">,90</span></span>
+                      {(() => {
+                        const [reais, centavos] = PRO_MONTHLY_PRICE_BRL.toFixed(2).split('.');
+                        return (
+                          <span className="text-4xl font-display font-bold text-primary-foreground">
+                            R$ {reais}
+                            <span className="text-2xl">,{centavos}</span>
+                          </span>
+                        );
+                      })()}
                       <span className="text-sm text-primary-foreground/40 font-medium">/mês</span>
                     </div>
-                    <p className="text-xs text-primary-foreground/30">Cobrado mensalmente. Cancele quando quiser.</p>
+                    <p className="text-xs text-primary/70 font-medium">Renovação automática todo mês. Cancele quando quiser.</p>
                   </div>
 
                   <div className="space-y-3 flex-1">
@@ -444,58 +460,6 @@ export default function Landing() {
                       'Base TACO completa (463+ alimentos)',
                       'Página personalizada com sua marca',
                       'Analytics em tempo real',
-                      'Suporte prioritário',
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-2.5 text-sm text-primary-foreground/70">
-                        <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                          <Check className="w-3 h-3 text-primary" />
-                        </div>
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-
-                  <Button
-                    type="button"
-                    size="xl"
-                    className="w-full mt-6 bg-primary-foreground/10 text-primary-foreground border border-primary-foreground/20 hover:bg-primary-foreground/15 rounded-xl"
-                    onClick={() => goToCheckout('monthly')}
-                  >
-                    Assinar Pro — mensal
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Anual — destaque */}
-            <motion.div variants={scaleIn} custom={1} className="relative pt-5">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
-                <span className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full gradient-gold text-primary-foreground text-xs font-bold shadow-lg tracking-wide whitespace-nowrap">
-                  <Crown className="w-3.5 h-3.5" /> MAIS POPULAR
-                </span>
-              </div>
-              <div className="rounded-3xl bg-white/[0.08] backdrop-blur-xl border-2 border-primary/40 shimmer relative h-full flex flex-col shadow-[0_0_60px_-10px_hsl(170_60%_30%/0.25)] overflow-hidden">
-                <div className="p-8 flex flex-col flex-1 pt-10">
-                  <div className="text-center space-y-2 mb-6">
-                    <p className="text-xs font-semibold tracking-widest uppercase text-primary/80">Anual</p>
-                    <div>
-                      <span className="text-4xl font-display font-bold text-primary-foreground">R$ 29<span className="text-2xl">,90</span></span>
-                      <span className="text-sm text-primary-foreground/40 font-medium">/mês</span>
-                    </div>
-                    <p className="text-xs text-primary/70 font-medium">
-                      12× de R$ 29,90 = R$ 358,80/ano
-                    </p>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 mt-1">
-                      <Sparkles className="w-3 h-3 text-primary" />
-                      <span className="text-xs font-bold text-primary">Menos de R$ 1 por dia</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 flex-1">
-                    {[
-                      'Tudo do plano Mensal',
-                      'Economia de R$ ' + savingsPerYear + '/ano',
-                      'Base TACO completa (463+ alimentos)',
                       'Cores e identidade visual',
                       'Links WhatsApp e Instagram',
                       'Resumo semanal por e-mail',
@@ -514,12 +478,12 @@ export default function Landing() {
                     variant="premium"
                     size="xl"
                     className="w-full mt-6 group"
-                    onClick={() => goToCheckout('annual')}
+                    onClick={goToCheckout}
                   >
-                    Assinar Pro — anual
+                    Assinar Pro
                     <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
-                  <p className="text-[10px] text-primary-foreground/25 text-center mt-3">Pagamento seguro (Mercado Pago) • Cancele a qualquer momento</p>
+                  <p className="text-[10px] text-primary-foreground/25 text-center mt-3">Pagamento seguro (Abacate Pay) • Cancele a qualquer momento</p>
                 </div>
               </div>
             </motion.div>
@@ -540,14 +504,14 @@ export default function Landing() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }}>
             <Accordion type="single" collapsible className="space-y-3">
               {[
-                { q: 'Posso testar antes de pagar?', a: 'Sim! Você tem 14 dias grátis para explorar todos os recursos do Altfood Pro. Sem compromisso — se não gostar, basta não continuar.' },
+                { q: 'Como funcionam os 14 dias?', a: 'O acesso ao painel e aos recursos Pro é liberado após a confirmação do pagamento. Nos primeiros 14 dias, se você cancelar e solicitar reembolso, devolvemos 100% do valor pago, conforme nossa política comercial.' },
                 { q: 'Precisa instalar alguma coisa?', a: 'Não! O Altfood funciona 100% no navegador, sem necessidade de instalar nenhum app. Seus pacientes acessam pelo link, e você gerencia tudo pelo dashboard online.' },
                 { q: 'Como compartilho com pacientes?', a: 'Você recebe um link exclusivo (ex: altfood.app/dra-maria). Basta enviar via WhatsApp, colocar na bio do Instagram, ou gerar um QR Code. Seus pacientes acessam sem precisar criar conta.' },
                 { q: 'Os dados são da TACO?', a: 'Sim! Utilizamos a Tabela TACO (Tabela Brasileira de Composição de Alimentos), 4ª edição, desenvolvida pela NEPA/UNICAMP — a referência nacional em dados nutricionais com 463+ alimentos catalogados.' },
-                { q: 'Posso cancelar a qualquer momento?', a: 'Sim, sem multas ou burocracia. Você pode cancelar pelo dashboard e continua tendo acesso até o final do período pago.' },
+                { q: 'Posso cancelar a qualquer momento?', a: 'Sim, sem multas ou burocracia. Você pode cancelar pelo dashboard e continua tendo acesso até o final do período pago. Nos primeiros 14 dias após o pagamento, o cancelamento com solicitação de reembolso integral é atendido conforme política divulgada no ato da compra.' },
                 { q: 'Funciona no celular?', a: 'Sim! O Altfood foi projetado mobile-first. A página de paciente funciona perfeitamente em qualquer celular, com interface otimizada e até modo offline.' },
-                { q: 'Meu paciente precisa pagar para usar?', a: 'Não! O paciente acessa 100% de graça. Ele não precisa criar conta, não precisa instalar nada e não paga nenhum centavo. Você é o único que investe — menos de R$ 1 por dia no plano anual — e disponibiliza o link personalizado para quantos pacientes quiser, sem custo adicional.' },
-                { q: 'Qual a diferença entre mensal e anual?', a: `No plano mensal você paga R$ 47,90/mês. No anual, o valor cai para R$ 29,90/mês (12× = R$ 358,80/ano) — menos de R$ 1 por dia. Você economiza R$ ${savingsPerYear} por ano.` },
+                { q: 'Meu paciente precisa pagar para usar?', a: `Não! O paciente acessa 100% de graça. Ele não precisa criar conta, não precisa instalar nada e não paga nenhum centavo. Você é o único que investe — ${formatProMonthlyWithPeriod()} com renovação mensal — e disponibiliza o link personalizado para quantos pacientes quiser, sem custo adicional.` },
+                { q: 'Como funciona a assinatura?', a: `Oferecemos um único plano Pro: ${formatProMonthlyWithPeriod()}, com renovação automática a cada mês. Você pode cancelar quando quiser pelo painel e segue com acesso até o fim do período pago.` },
               ].map((faq, i) => (
                 <motion.div key={i} variants={fadeUp} custom={i}>
                   <AccordionItem value={`faq-${i}`} className="glass-card rounded-2xl px-5 border-0">
@@ -574,9 +538,9 @@ export default function Landing() {
                   Quanto tempo você perdeu hoje respondendo substituição?
                 </h2>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                  Pare de calcular "100g de frango = Xg de patinho" no WhatsApp. Deixa o Altfood fazer isso por você. Teste grátis por 14 dias.
+                  Pare de calcular "100g de frango = Xg de patinho" no WhatsApp. Deixa o Altfood fazer isso por você. {formatRefundGuaranteeShort()}.
                 </p>
-                <Link to="/register" className="pt-4 block">
+                <Link to={registerProHref} className="pt-4 block">
                   <Button variant="premium" size="xl" className="group">
                     Quero meu tempo de volta
                     <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />

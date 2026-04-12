@@ -6,6 +6,7 @@ import { LayoutDashboard, User, HelpCircle, LogOut, Loader2, BarChart3, External
 import AltfoodIcon from '@/components/AltfoodIcon';
 import { cn } from '@/lib/utils';
 import { daysRemaining } from '@/lib/helpers';
+import { hasRefundGuaranteeActive } from '@/lib/subscriptionAccess';
 import SupportWidget from '@/components/SupportWidget';
 import NpsSurvey from '@/components/NpsSurvey';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -56,12 +57,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const subscriptionBanner = () => {
     if (!doctor) return null;
-    if (doctor.subscription_status === 'trial') {
+    if (hasRefundGuaranteeActive(doctor)) {
       const days = daysRemaining(doctor.trial_ends_at);
       return (
-        <div className="bg-warning/10 border-b border-warning/20 px-4 py-2.5 text-sm text-center">
-          <span className="font-medium text-warning">⏰ Período trial — {days} dias restantes.</span>
-          {' '}Assine para continuar.
+        <div className="bg-emerald-500/10 border-b border-emerald-500/20 px-4 py-2.5 text-sm text-center text-emerald-900 dark:text-emerald-100">
+          <span className="font-medium">Garantia de satisfação:</span>{' '}
+          faltam <strong>{days}</strong> {days === 1 ? 'dia' : 'dias'} para solicitar cancelamento com{' '}
+          <strong>reembolso integral</strong> do valor pago (fale com o suporte).
         </div>
       );
     }

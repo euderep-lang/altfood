@@ -1,5 +1,13 @@
 const PENDING_CHECKOUT_PLAN_KEY = 'altfood_pending_checkout_plan';
 
+/** Checkout interno que chama a edge function e redireciona para a Abacate Pay. */
+export const CHECKOUT_MONTHLY_PATH = '/checkout?plan=monthly';
+
+/** Cadastro com retorno ao checkout Pro após onboarding (mesmo fluxo que `next` na URL). */
+export function hrefRegisterThenProCheckout(): string {
+  return `/register?next=${encodeURIComponent(CHECKOUT_MONTHLY_PATH)}`;
+}
+
 export type CheckoutPlan = 'monthly' | 'annual';
 
 export function setPendingCheckoutPlan(plan: CheckoutPlan) {

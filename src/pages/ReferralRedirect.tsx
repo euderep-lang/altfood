@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { hrefRegisterThenProCheckout } from '@/lib/checkoutIntent';
 
 export default function ReferralRedirect() {
   const { code } = useParams();
@@ -9,7 +10,7 @@ export default function ReferralRedirect() {
     if (code) {
       localStorage.setItem('altfood_referral_code', code);
     }
-    navigate('/register', { replace: true });
+    navigate(hrefRegisterThenProCheckout(), { replace: true });
   }, [code, navigate]);
 
   return null;

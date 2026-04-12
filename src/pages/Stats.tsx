@@ -16,6 +16,7 @@ import {
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { formatNumber } from '@/lib/helpers';
+import { hasPaidAppAccess } from '@/lib/subscriptionAccess';
 
 const SOURCE_COLORS: Record<string, string> = {
   whatsapp: '#25D366',
@@ -49,7 +50,7 @@ function ProLockOverlay() {
         <Lock className="w-6 h-6 text-primary" />
       </div>
       <p className="text-sm font-semibold text-foreground text-center">Recurso exclusivo Pro</p>
-      <p className="text-xs text-muted-foreground text-center">Pare de responder substituições — R$ 47,90/mês</p>
+      <p className="text-xs text-muted-foreground text-center">Pare de responder substituições — R$ 19,90/mês</p>
       <Link to="/planos">
         <Button size="sm" className="rounded-xl gap-2 bg-primary hover:bg-primary/90">
           <Crown className="w-4 h-4" /> Fazer upgrade
@@ -63,12 +64,7 @@ export default function Stats() {
   const { data: doctor, isLoading: loadingDoctor } = useDoctor();
   const [todayCount, setTodayCount] = useState(0);
 
-  const isPro =
-    doctor?.subscription_status === 'active' ||
-    doctor?.subscription_status === 'trial' ||
-    (doctor?.subscription_status === 'cancelled' &&
-      doctor?.subscription_end_date &&
-      new Date(doctor.subscription_end_date) > new Date());
+  const isPro = hasPaidAppAccess(doctor ?? null);
 
   const { data: pageViews = [], isLoading: loadingViews, error: pageViewsError } = useQuery({
     queryKey: ['stats-pageViews', doctor?.id],

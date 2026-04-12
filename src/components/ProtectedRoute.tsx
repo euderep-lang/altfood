@@ -4,21 +4,14 @@ import { useDoctor } from '@/hooks/useDoctor';
 import { Loader2, Crown, Check, Clock, LogOut, Sparkles, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { formatProMonthlyMoney } from '@/lib/subscriptionPricing';
+import { hasPaidAppAccess, type DoctorAccessFields } from '@/lib/subscriptionAccess';
 import { supabase } from '@/integrations/supabase/client';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
-function isSubscriptionValid(doctor: any): boolean {
-  if (!doctor) return false;
-  if (doctor.subscription_status === 'active') return true;
-  if (doctor.subscription_status === 'blocked') return false;
-  if (doctor.subscription_status === 'trial') {
-    return new Date(doctor.trial_ends_at) > new Date();
-  }
-  if (doctor.subscription_status === 'cancelled' && doctor.subscription_end_date) {
-    return new Date(doctor.subscription_end_date) > new Date();
-  }
-  return false;
+function isSubscriptionValid(doctor: unknown): boolean {
+  return hasPaidAppAccess(doctor as DoctorAccessFields);
 }
 
 // Pages that don't require active subscription
@@ -135,10 +128,10 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                   className="relative"
                 >
                   <h1 className="text-2xl font-bold text-white">
-                    {firstName}, seu teste acabou 😢
+                    {firstName}, falta ativar sua assinatura
                   </h1>
                   <p className="text-white/80 text-sm mt-2">
-                    Mas a boa notícia é que seus pacientes podem continuar!
+                    O painel e os recursos Pro ficam disponíveis após o primeiro pagamento.
                   </p>
                 </motion.div>
               </div>
@@ -194,11 +187,11 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
                   <Link to="/planos">
                     <Button className="w-full rounded-xl h-12 bg-primary hover:bg-primary/90 text-base font-bold gap-2 shadow-lg shadow-primary/20">
                       <Zap className="w-5 h-5" />
-                      Parar de responder no WhatsApp — R$ 47,90/mês
+                      Parar de responder no WhatsApp — {formatProMonthlyMoney()}
                     </Button>
                   </Link>
                   <p className="text-center text-[11px] text-muted-foreground">
-                    Ou R$ 29,90/mês no plano anual — menos de R$ 1 por dia
+                    14 dias para avaliar com tranquilidade: se cancelar nesse período, devolvemos 100% do valor pago.
                   </p>
                 </motion.div>
 

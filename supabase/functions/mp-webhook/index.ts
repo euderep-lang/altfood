@@ -231,6 +231,13 @@ Deno.serve(async (req) => {
       });
     }
 
+    const { count: priorPaymentCount } = await supabase
+      .from("payments")
+      .select("id", { count: "exact", head: true })
+      .eq("doctor_id", doctorId)
+      .eq("status", "approved");
+    const isFirstApprovedPayment = (priorPaymentCount ?? 0) === 0;
+
     const now = new Date();
     const endDate = new Date(now);
     if (isAnnual) {
@@ -239,14 +246,21 @@ Deno.serve(async (req) => {
       endDate.setMonth(endDate.getMonth() + 1);
     }
 
+    const refundGuaranteeUntil = new Date(now);
+    refundGuaranteeUntil.setDate(refundGuaranteeUntil.getDate() + 14);
+    const doctorUpdate: Record<string, unknown> = {
+      subscription_status: "active",
+      subscription_end_date: endDate.toISOString(),
+      mp_subscription_id: String(paymentId),
+      mp_payer_email: payment.payer?.email || null,
+    };
+    if (isFirstApprovedPayment) {
+      doctorUpdate.trial_ends_at = refundGuaranteeUntil.toISOString();
+    }
+
     const { error: updateErr } = await supabase
       .from("doctors")
-      .update({
-        subscription_status: "active",
-        subscription_end_date: endDate.toISOString(),
-        mp_subscription_id: String(paymentId),
-        mp_payer_email: payment.payer?.email || null,
-      })
+      .update(doctorUpdate)
       .eq("id", doctorId);
 
     if (updateErr) {
@@ -260,7 +274,7 @@ Deno.serve(async (req) => {
     const { error: insertErr } = await supabase.from("payments").insert({
       doctor_id: doctorId,
       mp_payment_id: String(paymentId),
-      amount: payment.transaction_amount ?? (isAnnual ? 358.8 : 47.9),
+      amount: payment.transaction_amount ?? (isAnnual ? 358.8 : 19.9),
       currency: payment.currency_id || "BRL",
       plan: plan,
       status: "approved",

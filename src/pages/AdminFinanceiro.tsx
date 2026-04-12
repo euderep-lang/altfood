@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-const PRO_PRICE = 47.90;
+const PRO_PRICE = 19.9;
 
 type PeriodFilter = '7d' | '30d' | '90d' | '12m' | 'all';
 
