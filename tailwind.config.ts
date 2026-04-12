@@ -17,6 +17,11 @@ export default {
         sans: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         display: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         logo: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Altfood redesign
+        'altfood-display': ['"Playfair Display"', 'Georgia', 'ui-serif', 'serif'],
+        'altfood-body':    ['"DM Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        'altfood-head':    ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        'altfood-label':   ['"Inter"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -65,6 +70,18 @@ export default {
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
         info: "hsl(var(--info))",
+        // Altfood redesign brand tokens
+        altfood: {
+          forest:   '#1a3c2e',
+          lime:     '#c8f044',
+          offwhite: '#f5f0e8',
+          dark:     '#111a14',
+          muted:    '#6b7c6e',
+          surface:  '#ffffff',
+          border:   '#e2ddd4',
+          'on-dark': '#b0c4b8',
+          'muted-dark': '#6b9080',
+        },
       },
       borderRadius: {
         "2xl": "1rem",

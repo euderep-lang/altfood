@@ -38,6 +38,7 @@ const ReferralRedirect = lazy(() => import("./pages/ReferralRedirect"));
 const ShareKit = lazy(() => import("./pages/ShareKit"));
 const Changelog = lazy(() => import("./pages/Changelog"));
 const Billing = lazy(() => import("./pages/Billing"));
+const LandingRedesign = lazy(() => import("./pages/LandingRedesign"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -68,7 +69,7 @@ const App = () => (
             <GlobalLoadingBar />
             <Suspense fallback={<PageLoader />}>
               <Routes>
-                <Route path="/" element={<Landing />} />
+                <Route path="/" element={<LandingRedesign />} />
                 <Route path="/lp" element={<Landing />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />

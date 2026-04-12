@@ -255,7 +255,7 @@ Deno.serve(async (req) => {
     if (!abRes.ok) {
       console.error("[create-checkout] Abacate v2 API error:", abRes.status, rawText.slice(0, 500));
       const abMsg = String(json.error ?? json.message ?? rawText).slice(0, 280);
-      let error = `Abacate Pay (${abRes.status}): ${abMsg}`;
+      const error = `Abacate Pay (${abRes.status}): ${abMsg}`;
       const hint =
         /version mismatch|api key/i.test(abMsg)
           ? " Crie no painel Abacate (Integração → API) uma chave com permissão CHECKOUT:CREATE para v2, ou defina ABACATEPAY_CHECKOUT_VERSION=v1 no Supabase para usar cobrança v1."

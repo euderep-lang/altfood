@@ -124,10 +124,10 @@ export function getSavedLang(): Lang {
   try {
     const saved = localStorage.getItem(LANG_KEY);
     if (saved === 'en' || saved === 'pt') return saved;
-  } catch {}
+  } catch { /* ignore */ }
   return 'pt';
 }
 
 export function saveLang(lang: Lang) {
-  try { localStorage.setItem(LANG_KEY, lang); } catch {}
+  try { localStorage.setItem(LANG_KEY, lang); } catch { /* ignore */ }
 }
