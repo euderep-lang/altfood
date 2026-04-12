@@ -9,7 +9,7 @@ import AltfoodIcon from '@/components/AltfoodIcon';
 import { motion } from 'framer-motion';
 import { formatProMonthlyWithPeriod, formatRefundGuaranteeShort, PRO_MONTHLY_PRICE_BRL } from '@/lib/subscriptionPricing';
 import { hasPaidAppAccess } from '@/lib/subscriptionAccess';
-import { CHECKOUT_MONTHLY_PATH, hrefRegisterThenProCheckout } from '@/lib/checkoutIntent';
+import { CHECKOUT_MONTHLY_PATH } from '@/lib/checkoutIntent';
 
 const FREE_FEATURES = [
   { text: 'Página pública com marca Altfood', included: true },
@@ -42,11 +42,7 @@ export default function Pricing() {
   const navigate = useNavigate();
 
   const handleSubscribe = () => {
-    if (user) {
-      navigate(CHECKOUT_MONTHLY_PATH);
-    } else {
-      navigate(hrefRegisterThenProCheckout());
-    }
+    navigate(CHECKOUT_MONTHLY_PATH);
   };
 
   const hasProAccess = hasPaidAppAccess(doctor ?? null);

@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { CHECKOUT_MONTHLY_PATH, hrefRegisterThenProCheckout } from '@/lib/checkoutIntent';
+import { CHECKOUT_MONTHLY_PATH } from '@/lib/checkoutIntent';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -117,16 +116,10 @@ function useRotatingTestimonials(count: number, intervalMs: number) {
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
-  const { user } = useAuth();
   const testimonials = useRotatingTestimonials(3, 6000);
-  const registerProHref = hrefRegisterThenProCheckout();
 
   const goToCheckout = () => {
-    if (user) {
-      navigate(CHECKOUT_MONTHLY_PATH);
-    } else {
-      navigate(registerProHref);
-    }
+    navigate(CHECKOUT_MONTHLY_PATH);
   };
 
   useEffect(() => {
@@ -153,7 +146,7 @@ export default function Landing() {
             <Link to="/login">
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">Entrar</Button>
             </Link>
-            <Link to={registerProHref}>
+            <Link to={CHECKOUT_MONTHLY_PATH}>
               <Button size="sm" className="gradient-hero shadow-md">Começar com o Pro</Button>
             </Link>
           </div>
@@ -184,7 +177,7 @@ export default function Landing() {
           </motion.p>
 
           <motion.div variants={fadeUp} custom={3} className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
-            <Link to={registerProHref}>
+            <Link to={CHECKOUT_MONTHLY_PATH}>
               <Button variant="premium" size="xl" className="w-full sm:w-auto group">
                 Começar com o Pro
                 <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -266,7 +259,7 @@ export default function Landing() {
               Quanto do seu dia vai embora respondendo substituição?
             </motion.p>
             <motion.div variants={fadeUp} custom={1}>
-              <Link to={registerProHref}>
+              <Link to={CHECKOUT_MONTHLY_PATH}>
                 <Button variant="premium" size="xl" className="group">
                   Resolver isso agora
                   <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -540,7 +533,7 @@ export default function Landing() {
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
                   Pare de calcular "100g de frango = Xg de patinho" no WhatsApp. Deixa o Altfood fazer isso por você. {formatRefundGuaranteeShort()}.
                 </p>
-                <Link to={registerProHref} className="pt-4 block">
+                <Link to={CHECKOUT_MONTHLY_PATH} className="pt-4 block">
                   <Button variant="premium" size="xl" className="group">
                     Quero meu tempo de volta
                     <ArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />

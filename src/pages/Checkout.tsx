@@ -79,16 +79,27 @@ export default function Checkout() {
       setLoading(true);
       setError(null);
 
-      const { data: authData, error: authReadError } = await supabase.auth.getSession();
+      let { data: authData, error: authReadError } = await supabase.auth.getSession();
       if (authReadError || !authData.session?.access_token) {
         setError('Sessão não disponível ou expirada. Entre de novo e abra o checkout outra vez.');
         setLoading(false);
         return;
       }
 
+      // Renova access_token antes do invoke (evita 401 "Invalid JWT" no gateway com sessão antiga).
+      const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
+      if (!refreshErr && refreshed.session?.access_token) {
+        authData = refreshed;
+      }
+
+      const accessToken = authData.session!.access_token;
+
       try {
         const invokePromise = supabase.functions.invoke('create-checkout', {
           body: { plan: 'monthly' },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         });
         const timeoutPromise = new Promise<never>((_, reject) => {
           setTimeout(

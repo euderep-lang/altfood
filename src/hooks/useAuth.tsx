@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
@@ -40,14 +39,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (event === 'SIGNED_OUT') {
         setUser(null);
         setSession(null);
-      }
-
-      if (event === 'SIGNED_IN' && session?.user) {
-        setTimeout(() => {
-          if (window.location.pathname === '/') {
-            window.location.href = '/dashboard';
-          }
-        }, 100);
       }
     });
 
