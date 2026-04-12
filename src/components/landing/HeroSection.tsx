@@ -27,12 +27,12 @@ const fadeUp = (delay = 0) => ({
   animate: { opacity: 1, y: 0, transition: { duration: 0.65, ease, delay } },
 });
 
-const navLinks = ['Plataforma', 'Para Profissionais', 'Preços', 'Blog'];
+const navLinks = ['Como Funciona', 'Para Profissionais', 'Preços', 'Blog'];
 
 const chips = [
-  { emoji: '🥑', label: 'Gorduras Saudáveis' },
-  { emoji: '🌾', label: 'Carboidratos Complexos' },
-  { emoji: '🥬', label: 'Micronutrientes' },
+  { emoji: '🩺', label: 'Médicos' },
+  { emoji: '🥗', label: 'Nutricionistas' },
+  { emoji: '🏋️', label: 'Personal Trainers' },
 ];
 
 // ─── Mobile drawer ────────────────────────────────────────────────────────────
@@ -151,7 +151,7 @@ function FoodIllustration() {
             className="px-5 py-2 rounded-full text-xs font-semibold"
             style={{ background: T.forest, color: T.lime }}
           >
-            +10.000 alimentos catalogados
+            463 alimentos · Tabela TACO oficial
           </motion.div>
         </div>
       </div>
@@ -234,7 +234,7 @@ export function HeroSection() {
             style={{ background: `${T.lime}33`, color: T.forest }}
           >
             <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: T.forest }} aria-hidden />
-            Substituição Alimentar Inteligente
+            App para Profissionais de Saúde · R$19,90/mês
           </motion.div>
 
           {/* H1 */}
@@ -243,9 +243,9 @@ export function HeroSection() {
             className="text-5xl md:text-6xl xl:text-7xl font-extrabold leading-[1.05] tracking-tight"
             style={{ color: T.textDark }}
           >
-            Substituição<br />
-            Alimentar<br />
-            <span style={{ color: T.forest }}>Inteligente</span>
+            Seu link.<br />
+            Sua marca.<br />
+            <span style={{ color: T.forest }}>Grátis pro paciente.</span>
           </motion.h1>
 
           {/* Sub */}
@@ -254,18 +254,19 @@ export function HeroSection() {
             className="text-lg md:text-xl leading-relaxed max-w-lg"
             style={{ color: T.textMute }}
           >
-            Ajude seus pacientes a fazerem escolhas alimentares mais inteligentes.
-            A plataforma que conecta nutricionistas a alternativas alimentares personalizadas.
+            Assine por <strong style={{ color: T.textDark }}>R$19,90/mês</strong> e receba um link personalizado com
+            sua logo e cores. Seus pacientes acessam de graça e consultam substituições
+            alimentares baseadas na Tabela TACO.
           </motion.p>
 
           {/* CTAs */}
           <motion.div {...fadeUp(0.35)} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <a
-              href="#"
+              href="/register"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-base font-bold shadow-md transition-all hover:scale-105 active:scale-95"
               style={{ background: T.lime, color: T.textDark }}
             >
-              Conheça a Plataforma
+              Assinar por R$19,90/mês
               <ArrowRight size={18} aria-hidden />
             </a>
             <a
@@ -284,14 +285,14 @@ export function HeroSection() {
             style={{ color: T.textMute }}
           >
             <CheckCircle2 size={15} style={{ color: T.forest }} aria-hidden />
-            <span>Mais de 500 nutricionistas confiam na Altfood</span>
+            <span>Médicos, nutricionistas e personal trainers já usam o Altfood</span>
           </motion.div>
 
           {/* Chips — in-flow flex-wrap row, NO absolute positioning */}
           <motion.div
             {...fadeUp(0.5)}
             className="flex flex-wrap gap-2"
-            aria-label="Categorias nutricionais"
+            aria-label="Público-alvo da plataforma"
           >
             {chips.map((chip) => (
               <span

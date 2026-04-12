@@ -17,7 +17,7 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const testimonials = [
   {
     quote:
-      'A Altfood revolucionou minha prática. Consigo prescrever substituições baseadas em ciência em segundos. Meus pacientes adoram receber as sugestões pelo app.',
+      'Meus pacientes adoram. Envio o link, eles acessam na hora e já consultam as substituições sozinhos. Poupa o tempo da consulta e eles chegam mais preparados.',
     name: 'Dra. Camila Rocha',
     role: 'Nutricionista Clínica · CRN 12345',
     initials: 'CR',
@@ -25,26 +25,26 @@ const testimonials = [
   },
   {
     quote:
-      'O banco de dados nutricional é impressionante. Encontro alternativas para qualquer alimento com informações completas. Economizo horas por semana.',
-    name: 'Dr. Rafael Mendes',
-    role: 'Nutricionista Esportivo · CRN 67890',
+      'Uso com alunos de musculação. O link com meu nome e logo passa muito mais credibilidade. Por R$19,90 não tem como não valer — é o preço de um almoço.',
+    name: 'Rafael Mendes',
+    role: 'Personal Trainer · CREF 67890',
     initials: 'RM',
     color: '#1a3c2e',
   },
   {
     quote:
-      'A adesão dos meus pacientes aumentou 40% desde que comecei a usar a Altfood. A prescrição digital facilita muito o acompanhamento.',
+      'Já tinha receio de indicar substituições sem base científica. Com o Altfood e a Tabela TACO, tenho segurança para orientar e o paciente consulta quando quiser.',
     name: 'Dra. Ana Lima',
-    role: 'Nutricionista Funcional · CRN 11223',
+    role: 'Médica Clínica Geral · CRM 11223',
     initials: 'AL',
     color: '#40916c',
   },
 ];
 
 const stats = [
-  { value: '500+', label: 'Nutricionistas ativos' },
-  { value: '10.000+', label: 'Substituições prescritas' },
-  { value: '98%', label: 'Satisfação dos profissionais' },
+  { value: 'R$19,90', label: 'por mês, tudo incluso' },
+  { value: '463', label: 'alimentos da Tabela TACO' },
+  { value: '100%', label: 'gratuito para seus pacientes' },
 ];
 
 function Stars() {
@@ -144,7 +144,7 @@ export function Testimonials() {
             className="text-lg"
             style={{ color: T.textMute }}
           >
-            Mais de 500 nutricionistas já transformaram suas prescrições com a Altfood.
+            Médicos, nutricionistas e personal trainers já usam o Altfood no dia a dia.
           </motion.p>
         </div>
 

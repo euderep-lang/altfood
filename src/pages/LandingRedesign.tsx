@@ -92,12 +92,12 @@ function AnnouncementBanner() {
       />
       <span className="hidden sm:inline">✨</span>
       <span>
-        Novo: Prescrição digital agora disponível para todos os planos —{' '}
+        R$19,90/mês · Link personalizado com sua marca · Pacientes acessam de graça —{' '}
         <Link
           to="/planos"
           className="underline underline-offset-2 font-semibold hover:opacity-80 transition-opacity"
         >
-          Saiba mais
+          Assinar agora
         </Link>
       </span>
     </div>
@@ -127,8 +127,8 @@ function ProfessionalsImageBreak() {
       <div className="absolute inset-0 flex items-center px-8 md:px-20 font-sans">
         <div className="max-w-xl">
           <p className="text-3xl md:text-4xl font-bold leading-snug mb-4 text-white">
-            "A ciência da nutrição,<br />
-            <em>na palma da mão dos seus pacientes.</em>"
+            "Você assina. Seus pacientes<br />
+            <em>consultam de graça, quando quiserem.</em>"
           </p>
           <div className="w-12 h-1 rounded-full" style={{ background: T.lime }} />
         </div>
@@ -147,15 +147,15 @@ function HowItWorksImageAccent() {
             className="text-xs font-semibold uppercase tracking-[0.12em] block mb-3"
             style={{ color: T.forest }}
           >
-            Banco de Dados
+            Tabela TACO
           </span>
           <h3 className="text-3xl md:text-4xl font-bold leading-tight mb-4" style={{ color: T.dark }}>
-            10.000+ alimentos.<br />
-            <span style={{ color: T.forest }}>Infinitas possibilidades.</span>
+            463 alimentos.<br />
+            <span style={{ color: T.forest }}>Base oficial brasileira.</span>
           </h3>
           <p className="text-base leading-relaxed mb-6" style={{ color: T.muted }}>
-            Dados nutricionais completos baseados na Tabela TACO e fontes internacionais,
-            atualizados continuamente pela equipe Altfood.
+            Todos os alimentos são da Tabela Brasileira de Composição de Alimentos (TACO) —
+            a referência oficial do Brasil, com dados nutricionais completos e confiáveis.
           </p>
           <Link
             to="/planos"
@@ -194,11 +194,11 @@ function CTAStrip() {
           Pronto para começar?
         </span>
         <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: T.dark }}>
-          Transforme sua prática nutricional hoje
+          R$19,90/mês.<br />Seu link. Seus pacientes.
         </h2>
         <p className="text-lg leading-relaxed" style={{ color: T.muted }}>
-          Junte-se a mais de 500 nutricionistas que já prescrevem substituições
-          com inteligência e eficiência.
+          Assine hoje, personalize seu perfil com sua marca e compartilhe o link
+          com seus pacientes — eles acessam de graça, sempre.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
@@ -206,18 +206,18 @@ function CTAStrip() {
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
             style={{ background: T.lime, color: T.dark }}
           >
-            Criar conta gratuita
+            Assinar por R$19,90/mês
           </Link>
           <Link
             to="/planos"
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-semibold border-2 transition-all hover:opacity-80"
             style={{ borderColor: T.forest, color: T.forest }}
           >
-            Ver planos
+            Ver o que está incluso
           </Link>
         </div>
         <p className="text-sm" style={{ color: T.muted }}>
-          Sem cartão de crédito · Cancele quando quiser
+          Recorrência mensal · Cancele quando quiser · Sem taxa de adesão
         </p>
       </motion.div>
     </section>

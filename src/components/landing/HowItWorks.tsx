@@ -9,7 +9,7 @@
  */
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { ClipboardList, Smartphone, CheckCircle } from 'lucide-react';
+import { CreditCard, Link2, Search } from 'lucide-react';
 
 const T = {
   forest:     '#1a3c2e',
@@ -23,24 +23,24 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const steps = [
   {
     number: '01',
-    Icon: ClipboardList,
-    title: 'Profissional Cadastra',
+    Icon: CreditCard,
+    title: 'Você Assina o App',
     description:
-      'Nutricionistas cadastram seus pacientes e definem objetivos nutricionais e restrições alimentares.',
+      'Por R$19,90/mês você cria sua conta, adiciona sua logo, escolhe suas cores e personaliza seu perfil profissional.',
   },
   {
     number: '02',
-    Icon: Smartphone,
-    title: 'Paciente Recebe Sugestões',
+    Icon: Link2,
+    title: 'Compartilha seu Link',
     description:
-      'A plataforma gera substituições alimentares personalizadas baseadas em evidências científicas.',
+      'Receba um link único com a sua identidade visual e envie para seus pacientes. O acesso deles é completamente gratuito.',
   },
   {
     number: '03',
-    Icon: CheckCircle,
-    title: 'Substituição Feita',
+    Icon: Search,
+    title: 'Paciente Consulta',
     description:
-      'O paciente aplica as substituições no dia a dia com acompanhamento contínuo do profissional.',
+      'O paciente escolhe o alimento e a quantidade, e vê as melhores opções de substituição com base nos 463 alimentos da Tabela TACO.',
   },
 ];
 
@@ -143,8 +143,8 @@ export function HowItWorks() {
             transition={{ duration: 0.55, ease, delay: 0.08 }}
             className="text-4xl md:text-5xl font-extrabold leading-tight text-white"
           >
-            Prescrição inteligente<br />
-            em 3 passos simples
+            Simples assim:<br />
+            3 passos, você no controle
           </motion.h2>
         </div>
 
@@ -170,7 +170,7 @@ export function HowItWorks() {
           className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
           style={{ background: T.lime, color: T.textDark }}
         >
-          Começar agora gratuitamente
+          Assinar por R$19,90/mês
         </motion.a>
       </div>
     </section>

@@ -9,7 +9,7 @@
  */
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { Database, ClipboardCheck, BarChart3, ArrowRight, TrendingUp } from 'lucide-react';
+import { Link2, Database, Smartphone, ArrowRight, TrendingUp } from 'lucide-react';
 
 const T = {
   forest:  '#1a3c2e',
@@ -19,26 +19,26 @@ const T = {
   textMute:'#6b7c6e',
   surface: '#ffffff',
   border:  '#e2ddd4',
-  iconBg:  '#e8f5ec', // v2: solid mint — was #1a3c2e12 (7% opacity)
+  iconBg:  '#e8f5ec',
 } as const;
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 const features = [
   {
+    Icon: Link2,
+    title: 'Link com sua Marca',
+    description: 'Logo, cores e nome personalizados. Seus pacientes veem só a sua identidade — nenhuma menção à Altfood.',
+  },
+  {
     Icon: Database,
-    title: 'Banco de Dados Nutricional',
-    description: 'Acesso a mais de 10.000 alimentos com informações nutricionais completas e atualizadas.',
+    title: '463 Alimentos da Tabela TACO',
+    description: 'Banco de dados oficial brasileiro com informações nutricionais completas e confiáveis.',
   },
   {
-    Icon: ClipboardCheck,
-    title: 'Prescrição Digital',
-    description: 'Crie e envie prescrições de substituições diretamente para o app do seu paciente em segundos.',
-  },
-  {
-    Icon: BarChart3,
-    title: 'Acompanhamento do Paciente',
-    description: 'Monitore a adesão às substituições e ajuste em tempo real com base no progresso.',
+    Icon: Smartphone,
+    title: 'Paciente Independente',
+    description: 'O paciente acessa pelo celular, escolhe o alimento e a quantidade, e vê as opções de substituição na hora.',
   },
 ];
 
@@ -84,29 +84,19 @@ function DashboardMockup({ inView }: { inView: boolean }) {
           </span>
         </div>
 
-        {/* Progress bar */}
-        <div className="mb-5">
-          <div className="flex justify-between items-center mb-1.5">
-            <span className="text-xs font-medium" style={{ color: T.textMute }}>Adesão semanal</span>
-            <span className="text-sm font-bold" style={{ color: T.forest }}>87%</span>
+        {/* Link URL preview */}
+        <div className="mb-4 rounded-xl p-3 flex items-center gap-2" style={{ background: T.offWhite, border: `1px solid ${T.border}` }}>
+          <span className="text-base shrink-0" aria-hidden>🔗</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium mb-0.5" style={{ color: T.textMute }}>Seu link personalizado</p>
+            <p className="text-xs font-semibold truncate" style={{ color: T.forest }}>altfood.app/drjoanasilva</p>
           </div>
-          <div
-            className="h-2 rounded-full overflow-hidden"
-            style={{ background: T.border }}
-            role="progressbar"
-            aria-valuenow={87}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label="Adesão semanal: 87%"
+          <span
+            className="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0"
+            style={{ background: `${T.lime}28`, color: T.forest }}
           >
-            <motion.div
-              initial={{ width: 0 }}
-              animate={inView ? { width: '87%' } : {}}
-              transition={{ duration: 1, ease, delay: 0.6 }}
-              className="h-full rounded-full"
-              style={{ background: `linear-gradient(to right, ${T.forest}, ${T.lime})` }}
-            />
-          </div>
+            Gratuito para pacientes
+          </span>
         </div>
 
         {/* Substitution example */}
@@ -116,7 +106,7 @@ function DashboardMockup({ inView }: { inView: boolean }) {
         >
           <span className="text-xl shrink-0" aria-hidden>🍚</span>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium mb-1" style={{ color: T.textMute }}>Substituição prescrita</p>
+            <p className="text-xs font-medium mb-1" style={{ color: T.textMute }}>Paciente consultou</p>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-semibold" style={{ color: T.textDark }}>Arroz branco</span>
               <ArrowRight size={13} style={{ color: T.lime, flexShrink: 0 }} aria-hidden />
@@ -144,13 +134,13 @@ function DashboardMockup({ inView }: { inView: boolean }) {
           ))}
         </div>
 
-        {/* v2: ANVISA badge INSIDE card at bottom — not absolute outside bounds */}
+        {/* TACO badge */}
         <div className="pt-3 border-t" style={{ borderColor: T.border }}>
           <span
             className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
             style={{ background: `${T.lime}20`, color: T.forest, border: `1px solid ${T.lime}40` }}
           >
-            <span style={{ color: T.lime }}>✓</span> ANVISA Compliance
+            <span style={{ color: T.lime }}>✓</span> 463 alimentos · Tabela TACO oficial
           </span>
         </div>
       </div>
@@ -177,7 +167,7 @@ export function ForProfessionals() {
               className="text-xs font-semibold uppercase tracking-[0.12em]"
               style={{ color: T.forest }}
             >
-              Para Nutricionistas
+              Para Profissionais de Saúde
             </motion.span>
 
             <motion.h2
@@ -187,8 +177,8 @@ export function ForProfessionals() {
               className="text-4xl md:text-5xl font-extrabold leading-tight"
               style={{ color: T.textDark }}
             >
-              Ferramentas criadas<br />
-              <span style={{ color: T.forest }}>para quem cuida de vidas</span>
+              Seu app, sua marca,<br />
+              <span style={{ color: T.forest }}>seus pacientes conectados</span>
             </motion.h2>
 
             <motion.p
@@ -198,8 +188,8 @@ export function ForProfessionals() {
               className="text-lg leading-relaxed"
               style={{ color: T.textMute }}
             >
-              A Altfood foi desenvolvida com e para nutricionistas. Nossa plataforma oferece
-              as ferramentas que você precisa para personalizar substituições com base em evidências.
+              Médicos, nutricionistas e personal trainers assinam o Altfood por R$19,90/mês
+              e entregam para cada paciente um link gratuito com sua identidade visual.
             </motion.p>
           </div>
 
@@ -248,7 +238,7 @@ export function ForProfessionals() {
             className="self-start inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-base font-bold transition-all hover:opacity-90 hover:scale-105 active:scale-95"
             style={{ background: T.forest, color: '#ffffff' }}
           >
-            Criar conta gratuita
+            Assinar por R$19,90/mês
             <ArrowRight size={15} aria-hidden />
           </motion.a>
         </div>
