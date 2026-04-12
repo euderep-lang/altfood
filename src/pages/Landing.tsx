@@ -368,10 +368,10 @@ export default function Landing() {
                 </span>
               </motion.div>
 
-              <motion.h1 variants={fadeUp} custom={1} className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.08] tracking-tight">
-                Você passou 8 anos se formando pra responder{' '}
-                <span className="text-gradient italic">"posso trocar o frango?"</span>
-                {' '}no WhatsApp?
+              <motion.h1 variants={fadeUp} custom={1} className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.12] tracking-tight">
+                <span className="block">Você passou 5 anos se estudando pra responder:</span>
+                <span className="text-gradient mt-1 block italic md:mt-2">&ldquo;posso trocar o frango?&rdquo;</span>
+                <span className="mt-1 block md:mt-2">no WhatsApp?</span>
               </motion.h1>
 
               <motion.p variants={fadeUp} custom={2} className="text-white/60 text-lg leading-relaxed max-w-lg">
