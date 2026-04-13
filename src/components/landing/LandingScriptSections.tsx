@@ -13,6 +13,7 @@ import {
   viewportOnce,
   landingEase,
 } from '@/components/landing/landingMotion';
+import { LandingCtaPriceSubline } from '@/components/landing/LandingCtaPriceSubline';
 
 export function LandingPainSection() {
   const reduced = useReducedMotion();
@@ -228,7 +229,7 @@ export function LandingHowScriptSection() {
         </motion.ol>
 
         <motion.div
-          className="mt-10 flex justify-center"
+          className="mt-10 flex flex-col items-center gap-3"
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
@@ -246,6 +247,7 @@ export function LandingHowScriptSection() {
               Quero meu web app personalizado
             </Link>
           </motion.div>
+          <LandingCtaPriceSubline initialIndex={1} className="max-w-md px-2" />
         </motion.div>
       </div>
     </section>
@@ -461,18 +463,21 @@ export function LandingPricingGuaranteeSection() {
               </li>
             ))}
           </ul>
-          <motion.div className="mt-8" whileHover={reduced ? undefined : { scale: 1.01 }} whileTap={reduced ? undefined : { scale: 0.99 }}>
-            <Link
-              to="/register"
-              className="flex w-full touch-manipulation items-center justify-center rounded-full py-4 text-base font-bold shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(170_60%_30%)]"
-              style={{
-                background: `linear-gradient(135deg, ${B.lime}, color-mix(in srgb, ${B.lime} 82%, ${B.secondary}))`,
-                color: B.forest,
-              }}
-            >
-              Assinar Altfood agora
-            </Link>
-          </motion.div>
+          <div className="mt-8 flex flex-col items-stretch gap-3">
+            <motion.div whileHover={reduced ? undefined : { scale: 1.01 }} whileTap={reduced ? undefined : { scale: 0.99 }}>
+              <Link
+                to="/register"
+                className="flex w-full touch-manipulation items-center justify-center rounded-full py-4 text-base font-bold shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(170_60%_30%)]"
+                style={{
+                  background: `linear-gradient(135deg, ${B.lime}, color-mix(in srgb, ${B.lime} 82%, ${B.secondary}))`,
+                  color: B.forest,
+                }}
+              >
+                Assinar Altfood agora
+              </Link>
+            </motion.div>
+            <LandingCtaPriceSubline initialIndex={2} className="px-1" />
+          </div>
         </div>
 
         <div

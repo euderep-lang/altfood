@@ -21,6 +21,7 @@ import {
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { landingBrand as B } from '@/lib/landingBrand';
 import { fadeUpSoftVariants, fadeUpVariants, viewportOnce, landingEase } from '@/components/landing/landingMotion';
+import { LandingCtaPriceSubline } from '@/components/landing/LandingCtaPriceSubline';
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -303,14 +304,17 @@ export function LandingDoubtsCtaSection() {
             <MessageCircle className="h-4 w-4 shrink-0" aria-hidden />
             Entrar na minha conta
           </Link>
-          <Link
-            to="/register"
-            className="inline-flex min-h-12 touch-manipulation items-center justify-center gap-2 rounded-full px-8 py-3.5 text-sm font-bold shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(170_60%_30%)]"
-            style={{ background: B.lime, color: B.forest }}
-          >
-            Assinar agora
-            <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
-          </Link>
+          <div className="flex w-full flex-col items-center gap-2 sm:w-auto">
+            <Link
+              to="/register"
+              className="inline-flex min-h-12 w-full touch-manipulation items-center justify-center gap-2 rounded-full px-8 py-3.5 text-sm font-bold shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(170_60%_30%)] sm:w-auto"
+              style={{ background: B.lime, color: B.forest }}
+            >
+              Assinar agora
+              <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
+            </Link>
+            <LandingCtaPriceSubline initialIndex={2} className="w-full max-w-xs sm:max-w-none" />
+          </div>
         </div>
         <Link to="/planos" className="mt-6 text-sm font-semibold underline-offset-4 hover:underline" style={{ color: B.primary }}>
           Ver planos e detalhes

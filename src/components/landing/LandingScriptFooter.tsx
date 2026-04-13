@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { landingBrand as B } from '@/lib/landingBrand';
 import { fadeUpVariants, viewportOnce } from '@/components/landing/landingMotion';
+import { LandingCtaPriceSubline } from '@/components/landing/LandingCtaPriceSubline';
 
 export function LandingScriptFooter() {
   const reduced = useReducedMotion();
@@ -33,20 +34,23 @@ export function LandingScriptFooter() {
         <p className="text-xl font-semibold leading-snug text-white md:text-2xl">
           O próximo nível do seu atendimento custa menos que um café por semana. Comece agora.
         </p>
-        <motion.div
-          className="mt-8 inline-block"
-          whileHover={reduced ? undefined : { scale: 1.03 }}
-          whileTap={reduced ? undefined : { scale: 0.98 }}
-        >
-          <Link
-            to="/register"
-            className="inline-flex min-h-12 touch-manipulation items-center justify-center gap-2 rounded-full px-10 py-4 text-base font-bold shadow-lg ring-2 ring-black/10 transition-shadow hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            style={{ background: B.lime, color: B.forest }}
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <motion.div
+            className="inline-block"
+            whileHover={reduced ? undefined : { scale: 1.03 }}
+            whileTap={reduced ? undefined : { scale: 0.98 }}
           >
-            Assinar Altfood agora
-            <ArrowRight className="h-5 w-5" aria-hidden />
-          </Link>
-        </motion.div>
+            <Link
+              to="/register"
+              className="inline-flex min-h-12 touch-manipulation items-center justify-center gap-2 rounded-full px-10 py-4 text-base font-bold shadow-lg ring-2 ring-black/10 transition-shadow hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              style={{ background: B.lime, color: B.forest }}
+            >
+              Assinar Altfood agora
+              <ArrowRight className="h-5 w-5" aria-hidden />
+            </Link>
+          </motion.div>
+          <LandingCtaPriceSubline tone="onDark" initialIndex={1} className="max-w-md px-2" />
+        </div>
         <p className="mt-10 text-sm" style={{ color: B.onDarkMuted }}>
           Altfood © {new Date().getFullYear()} – Todos os direitos reservados.
         </p>

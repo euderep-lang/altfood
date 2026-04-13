@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { HeroAnimatedBackdrop } from '@/components/landing/HeroAnimatedBackdrop';
+import { LandingCtaPriceSubline } from '@/components/landing/LandingCtaPriceSubline';
 import { PatientPagePhoneMockup } from '@/components/landing/PatientPagePhoneMockup';
 import { BRAND_MARK_SRC } from '@/components/AltfoodLogo';
 import { landingBrand as B } from '@/lib/landingBrand';
@@ -129,9 +130,7 @@ export function HeroSection() {
               )}
             </Link>
           </motion.div>
-          <p className="text-sm font-medium" style={{ color: B.onDarkMuted }}>
-            Apenas R$ 19,90/mês. Pacientes ilimitados.
-          </p>
+          <LandingCtaPriceSubline tone="onDark" initialIndex={0} className="max-w-md" />
         </motion.div>
 
         <motion.div variants={vFade} className="mt-14 w-full max-w-[300px] md:mt-16">
