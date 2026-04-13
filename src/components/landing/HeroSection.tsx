@@ -56,12 +56,12 @@ export function HeroSection() {
           >
             Como funciona
           </a>
-          <Link
-            to="/planos"
+          <a
+            href="#planos"
             className="hidden min-h-11 items-center rounded-full px-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8f044] sm:inline-flex"
           >
             Planos
-          </Link>
+          </a>
           <a
             href="#faq"
             className="hidden min-h-11 items-center rounded-full px-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8f044] md:inline-flex"

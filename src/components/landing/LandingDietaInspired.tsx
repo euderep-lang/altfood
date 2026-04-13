@@ -7,14 +7,11 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
-  BadgePercent,
   BookOpen,
   Gift,
-  LayoutDashboard,
   Link2,
   MessageCircle,
   Palette,
-  ShieldCheck,
   Smartphone,
   Users,
 } from 'lucide-react';
@@ -117,14 +114,17 @@ export function LandingBenefitSplitSection() {
   );
 }
 
+const featureHighlight = {
+  Icon: Gift,
+  title: 'Grátis para o paciente',
+  text: 'Quem paga a assinatura é o profissional; o acesso do paciente ao app não é cobrado por paciente.',
+} as const;
+
 const featureItems = [
   { Icon: BookOpen, title: 'Substituições com referência', text: 'Trocas guiadas por tabelas nutricionais oficiais, no contexto do seu plano.' },
   { Icon: Palette, title: 'Marca e cores suas', text: 'Logo, paleta e link exclusivo — o paciente vê o app como extensão do seu consultório.' },
   { Icon: Link2, title: 'Um link para enviar', text: 'Depois da consulta, envie o acesso; nada de instalar app de terceiros com outro nome.' },
   { Icon: Users, title: 'Pacientes ilimitados', text: 'Cresça a carteira sem limite artificial de cadastros no plano profissional.' },
-  { Icon: BadgePercent, title: 'Sem taxa de adesão', text: 'Assinatura mensal simples; sem fidelidade forçada no discurso comercial do produto.' },
-  { Icon: LayoutDashboard, title: 'Painel enxuto', text: 'Configure white label e acompanhe o essencial sem curva de aprendizado longa.' },
-  { Icon: Gift, title: 'Grátis para o paciente', text: 'Quem paga a assinatura é o profissional; o acesso do paciente ao app não é cobrado por paciente.' },
   { Icon: MessageCircle, title: 'Suporte humano', text: 'Dúvidas sobre a plataforma: fale com a equipe Altfood quando precisar.' },
 ] as const;
 
@@ -158,8 +158,48 @@ export function LandingFeatureMatrixSection() {
           </p>
         </motion.div>
 
+        <motion.div
+          className="mt-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={v}
+        >
+          <div
+            className="relative overflow-hidden rounded-3xl border-2 p-6 shadow-lg md:p-8 lg:flex lg:items-center lg:gap-10"
+            style={{
+              borderColor: `color-mix(in srgb, ${B.forest} 55%, ${B.lime})`,
+              background: `linear-gradient(125deg, color-mix(in srgb, ${B.lime} 42%, white) 0%, ${B.surface} 38%, color-mix(in srgb, ${B.primary} 8%, ${B.surface}) 100%)`,
+            }}
+          >
+            <div
+              className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full opacity-35 blur-3xl"
+              style={{ background: B.lime }}
+              aria-hidden
+            />
+            <div
+              className="relative mb-5 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-md ring-2 ring-black/5 lg:mb-0 lg:h-16 lg:w-16"
+              style={{ background: B.lime, color: B.forest }}
+              aria-hidden
+            >
+              <featureHighlight.Icon className="h-7 w-7 lg:h-8 lg:w-8" strokeWidth={2.2} />
+            </div>
+            <div className="relative min-w-0">
+              <p className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: B.primary }}>
+                Destaque
+              </p>
+              <h3 className="mt-1.5 text-xl font-black tracking-tight md:text-2xl lg:text-[1.65rem]" style={{ color: B.forest }}>
+                {featureHighlight.title}
+              </h3>
+              <p className="mt-3 max-w-2xl text-base leading-[1.65] md:text-lg" style={{ color: B.muted }}>
+                {featureHighlight.text}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
         <motion.ul
-          className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
