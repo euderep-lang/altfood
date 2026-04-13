@@ -1,301 +1,93 @@
-/** Hero — USP + subtítulo + demo (mockup); navegação mínima orientada à conversão. */
-import { useState, useEffect } from 'react';
+/** Hero — roteiro Altfood: headline, subhead, CTA, micro-preço, iPhone central com marca fictícia. */
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Menu, X } from 'lucide-react';
-import { AltfoodLogoNavLight } from '@/components/AltfoodLogo';
+import { motion } from 'framer-motion';
 import { PatientPagePhoneMockup } from '@/components/landing/PatientPagePhoneMockup';
+import { BRAND_MARK_SRC } from '@/components/AltfoodLogo';
 
-const T = {
-  forest: '#1a3c2e',
-  lime: '#c8f044',
-  offWhite: '#f5f0e8',
-  textDark: '#111a14',
-  textMute: '#6b7c6e',
-  surface: '#ffffff',
-  border: '#e2ddd4',
+const NAVY = '#152b36';
+const LIME = '#c8f044';
+const MUTE = '#a8bdb4';
+
+/** Verde oliva / azul marinho no app do paciente (exemplo white label) */
+const CLINIC_BRAND = {
+  primaryColor: '#2d4a52',
+  brandName: 'Clínica Saúde & Bem-Estar',
+  brandSubtitle: 'White label · Consultoria integrativa',
+  initials: 'CS',
 } as const;
 
-const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.65, ease, delay } },
-});
-
-/** Poucos links = menos distração antes da conversão */
-const navItems = [
-  { label: 'Como funciona', href: '#como-funciona' },
-  { label: 'Benefícios', href: '#para-profissionais' },
-  { label: 'Dúvidas', href: '#objecoes' },
-] as const;
-
-const chips = [
-  { emoji: '🩺', label: 'Nutrição clínica' },
-  { emoji: '🏥', label: 'Medicina' },
-  { emoji: '🏋️', label: 'Educ. física' },
-];
-
-function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [open]);
-
-  return (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div
-            key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/40"
-            onClick={onClose}
-            aria-hidden
-          />
-          <motion.div
-            key="drawer"
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ duration: 0.3, ease }}
-            className="fixed right-0 top-0 z-50 flex h-full w-72 flex-col px-6 py-8 shadow-2xl"
-            style={{ background: T.offWhite }}
-            role="dialog"
-            aria-modal
-            aria-label="Menu de navegação"
-          >
-            <button
-              type="button"
-              onClick={onClose}
-              className="mb-4 self-end rounded-lg p-2 transition-colors hover:bg-black/5"
-              aria-label="Fechar menu"
-            >
-              <X size={22} style={{ color: T.forest }} />
-            </button>
-            <div className="mb-6">
-              <AltfoodLogoNavLight href="/" />
-            </div>
-            <nav className="flex flex-col gap-2">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={onClose}
-                  className="rounded-xl px-4 py-3 text-base font-medium transition-colors hover:bg-black/5"
-                  style={{ color: T.textDark }}
-                >
-                  {item.label}
-                </a>
-              ))}
-              <Link
-                to="/planos"
-                onClick={onClose}
-                className="rounded-xl px-4 py-3 text-base font-medium transition-colors hover:bg-black/5"
-                style={{ color: T.textDark }}
-              >
-                Planos
-              </Link>
-            </nav>
-            <div className="mt-auto flex flex-col gap-2">
-              <Link
-                to="/login"
-                onClick={onClose}
-                className="flex w-full items-center justify-center rounded-xl py-3 text-base font-semibold transition-all hover:bg-black/5"
-                style={{ color: T.forest, border: `2px solid ${T.forest}` }}
-              >
-                Entrar
-              </Link>
-              <Link
-                to="/register"
-                onClick={onClose}
-                className="flex w-full items-center justify-center rounded-xl py-3 text-base font-bold transition-all hover:opacity-90"
-                style={{ background: T.forest, color: '#fff' }}
-              >
-                Começar teste grátis
-              </Link>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
-  );
-}
-
 export function HeroSection() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   return (
-    <section className="relative flex flex-col font-sans" style={{ background: T.offWhite }}>
-      <div
-        className="pointer-events-none absolute inset-0 opacity-30"
-        style={{
-          backgroundImage: `radial-gradient(circle at 70% 10%, ${T.lime}28 0%, transparent 50%),
-                            radial-gradient(circle at 10% 80%, ${T.forest}12 0%, transparent 40%)`,
-        }}
-        aria-hidden
-      />
+    <section className="relative flex flex-col font-sans text-white" style={{ background: `linear-gradient(180deg, ${NAVY} 0%, #0f1a20 100%)` }}>
+      <nav className="relative z-10 flex items-center justify-between px-5 py-4 md:px-12" aria-label="Navegação">
+        <Link to="/" className="flex items-center gap-2.5" aria-label="Altfood — início">
+          <img
+            src={BRAND_MARK_SRC}
+            alt=""
+            width={36}
+            height={36}
+            className="h-9 w-9 shrink-0 rounded-2xl object-cover ring-1 ring-white/20"
+            decoding="async"
+          />
+          <span className="text-xl font-bold tracking-tight">Altfood</span>
+        </Link>
+        <Link to="/login" className="text-sm font-semibold text-white/85 transition-colors hover:text-white">
+          Entrar
+        </Link>
+      </nav>
 
-      <motion.nav
-        initial={{ opacity: 0, y: -14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease }}
-        className="relative z-20 flex items-center justify-between px-5 py-4 md:px-16"
-        aria-label="Navegação principal"
-      >
-        <AltfoodLogoNavLight href="/" />
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-5 pb-16 pt-6 text-center md:pb-20 md:pt-4">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease }}
+          className="text-3xl font-extrabold leading-[1.12] tracking-tight sm:text-4xl md:text-5xl"
+        >
+          Sua consultoria no bolso do seu paciente.
+          <br />
+          <span style={{ color: LIME }}>Sua marca em cada substituição.</span>
+        </motion.h1>
 
-        <div className="hidden items-center gap-6 md:flex">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium transition-opacity hover:opacity-60"
-              style={{ color: T.textDark }}
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease, delay: 0.08 }}
+          className="mt-6 max-w-2xl text-base leading-relaxed sm:text-lg"
+          style={{ color: MUTE }}
+        >
+          O Altfood é o Web App White Label que dá autonomia total para seus pacientes trocarem alimentos em segundos.
+          Elimine as dúvidas no WhatsApp e profissionalize seu atendimento por um valor simbólico.
+        </motion.p>
 
-        <div className="flex items-center gap-2 md:gap-3">
-          <Link
-            to="/planos"
-            className="hidden text-sm font-semibold transition-opacity hover:opacity-60 md:inline"
-            style={{ color: T.forest }}
-          >
-            Planos
-          </Link>
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease, delay: 0.14 }}
+          className="mt-8 flex flex-col items-center gap-3"
+        >
           <Link
             to="/register"
-            className="hidden rounded-full px-4 py-2 text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] md:inline-flex"
-            style={{ background: T.lime, color: T.textDark }}
+            className="inline-flex min-h-[52px] min-w-[min(100%,320px)] items-center justify-center rounded-full px-8 py-3.5 text-center text-sm font-black uppercase tracking-wide shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98] sm:text-base"
+            style={{ background: LIME, color: NAVY }}
           >
-            Começar grátis
+            Quero meu web app personalizado
           </Link>
-          <Link
-            to="/login"
-            className="hidden rounded-lg border-2 px-4 py-2 text-sm font-semibold transition-all hover:bg-black/5 md:inline-flex"
-            style={{ color: T.forest, borderColor: T.forest }}
-          >
-            Entrar
-          </Link>
-          <button
-            type="button"
-            onClick={() => setDrawerOpen(true)}
-            className="rounded-lg p-2 transition-colors hover:bg-black/5 md:hidden"
-            aria-label="Abrir menu"
-            aria-expanded={drawerOpen}
-          >
-            <Menu size={22} style={{ color: T.forest }} />
-          </button>
-        </div>
-      </motion.nav>
+          <p className="text-sm font-medium" style={{ color: MUTE }}>
+            Apenas R$ 19,90/mês. Pacientes ilimitados.
+          </p>
+        </motion.div>
 
-      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
-
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-5 pb-16 pt-6 md:px-16 lg:grid-cols-5 lg:gap-8 lg:pt-8">
-        <div className="flex flex-col gap-5 lg:col-span-3">
-          <motion.span
-            {...fadeUp(0.04)}
-            className="text-xs font-bold uppercase tracking-[0.14em] text-[#111a14]/75"
-          >
-            Para nutricionistas, médicos e educadores físicos
-          </motion.span>
-
-          <motion.h1
-            {...fadeUp(0.1)}
-            className="text-4xl font-extrabold leading-[1.08] tracking-tight text-[#111a14] sm:text-5xl md:text-6xl xl:text-[3.15rem]"
-          >
-            Seu paciente consulta a{' '}
-            <span style={{ color: T.forest }}>TACO no seu link</span>
-            <br className="hidden sm:block" />
-            <span className="sm:whitespace-nowrap"> — sem te bombardear no WhatsApp.</span>
-          </motion.h1>
-
-          <motion.p
-            {...fadeUp(0.16)}
-            className="max-w-xl text-base leading-relaxed md:text-lg"
-            style={{ color: T.textMute }}
-          >
-            <strong className="font-semibold text-[#111a14]">Proposta única:</strong> uma página pública com{' '}
-            <em>a sua marca</em>, onde ele busca o alimento, ajusta gramas e vê substituições similares com base oficial —
-            no navegador do celular, <strong className="font-semibold text-[#111a14]">sem baixar app</strong>. Você
-            vende clareza e limite; o paciente ganha autonomia com critério.
-          </motion.p>
-
-          <motion.div {...fadeUp(0.22)} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap">
-            <Link
-              to="/register"
-              className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
-              style={{ background: T.lime, color: T.textDark }}
-            >
-              Começar teste grátis
-              <ArrowRight size={18} aria-hidden />
-            </Link>
-            <Link
-              to="/planos"
-              className="inline-flex items-center justify-center rounded-full border-2 px-6 py-3.5 text-sm font-bold transition-all hover:bg-black/[0.03]"
-              style={{ color: T.forest, borderColor: T.forest }}
-            >
-              Ver planos e preços
-            </Link>
-            <a
-              href="#como-funciona"
-              className="inline-flex items-center justify-center gap-1 py-2 text-sm font-semibold transition-opacity hover:opacity-60 sm:py-0"
-              style={{ color: T.textMute }}
-            >
-              Ver como funciona →
-            </a>
-          </motion.div>
-
-          <motion.div {...fadeUp(0.28)} className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs md:text-sm" style={{ color: T.textMute }}>
-            <span className="inline-flex items-center gap-1.5">
-              <CheckCircle2 size={14} className="shrink-0" style={{ color: T.forest }} aria-hidden />
-              HTTPS
-            </span>
-            <span className="text-border hidden sm:inline">|</span>
-            <span>TACO (NEPA/UNICAMP)</span>
-            <span className="text-border hidden sm:inline">|</span>
-            <span>Paciente sem instalar app</span>
-          </motion.div>
-
-          <motion.div {...fadeUp(0.34)} className="flex flex-wrap gap-2" aria-label="Especialidades que usam o Altfood">
-            {chips.map((chip) => (
-              <span
-                key={chip.label}
-                className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium"
-                style={{
-                  background: T.surface,
-                  borderColor: T.border,
-                  color: T.textDark,
-                  boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-                }}
-              >
-                <span aria-hidden>{chip.emoji}</span>
-                {chip.label}
-              </span>
-            ))}
-          </motion.div>
-        </div>
-
-        <div className="mx-auto w-full max-w-[320px] lg:col-span-2 lg:mx-0 lg:max-w-none lg:justify-self-end">
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.75, ease, delay: 0.15 }}
-          >
-            <PatientPagePhoneMockup />
-            <p className="mt-4 text-center text-xs leading-relaxed md:text-left" style={{ color: T.textMute }}>
-              <strong className="font-semibold text-[#111a14]">Prova visual:</strong> animação do fluxo real — busca,
-              macros, peso e substituições — igual à experiência quando você envia o link.
-            </p>
-          </motion.div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.65, ease, delay: 0.2 }}
+          className="mt-12 w-full max-w-[300px]"
+        >
+          <PatientPagePhoneMockup brand={CLINIC_BRAND} />
+          <p className="mt-4 text-center text-xs leading-relaxed" style={{ color: MUTE }}>
+            Exemplo visual: página do paciente com a identidade da sua clínica — cores, logo e link exclusivos.
+          </p>
+        </motion.div>
       </div>
     </section>
   );

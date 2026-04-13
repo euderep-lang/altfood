@@ -6,7 +6,21 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Loader2 } from 'lucide-react';
 
-const PRIMARY = '#0f766e';
+const DEFAULT_PRIMARY = '#0f766e';
+
+export type PatientPagePhoneBrand = {
+  primaryColor: string;
+  brandName: string;
+  brandSubtitle: string;
+  initials: string;
+};
+
+const DEFAULT_BRAND: PatientPagePhoneBrand = {
+  primaryColor: DEFAULT_PRIMARY,
+  brandName: 'Dra. Carine Cassol',
+  brandSubtitle: 'CRM 80939 • Nutrologia',
+  initials: 'CC',
+};
 
 const TARGET_QUERY = 'Peito de frango';
 
@@ -34,7 +48,16 @@ function usePrefersReducedMotion(): boolean {
 
 type DemoPhase = 'search' | 'typing' | 'food' | 'loading' | 'results';
 
-export function PatientPagePhoneMockup({ className }: { className?: string }) {
+export function PatientPagePhoneMockup({
+  className,
+  brand,
+}: {
+  className?: string;
+  /** Marca fictícia na landing (ex.: clínica white-label) ou dados reais do mock padrão */
+  brand?: Partial<PatientPagePhoneBrand>;
+}) {
+  const b: PatientPagePhoneBrand = { ...DEFAULT_BRAND, ...brand };
+  const primary = b.primaryColor;
   const reducedMotion = usePrefersReducedMotion();
   const [phase, setPhase] = useState<DemoPhase>(reducedMotion ? 'results' : 'search');
   const [typedLen, setTypedLen] = useState(reducedMotion ? TARGET_QUERY.length : 0);
@@ -108,15 +131,18 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
             <div className="px-3 pb-3 pt-1">
               <div className="flex items-center gap-2.5">
                 <div
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#0f766e]/25 text-sm font-bold text-white shadow-sm"
-                  style={{ background: `linear-gradient(135deg, ${PRIMARY}, ${PRIMARY}cc)` }}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border text-sm font-bold text-white shadow-sm"
+                  style={{
+                    background: `linear-gradient(135deg, ${primary}, ${primary}cc)`,
+                    borderColor: `${primary}40`,
+                  }}
                   aria-hidden
                 >
-                  CC
+                  {b.initials}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h2 className="truncate text-sm font-bold leading-tight text-foreground">Dra. Carine Cassol</h2>
-                  <p className="mt-0.5 text-[10px] leading-snug text-muted-foreground">CRM 80939 • Nutrologia</p>
+                  <h2 className="truncate text-sm font-bold leading-tight text-foreground">{b.brandName}</h2>
+                  <p className="mt-0.5 text-[10px] leading-snug text-muted-foreground">{b.brandSubtitle}</p>
                 </div>
                 <div className="flex shrink-0 gap-1" aria-hidden>
                   <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted text-[11px]">🇧🇷</span>
@@ -136,7 +162,7 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
               <div className="mt-2 flex justify-center">
                 <span
                   className="rounded-full px-2.5 py-1 text-[8px] font-semibold uppercase tracking-wide"
-                  style={{ backgroundColor: `${PRIMARY}15`, color: PRIMARY }}
+                  style={{ backgroundColor: `${primary}18`, color: primary }}
                 >
                   Tabela de substituição alimentar
                 </span>
@@ -157,7 +183,8 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
                       {searchDisplay}
                       {phase === 'typing' && typedLen < TARGET_QUERY.length && (
                         <motion.span
-                          className="ml-px inline-block h-3 w-px translate-y-px bg-primary align-middle"
+                          className="ml-px inline-block h-3 w-px translate-y-px align-middle"
+                          style={{ backgroundColor: primary }}
                           animate={{ opacity: [1, 0] }}
                           transition={{ repeat: Infinity, duration: 0.55 }}
                           aria-hidden
@@ -183,7 +210,7 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
                       <div className="flex min-w-0 flex-1 items-center gap-2">
                         <div
                           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base"
-                          style={{ backgroundColor: `${PRIMARY}12` }}
+                          style={{ backgroundColor: `${primary}14` }}
                         >
                           🍗
                         </div>
@@ -221,8 +248,8 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
                           key={w}
                           className="rounded-full px-2 py-0.5 text-[9px] font-semibold transition-colors"
                           style={{
-                            backgroundColor: w === 100 ? PRIMARY : `${PRIMARY}10`,
-                            color: w === 100 ? '#fff' : PRIMARY,
+                            backgroundColor: w === 100 ? primary : `${primary}14`,
+                            color: w === 100 ? '#fff' : primary,
                           }}
                         >
                           {w}g
@@ -238,10 +265,13 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="mt-2 flex items-center justify-center gap-2 rounded-2xl border border-dashed border-primary/25 bg-primary/[0.04] py-3"
+                        className="mt-2 flex items-center justify-center gap-2 rounded-2xl border border-dashed py-3"
+                        style={{ borderColor: `${primary}35`, backgroundColor: `${primary}08` }}
                       >
-                        <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden />
-                        <span className="text-[10px] font-medium text-primary">Buscando substituições na TACO…</span>
+                        <Loader2 className="h-4 w-4 animate-spin" style={{ color: primary }} aria-hidden />
+                        <span className="text-[10px] font-medium" style={{ color: primary }}>
+                          Buscando substituições na TACO…
+                        </span>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -321,10 +351,13 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
             ? { y: { repeat: Infinity, duration: 2.8, ease: 'easeInOut' }, opacity: { duration: 0.3 } }
             : {}
         }
-        className="pointer-events-none absolute -left-2 top-[38%] max-sm:scale-90 sm:-left-5 sm:top-[36%] rounded-2xl border border-[#0f766e]/15 bg-white px-2.5 py-2 shadow-xl sm:px-3 sm:py-2.5"
+        className="pointer-events-none absolute -left-2 top-[38%] max-sm:scale-90 sm:-left-5 sm:top-[36%] rounded-2xl border bg-white px-2.5 py-2 shadow-xl sm:px-3 sm:py-2.5"
+        style={{ borderColor: `${primary}22` }}
         aria-hidden
       >
-        <p className="text-[10px] font-bold text-[#0f766e]">Paciente no mercado</p>
+        <p className="text-[10px] font-bold" style={{ color: primary }}>
+          Paciente no mercado
+        </p>
         <p className="text-[9px] text-muted-foreground">sem te ligar</p>
       </motion.div>
     </div>
