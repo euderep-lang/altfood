@@ -577,7 +577,7 @@ export default function Onboarding() {
           <div className="p-6 space-y-5">
             <div className="space-y-3">
               <p className="text-sm text-foreground leading-relaxed">
-                <strong>Seus pacientes merecem praticidade.</strong> Com o Altfood Pro, eles acessam substituições alimentares
+                <strong>Seus pacientes merecem praticidade.</strong> Com o Altfood PRO, eles acessam substituições alimentares
                 personalizadas direto pelo celular — sem instalar nada, sem papel, sem perder tempo.
               </p>
             </div>
@@ -585,7 +585,7 @@ export default function Onboarding() {
             <div className="bg-primary/5 rounded-xl p-4 space-y-2">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-foreground">Altfood Pro inclui:</span>
+                <span className="text-sm font-semibold text-foreground">Altfood PRO inclui:</span>
               </div>
               <ul className="text-xs text-muted-foreground space-y-1.5 ml-6">
                 {['Substituições ilimitadas', 'Página com sua marca e cores', 'Analytics de acessos', 'Suporte prioritário'].map(f => (

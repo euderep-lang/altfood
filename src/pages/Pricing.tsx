@@ -73,7 +73,8 @@ export default function Pricing() {
           <p className="text-muted-foreground mt-3 text-base">
             Acesso ao painel após o pagamento. {formatRefundGuaranteeShort()}.
           </p>
-          <p className="text-sm text-primary font-medium mt-4">{formatProMonthlyWithPeriod()} — assinatura mensal recorrente</p>
+          <p className="text-sm text-primary font-medium mt-4">{formatProMonthlyWithPeriod()} — Altfood PRO (mensal)</p>
+          <p className="text-xs text-muted-foreground mt-2">Condição de lançamento por tempo limitado.</p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -114,7 +115,7 @@ export default function Pricing() {
               <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
               <CardContent className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-4">
-                  <Badge className="bg-primary text-primary-foreground rounded-lg text-xs">Pro</Badge>
+                  <Badge className="bg-primary text-primary-foreground rounded-lg text-xs">Altfood PRO</Badge>
                   <Badge className="bg-primary/10 text-primary border-primary/20 rounded-lg text-[10px]">Mais popular</Badge>
                 </div>
                 <div className="mb-6 text-center">
@@ -142,8 +143,8 @@ export default function Pricing() {
                   <Button disabled className="w-full rounded-xl h-12 text-sm font-semibold mt-6 bg-primary/20 text-primary">
                     <Crown className="w-4 h-4 mr-2" />{' '}
                     {doctor?.subscription_status === 'cancelled'
-                      ? 'Pro ativo até o fim do período'
-                      : 'Você já é Pro'}
+                      ? 'PRO ativo até o fim do período'
+                      : 'Você já é PRO'}
                   </Button>
                 ) : (
                   <Button
@@ -151,7 +152,7 @@ export default function Pricing() {
                     className="w-full rounded-xl h-12 text-sm font-semibold mt-6 bg-primary hover:bg-primary/90"
                   >
                     <Crown className="w-4 h-4 mr-2" />
-                    Assinar Pro
+                    Assinar Altfood PRO
                   </Button>
                 )}
               </CardContent>

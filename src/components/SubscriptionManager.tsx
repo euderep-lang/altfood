@@ -228,7 +228,7 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">
-                          Altfood Pro — {payment.plan === 'annual' ? 'Anual' : 'Mensal'}
+                          Altfood PRO — {payment.plan === 'annual' ? 'Anual' : 'Mensal'}
                         </p>
                         <p className="text-[11px] text-muted-foreground">
                           {new Date(payment.paid_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}

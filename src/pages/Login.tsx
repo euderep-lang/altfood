@@ -94,7 +94,7 @@ export default function Login() {
         toast({ title: '✅ Login realizado!', description: 'Continue para assinar e liberar o painel.' });
         navigate(nextPath, { replace: true });
       } else {
-        toast({ title: 'Assinatura necessária', description: 'Assine o Altfood Pro para acessar o painel.' });
+        toast({ title: 'Assinatura necessária', description: 'Assine o Altfood PRO para acessar o painel.' });
         navigate(CHECKOUT_MONTHLY_PATH, { replace: true });
       }
     } else {

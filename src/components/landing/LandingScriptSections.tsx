@@ -3,7 +3,7 @@
  */
 import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Check, Heart, Palette, Link2, Sparkles, Star } from 'lucide-react';
+import { BadgeCheck, Check, Heart, Palette, Link2, Sparkles, Star } from 'lucide-react';
 import { landingBrand as B } from '@/lib/landingBrand';
 import {
   fadeUpSoftVariants,
@@ -15,6 +15,7 @@ import {
 } from '@/components/landing/landingMotion';
 import { LandingCtaPriceSubline } from '@/components/landing/LandingCtaPriceSubline';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { WhatsAppPatientPings } from '@/components/landing/WhatsAppPatientPings';
 
 export function LandingPainSection() {
   const reduced = useReducedMotion();
@@ -51,6 +52,13 @@ export function LandingPainSection() {
           </span>{' '}
           no WhatsApp?
         </p>
+        <div className="mt-8">
+          <WhatsAppPatientPings />
+          <p className="mx-auto mt-4 max-w-[52rem] text-sm leading-relaxed" style={{ color: B.muted }}>
+            “Dra., tô almoçando e não achei frango aqui em casa…” — esse tipo de pedido vira ping infinito. O Altfood
+            reduz esse atrito sem você precisar viver no chat.
+          </p>
+        </div>
         <p className="mx-auto mt-5 max-w-[52rem] text-base leading-[1.65] md:text-lg" style={{ color: B.muted }}>
           O Altfood resolve isso para você. Você entrega a ferramenta personalizada, o paciente ganha liberdade para
           fazer trocas inteligentes seguindo seus critérios, e você recupera as horas perdidas com suporte manual.
@@ -97,8 +105,8 @@ export function LandingWhiteLabelSection() {
           viewport={viewportOnce}
           variants={vHead}
         >
-          Não é um app qualquer.{' '}
-          <span className="bg-gradient-to-r from-[hsl(170_60%_28%)] to-[hsl(160_50%_36%)] bg-clip-text text-transparent">
+          Não é um app qualquer.
+          <span className="mt-1 block bg-gradient-to-r from-[hsl(170_60%_28%)] to-[hsl(160_50%_36%)] bg-clip-text text-transparent">
             É o SEU app.
           </span>
         </motion.h2>
@@ -630,7 +638,10 @@ export function LandingPricingGuaranteeSection() {
           }}
         >
           <p className="text-xs font-bold uppercase tracking-[0.15em]" style={{ color: B.lime }}>
-            Selo de garantia blindada
+            <span className="inline-flex items-center justify-center gap-2">
+              Selo de garantia blindada
+              <BadgeCheck className="h-4 w-4" aria-hidden />
+            </span>
           </p>
           <p className="mt-3 text-lg font-extrabold leading-snug md:text-xl">
             7 DIAS DE SATISFAÇÃO GARANTIDA OU SEU DINHEIRO DE VOLTA.

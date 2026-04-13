@@ -8,9 +8,9 @@ import { cn } from '@/lib/utils';
 import { landingBrand as B } from '@/lib/landingBrand';
 
 export const LANDING_CTA_PRICE_SUBLINES = [
-  'Apenas R$ 19,90/mês. Pacientes ilimitados.',
-  'Apenas R$ 19,90/mês. Seus pacientes não pagam.',
-  'Apenas R$ 19,90/mês. Seu app personalizado com sua marca.',
+  'Altfood PRO por R$ 19,90/mês. Pacientes ilimitados.',
+  'Altfood PRO por R$ 19,90/mês. Seus pacientes não pagam.',
+  'Altfood PRO: condição de lançamento por tempo limitado.',
 ] as const;
 
 type Tone = 'onDark' | 'onLight';

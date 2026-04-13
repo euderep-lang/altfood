@@ -916,7 +916,7 @@ export default function Landing() {
           <div className="relative pt-5">
             <div className="absolute -top-1 left-1/2 -translate-x-1/2 z-10">
               <span className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full gradient-gold text-white text-xs font-black shadow-lg tracking-wide">
-                ✦ Altfood Pro
+                ✦ Altfood PRO
               </span>
             </div>
             <div className="rounded-3xl bg-white/[0.07] border border-white/15 backdrop-blur-xl p-8 pt-12 space-y-7 shimmer">
@@ -956,7 +956,7 @@ export default function Landing() {
                 size="lg"
                 className="w-full gradient-hero text-white font-black rounded-xl h-14 text-base shadow-lg shadow-[#0F766E]/30 group"
               >
-                Assinar Altfood Pro
+                Assinar Altfood PRO
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               <p className="text-[11px] text-white/20 text-center">{formatRefundGuaranteeShort()} · Pagamento seguro</p>
