@@ -1,7 +1,5 @@
 /**
- * Hero da LP — narrativa inspirada em SPIN Selling (Rackham):
- * S (Situação) → P (Problema) → I (Implicação) → N (Necessidade/valor) no texto;
- * prova visual = mockup da página do paciente (PatientPage) no iPhone.
+ * Hero — LP principal: contexto do consultório, dor fora dele, custo da inação, valor do link; mockup = página do paciente.
  */
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -36,7 +34,7 @@ const navItems = [
 const chips = [
   { emoji: '🩺', label: 'Nutrição clínica' },
   { emoji: '🏥', label: 'Endocrino' },
-  { emoji: '🏋️', label: 'Esporte & lifestyle' },
+  { emoji: '🏋️', label: 'Esporte e lifestyle' },
 ];
 
 function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -182,20 +180,14 @@ export function HeroSection() {
 
       <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-5 pb-16 pt-8 md:px-16 lg:grid-cols-5 lg:gap-8">
         <div className="flex flex-col gap-5 lg:col-span-3">
-          {/* Situação (S) */}
-          <motion.div
+          <motion.p
             {...fadeUp(0.05)}
-            className="inline-flex max-w-prose items-start gap-2 self-start rounded-2xl border px-3 py-2 text-left text-xs leading-snug"
-            style={{ borderColor: T.border, background: T.surface, color: T.textMute }}
+            className="max-w-xl text-sm leading-relaxed text-[#111a14]/85 md:text-base"
           >
-            <span className="mt-0.5 shrink-0 font-bold uppercase tracking-wider text-[10px]" style={{ color: T.forest }}>
-              Situação
-            </span>
-            <span>
-              Você entrega um plano alimentar claro no consultório. O paciente sai motivado — e logo está no mercado ou no
-              restaurante, com o celular na mão.
-            </span>
-          </motion.div>
+            No consultório o plano fecha. No mercado, no delivery ou na viagem, volta a mesma história: &quot;posso trocar
+            o frango?&quot;, &quot;quanto de patinho equivale a 100 g disso?&quot; — sempre no horário em que você não
+            estaria escolhendo atender.
+          </motion.p>
 
           <motion.div
             {...fadeUp(0.08)}
@@ -203,10 +195,9 @@ export function HeroSection() {
             style={{ background: `${T.lime}33`, color: T.forest }}
           >
             <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: T.forest }} aria-hidden />
-            SPIN na prática clínica
+            TACO · link com a sua cara · paciente no celular
           </motion.div>
 
-          {/* Problema (P) + Implicação (I) no H1; N no subtítulo */}
           <motion.h1
             {...fadeUp(0.15)}
             className="text-4xl font-extrabold leading-[1.08] tracking-tight text-[#111a14] sm:text-5xl md:text-6xl xl:text-[3.35rem]"
@@ -217,18 +208,14 @@ export function HeroSection() {
           </motion.h1>
 
           <motion.p {...fadeUp(0.22)} className="max-w-xl text-base leading-relaxed md:text-lg" style={{ color: T.textMute }}>
-            <strong className="font-semibold text-[#111a14]">Problema:</strong> &quot;Posso trocar o frango?&quot;, &quot;100g vira
-            quanto de patinho?&quot; — mensagens fora do horário, respostas apressadas, o mesmo paciente perguntando de
-            novo.{' '}
-            <strong className="font-semibold text-[#111a14]">Implicação:</strong> cada interrupção rouba tempo de consulta,
-            documentação e descanso; respostas improvisadas aumentam risco e frustração dos dois lados.
+            Quando a resposta depende só de você no WhatsApp, o paciente espera ou chuta. Você perde foco em consulta,
+            laudo e descanso; ele perde confiança na troca. Ninguém ganha com achismo no corredor do supermercado.
           </motion.p>
 
           <motion.p {...fadeUp(0.28)} className="max-w-xl text-base leading-relaxed md:text-lg" style={{ color: T.textMute }}>
-            <strong className="font-semibold text-[#111a14]">Necessidade (o que você ganharia):</strong> um lugar único, com a
-            <em> sua </em>
-            marca, onde o paciente consulta substituições baseadas na <strong className="text-[#111a14]">Tabela TACO</strong> —
-            sozinho, no ritmo dele — e você recupera previsibilidade no WhatsApp.
+            O Altfood é o seu endereço com a <em>sua</em> marca: o paciente busca o alimento, ajusta as gramas e vê
+            substituições com base na <strong className="font-semibold text-[#111a14]">Tabela TACO</strong>, com similaridade
+            clara — sozinho, no ritmo dele. Você continua sendo a referência; só deixa de ser o buscador da dieta 24 horas.
           </motion.p>
 
           <motion.div {...fadeUp(0.35)} className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -237,7 +224,7 @@ export function HeroSection() {
               className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{ background: T.lime, color: T.textDark }}
             >
-              Quero ver isso na minha prática
+              Criar minha página
               <ArrowRight size={18} aria-hidden />
             </Link>
             <a
@@ -245,16 +232,16 @@ export function HeroSection() {
               className="inline-flex items-center justify-center gap-1.5 py-3.5 text-sm font-semibold transition-opacity hover:opacity-60 sm:py-0"
               style={{ color: T.forest }}
             >
-              Como o Altfood responde ao SPIN →
+              Ver como funciona →
             </a>
           </motion.div>
 
           <motion.div {...fadeUp(0.42)} className="flex items-center gap-2 text-sm" style={{ color: T.textMute }}>
             <CheckCircle2 size={15} style={{ color: T.forest }} aria-hidden />
-            <span>Página do paciente igual à real — busca, macros, peso em gramas, selo de similaridade TACO.</span>
+            <span>Mesma tela que o paciente usa: busca, macros, gramas, similaridade — sem baixar app.</span>
           </motion.div>
 
-          <motion.div {...fadeUp(0.5)} className="flex flex-wrap gap-2" aria-label="Especialidades que mais usam o Altfood">
+          <motion.div {...fadeUp(0.5)} className="flex flex-wrap gap-2" aria-label="Áreas que mais usam o Altfood">
             {chips.map((chip) => (
               <span
                 key={chip.label}
@@ -281,8 +268,7 @@ export function HeroSection() {
           >
             <PatientPagePhoneMockup />
             <p className="mt-4 text-center text-xs leading-relaxed md:text-left" style={{ color: T.textMute }}>
-              À direita: o mesmo fluxo da página pública do paciente (busca, TACO, peso em gramas, similaridade) — como no
-              iPhone no dia a dia, sem instalar app.
+              É a experiência real da página do paciente no iPhone — o que ele vê depois que você envia o link.
             </p>
           </motion.div>
         </div>

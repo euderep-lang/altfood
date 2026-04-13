@@ -49,7 +49,7 @@ function ScrollProgressBar() {
 // ─── SEO head helper (Vite: we manage via index.html + this sets page-level meta) ──
 function PageMeta() {
   useEffect(() => {
-    document.title = 'Altfood — SPIN na prática clínica: link TACO para o paciente';
+    document.title = 'Altfood — Substituições TACO no link do seu paciente';
     const setMeta = (name: string, content: string, property?: boolean) => {
       const selector = property
         ? `meta[property="${name}"]`
@@ -65,12 +65,12 @@ function PageMeta() {
 
     setMeta(
       'description',
-      'Altfood aplica vendas consultivas (SPIN) à rotina nutricional: situamos o paciente no mercado, nomeamos o problema das trocas soltas, mostramos a implicação do WhatsApp 24h e entregamos o payoff — link seu com TACO no bolso dele.'
+      'Link com a sua marca: o paciente consulta substituições na Tabela TACO no celular — busca, gramas, similaridade — sem te bombardear no WhatsApp.'
     );
     setMeta('og:title', 'Altfood — Menos improviso, mais decisão com TACO', true);
     setMeta(
       'og:description',
-      'Página do paciente como no iPhone real: busca, gramas, similaridade. Sua marca. Evidência oficial.',
+      'A mesma tela que o paciente usa no dia a dia: sua marca, TACO oficial, quantidade em gramas.',
       true
     );
     setMeta('og:image', '/images/og-image.jpg', true);
@@ -99,10 +99,9 @@ function AnnouncementBanner() {
       />
       <span className="hidden sm:inline">✨</span>
       <span>
-        <span className="hidden sm:inline">Pergunta de necessidade: </span>O que mudaria se o paciente parasse de te
-        interromper fora do horário? —{' '}
-        <Link to="/register" className="underline underline-offset-2 font-semibold hover:opacity-80 transition-opacity">
-          Ver o link em ação
+        E se o paciente resolvesse a troca no mercado antes de te escrever?{' '}
+        <Link to="/register" className="font-semibold underline underline-offset-2 transition-opacity hover:opacity-80">
+          Criar minha página
         </Link>
       </span>
     </div>
@@ -150,16 +149,15 @@ function HowItWorksImageAccent() {
       <div className="max-w-4xl mx-auto px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
           <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
-            Need-payoff + prova
+            Base oficial
           </span>
           <h3 className="mb-4 text-3xl font-bold leading-tight md:text-4xl" style={{ color: T.dark }}>
-            O que o paciente ganha<br />
-            <span style={{ color: T.forest }}>quando a resposta vem com fonte?</span>
+            Quando a resposta vem com número,<br />
+            <span style={{ color: T.forest }}>a dúvida encurta</span>
           </h3>
           <p className="mb-6 text-base leading-relaxed" style={{ color: T.muted }}>
-            Confiança. Menos idas e vindas. Ele verbaliza para si mesmo: &quot;preciso de algo parecido com frango, na
-            mesma faixa de proteína&quot; — e a TACO responde com número, não com achismo. Você vende segurança, não
-            troca de mensagem.
+            O paciente enxerga similaridade e gramas equivalentes — não fica no “acho que pode”. Menos ida e volta no
+            seu privado; mais segurança na decisão dele no corredor.
           </p>
           <Link
             to="/planos"
@@ -195,15 +193,15 @@ function CTAStrip() {
         className="max-w-2xl mx-auto flex flex-col items-center gap-6"
       >
         <span className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
-          Fechamento consultivo
+          Pronto para testar?
         </span>
         <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: T.dark }}>
-          Se o payoff fosse<br />
-          <span style={{ color: T.forest }}>1 hora sua por semana?</span>
+          Uma hora sua por semana<br />
+          <span style={{ color: T.forest }}>de volta ao que importa</span>
         </h2>
         <p className="text-lg leading-relaxed" style={{ color: T.muted }}>
-          O Altfood não é “mais um app”. É o lugar onde o paciente executa o plano sem te desestabilizar — e onde você
-          recoloca o foco no que só o profissional faz: julgar, priorizar, acompanhar evolução.
+          O Altfood não é mais um app para o paciente baixar. É o endereço onde ele executa o plano com a TACO no bolso —
+          e onde você deixa de ser o buscador da dieta a toda hora.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
@@ -222,7 +220,7 @@ function CTAStrip() {
           </Link>
         </div>
         <p className="text-sm" style={{ color: T.muted }}>
-          Depois que o valor está claro, o preço vira detalhe — veja planos e o que entra no link.
+          Veja planos e o que entra no seu link — cancele quando quiser.
         </p>
       </motion.div>
     </section>

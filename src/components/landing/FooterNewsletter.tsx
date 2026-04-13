@@ -90,8 +90,8 @@ export function FooterNewsletter() {
           <div className="flex flex-col gap-5">
             <AltfoodLogoFooterDark className="h-11 max-w-[220px]" />
             <p className="text-sm leading-relaxed" style={{ color: T.bodyOnDark }}>
-              Ferramenta consultiva: ajudamos o profissional a levar o paciente da dúvida solta (problema) para a decisão
-              informada (payoff) — com a TACO por baixo do capô e a sua marca na vitrine.
+              Substituições com base na Tabela TACO, no link com a sua marca — para o paciente consultar quando a dúvida
+              aparecer, sem depender do seu WhatsApp a toda hora.
             </p>
             <div className="flex gap-2">
               {/* LinkedIn */}

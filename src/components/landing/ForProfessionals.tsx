@@ -28,27 +28,27 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const features = [
   {
     Icon: Target,
-    title: 'Perguntas de situação viram roteiro, não improviso',
+    title: 'O contexto já vem montado na tela',
     description:
-      'No SPIN, você primeiro alinha contexto. No Altfood, o contexto já está na interface: alimento, gramas, categoria TACO — o paciente “faz as perguntas certas” sozinho, guiado pelo layout.',
+      'Alimento, gramas, categoria TACO: o paciente navega num roteiro claro em vez de te mandar áudio solto. Menos “depende”, mais decisão com critério.',
   },
   {
     Icon: ShieldQuestion,
-    title: 'Problemas explícitos saem do ar ambíguo do WhatsApp',
+    title: 'Menos “acho que pode” no ar',
     description:
-      'Em vez de “acho que pode”, o paciente vê opções ranqueadas com similaridade e equivalente em gramas. Você reduz a ambiguidade que gera retrabalho e segunda mensagem.',
+      'Ele vê opções com similaridade e quantidade equivalente. Você corta a segunda mensagem pedindo print do rótulo.',
   },
   {
     Icon: Database,
-    title: 'Implicação financeira e de tempo — endereçada de uma vez',
+    title: 'Seu tempo volta para o que paga a conta',
     description:
-      'Cada consulta de substituição que não vira agenda faturada é custo. Quanto mais o paciente resolve no link, mais sobra tempo para o que só você faz: julgar, priorizar, ajustar plano.',
+      'Cada troca resolvida no link é uma microconsulta que não roubou vaga na agenda. Sobram minutos para documentar, estudar caso ou simplesmente respirar.',
   },
   {
     Icon: Smartphone,
-    title: 'Need-payoff: “e se eu pudesse parar de ser o Google da dieta?”',
+    title: 'Referência sem ficar plugado 24h',
     description:
-      'Esse é o ganho emocional que fecha venda consultiva. O Altfood entrega: link com sua marca, paciente no celular, TACO por trás — você vira referência sem estar online 24h.',
+      'Link com sua cara, paciente no celular, TACO por baixo: você continua sendo a autoridade — só não precisa ser o buscador da dieta a toda hora.',
   },
 ];
 
@@ -177,7 +177,7 @@ export function ForProfessionals() {
               className="text-xs font-semibold uppercase tracking-[0.12em]"
               style={{ color: T.forest }}
             >
-              Diagnóstico comercial (SPIN)
+              Para quem prescreve
             </motion.span>
 
             <motion.h2
@@ -188,7 +188,7 @@ export function ForProfessionals() {
               style={{ color: T.textDark }}
             >
               Menos conversa solta.<br />
-              <span style={{ color: T.forest }}>Mais decisão estruturada.</span>
+              <span style={{ color: T.forest }}>Mais decisão com critério.</span>
             </motion.h2>
 
             <motion.p
@@ -198,9 +198,8 @@ export function ForProfessionals() {
               className="text-lg leading-relaxed"
               style={{ color: T.textMute }}
             >
-              Rackham ensina que grandes pedidos vêm depois que o cliente verbaliza o valor. Abaixo estão os ganhos que
-              ouvimos de quem já migrou do “me manda uma foto do rótulo” para o link Altfood: autoridade preservada, escala
-              no acompanhamento e paciente mais autônomo — sem você sumir do processo.
+              Quem saiu do “me manda uma foto do rótulo” para o link costuma dizer a mesma coisa: o paciente entende o
+              valor antes de cobrar o próximo passo — e você recupera fôlego para o que só o profissional faz.
             </motion.p>
           </div>
 

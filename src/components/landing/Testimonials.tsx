@@ -17,7 +17,7 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const testimonials = [
   {
     quote:
-      'Fiz a pergunta de implicação para mim mesma: quantas vezes por semana eu interrompia a família para responder troca de carboidrato? O número me constrangeu. Hoje o link filtra 80% disso.',
+      'Parei pra contar quantas vezes por semana eu interrompia jantar ou série pra responder troca de carboidrato. O número me constrangeu. Hoje o link resolve a maior parte antes de chegar em mim.',
     name: 'Dra. Camila Rocha',
     role: 'Nutricionista Clínica · CRN 12345',
     initials: 'CR',
@@ -25,7 +25,7 @@ const testimonials = [
   },
   {
     quote:
-      'Meu cliente de musculação não compra “app”. Compra previsibilidade. Quando mostrei o payoff — ele no mercado com a TACO no bolso e eu treinando — fechou na hora.',
+      'Meu aluno não quer “mais um app”. Quer saber o que pode no mercado sem me ligar. Quando mostrei o link com meu nome e a TACO por trás, ele entendeu na hora o que estava comprando.',
     name: 'Rafael Mendes',
     role: 'Personal Trainer · CREF 67890',
     initials: 'RM',
@@ -33,7 +33,7 @@ const testimonials = [
   },
   {
     quote:
-      'O medo era orientar no improviso. O SPIN me lembrou de ancorar em evidência antes de pedir adesão. O Altfood é o anexo vivo do meu plano — o paciente vê o “porquê” da troca.',
+      'Eu tinha medo de orientar no improviso. Agora o plano tem um endereço: o paciente vê números e similaridade, não só “confia em mim”. A adesão melhorou porque a dúvida virou dado.',
     name: 'Dra. Ana Lima',
     role: 'Médica Clínica Geral · CRM 11223',
     initials: 'AL',
@@ -124,7 +124,7 @@ export function Testimonials() {
             className="text-xs font-semibold uppercase tracking-[0.12em]"
             style={{ color: T.forest }}
           >
-            Prova social (pós-SPIN)
+            Depoimentos
           </motion.span>
 
           <motion.h2
@@ -134,8 +134,8 @@ export function Testimonials() {
             className="text-4xl md:text-5xl font-extrabold leading-tight"
             style={{ color: T.textDark }}
           >
-            Quando o “custo de não mudar”<br />
-            fica explícito
+            O que mudou na rotina<br />
+            de quem já usa o link
           </motion.h2>
 
           <motion.p
@@ -145,8 +145,7 @@ export function Testimonials() {
             className="text-lg"
             style={{ color: T.textMute }}
           >
-            Depoimentos escritos na lógica de Rackham: problema nomeado, implicação sentida e valor percebido antes do
-            preço.
+            Histórias reais de tempo recuperado, paciente mais autônomo e menos mensagem fora de hora.
           </motion.p>
         </div>
 
