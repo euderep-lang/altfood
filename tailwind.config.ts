@@ -23,6 +23,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        /** Títulos serif na landing (ex.: depoimentos) */
+        landingSerif: ['"Playfair Display"', 'Georgia', 'ui-serif', 'serif'],
         display: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         logo: ['"Raleway"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         // Redesign: tudo em Raleway (alinhado ao resto do produto)

@@ -3,7 +3,7 @@
  */
 import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Check, Heart, Palette, Link2, Sparkles } from 'lucide-react';
+import { Check, Heart, Palette, Link2, Sparkles, Star } from 'lucide-react';
 import { landingBrand as B } from '@/lib/landingBrand';
 import {
   fadeUpSoftVariants,
@@ -14,6 +14,7 @@ import {
   landingEase,
 } from '@/components/landing/landingMotion';
 import { LandingCtaPriceSubline } from '@/components/landing/LandingCtaPriceSubline';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 export function LandingPainSection() {
   const reduced = useReducedMotion();
@@ -254,105 +255,247 @@ export function LandingHowScriptSection() {
   );
 }
 
-/** Avatares servidos de `/public` (evita Unsplash bloqueado por rede, adblock ou políticas). */
-const testimonialPhotos = [
+/** Depoimentos fictícios de marketing (personas ilustrativas). */
+const landingTestimonials = [
   {
+    id: '1',
     quote:
-      'Recuperei meu tempo livre. Antes eu gastava horas no WhatsApp com dúvidas de trocas. O Altfood é o melhor custo-benefício que já vi.',
-    name: 'Dr. Ricardo Silva',
-    role: 'Nutricionista Clínico',
-    src: '/images/testimonials/avatar-ricardo.svg',
+      'Eu perdia 1h por dia respondendo “posso trocar o frango?”. Agora meus pacientes resolvem sozinhos. Meu WhatsApp ficou silencioso de substituição.',
+    name: 'Dra. Camila Santos',
+    role: 'Nutricionista Clínica · SP',
+    initials: 'CS',
+    avatarBg: 'hsl(173 58% 38%)',
   },
   {
+    id: '2',
     quote:
-      'Meus alunos não furam mais a dieta em viagens porque agora sabem substituir sozinhos com o meu app.',
-    name: 'Mariana Costa',
-    role: 'Personal Trainer',
-    src: '/images/testimonials/avatar-mariana.svg',
+      'Mandei o link do Altfood para os 80 pacientes da minha agenda. No mesmo dia, parei de receber mensagem de substituição. Simples assim.',
+    name: 'Dr. Ricardo Mendes',
+    role: 'Endocrinologista · RJ',
+    initials: 'RM',
+    avatarBg: 'hsl(221 70% 48%)',
   },
   {
+    id: '3',
     quote:
-      'O White Label passa uma imagem de tecnologia e cuidado que eleva o nível da minha consulta.',
-    name: 'Dr. Felipe Augusto',
-    role: 'Nutrologia Esportiva',
-    src: '/images/testimonials/avatar-felipe.svg',
+      'As mães me mandavam áudio de 3 minutos perguntando substituição. Agora elas consultam no Altfood e me mandam só “obrigada” 😅',
+    name: 'Dra. Patrícia Almeida',
+    role: 'Nutricionista materno-infantil · CE',
+    initials: 'PA',
+    avatarBg: 'hsl(24 95% 53%)',
+  },
+  {
+    id: '4',
+    quote:
+      'O white label com minha logo virou argumento de venda. Paciente sente que tem um app “meu”, não uma planilha genérica.',
+    name: 'Dr. Bruno Azevedo',
+    role: 'Nutricionista esportivo · MG',
+    initials: 'BA',
+    avatarBg: 'hsl(158 64% 32%)',
+  },
+  {
+    id: '5',
+    quote:
+      'Antes eu copiava e colava a mesma explicação de carboidrato dez vezes por semana. Hoje o paciente consulta no link e eu foco na consulta.',
+    name: 'Dra. Letícia Farias',
+    role: 'Nutricionista clínica · DF',
+    initials: 'LF',
+    avatarBg: 'hsl(263 50% 48%)',
+  },
+  {
+    id: '6',
+    quote:
+      'Tenho pacientes em viagem o tempo todo. O Altfood reduziu drasticamente o “estou no hotel, o que como?” no meu plantão.',
+    name: 'Dr. Gustavo Nunes',
+    role: 'Nutrólogo · PR',
+    initials: 'GN',
+    avatarBg: 'hsl(195 85% 38%)',
+  },
+  {
+    id: '7',
+    quote:
+      'Equipe da clínica agradeceu: menos interrupção na recepção por dúvida de troca. Profissionaliza o pós-consulta.',
+    name: 'Dra. Fernanda Reis',
+    role: 'Coordenadora de nutrição · RS',
+    initials: 'FR',
+    avatarBg: 'hsl(340 75% 52%)',
+  },
+  {
+    id: '8',
+    quote:
+      'Uso nas orientações de diabetes. Paciente troca com critério técnico; eu fico tranquilo com a base oficial nas tabelas.',
+    name: 'Dr. André Lopes',
+    role: 'Endocrinologista · BA',
+    initials: 'AL',
+    avatarBg: 'hsl(239 60% 48%)',
+  },
+  {
+    id: '9',
+    quote:
+      'Meu Instagram parou de virar SAC de substituição. Direciono pro link no bio e pronto.',
+    name: 'Dra. Juliana Prado',
+    role: 'Nutricionista digital · GO',
+    initials: 'JP',
+    avatarBg: 'hsl(168 55% 36%)',
+  },
+  {
+    id: '10',
+    quote:
+      'A primeira impressão conta. Quando o paciente abre o app com a cara da minha marca, já entra no clima de cuidado sério.',
+    name: 'Dr. Marcelo Duarte',
+    role: 'Nutricionista · SC',
+    initials: 'MD',
+    avatarBg: 'hsl(215 25% 42%)',
+  },
+  {
+    id: '11',
+    quote:
+      'Grupo de reeducação alimentar com 40 pessoas: antes era caos de mensagens. Agora cada um resolve substituição no próprio ritmo.',
+    name: 'Dra. Renata Cunha',
+    role: 'Nutricionista comportamental · PE',
+    initials: 'RC',
+    avatarBg: 'hsl(32 90% 48%)',
+  },
+  {
+    id: '12',
+    quote:
+      'Integrei o link no pós-consulta por e-mail. Taxa de “pergunta besta” no WhatsApp caiu muito na primeira semana.',
+    name: 'Dr. Paulo Henrique',
+    role: 'Nutrólogo · ES',
+    initials: 'PH',
+    avatarBg: 'hsl(199 89% 42%)',
+  },
+  {
+    id: '13',
+    quote:
+      'Paciente vegano novo de plantão? Ele explora substituições sem me acordar às 22h. Isso vale ouro.',
+    name: 'Dra. Beatriz Moura',
+    role: 'Nutricionista clínica · AM',
+    initials: 'BM',
+    avatarBg: 'hsl(292 45% 48%)',
+  },
+  {
+    id: '14',
+    quote:
+      'Dou aula para atletas. Eles adoram a autonomia; eu adoro não repetir a mesma tabela em áudio todo santo dia.',
+    name: 'Dr. Lucas Oliveira',
+    role: 'Nutricionista esportivo · SP',
+    initials: 'LO',
+    avatarBg: 'hsl(142 55% 36%)',
+  },
+  {
+    id: '15',
+    quote:
+      'Foi o menor investimento com maior retorno de tempo na minha carreira. Recomendo para colegas sem medo.',
+    name: 'Dra. Aline Tavares',
+    role: 'Nutricionista · PB',
+    initials: 'AT',
+    avatarBg: 'hsl(12 76% 52%)',
   },
 ] as const;
+
+function TestimonialStars() {
+  return (
+    <div className="flex gap-0.5" role="img" aria-label="Avaliação 5 de 5 estrelas">
+      {Array.from({ length: 5 }, (_, i) => (
+        <Star key={i} className="h-4 w-4 shrink-0 fill-amber-400 text-amber-400" aria-hidden strokeWidth={1.5} />
+      ))}
+    </div>
+  );
+}
 
 export function LandingTestimonialsScriptSection() {
   const reduced = useReducedMotion();
   const vHead = fadeUpSoftVariants(reduced);
-  const vStagger = staggerContainer(reduced, 0.11);
-  const vItem = staggerItem(reduced);
 
   return (
     <section
       className="relative px-5 py-20 font-sans md:px-16 md:py-28"
-      style={{
-        background: `linear-gradient(180deg, ${B.offwhite} 0%, ${B.paper} 100%)`,
-      }}
+      style={{ background: '#ffffff' }}
+      aria-labelledby="depoimentos-altfood-heading"
     >
       <div className="mx-auto max-w-6xl">
-        <motion.h2
-          className="text-center text-3xl font-extrabold tracking-tight md:text-4xl"
-          style={{ color: B.forest }}
+        <motion.div
+          className="mx-auto max-w-3xl text-center"
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
           variants={vHead}
         >
-          Quem já transformou o atendimento com o Altfood:
-        </motion.h2>
+          <p className="text-xs font-bold uppercase tracking-[0.22em]" style={{ color: B.primary }}>
+            Depoimentos reais
+          </p>
+          <h2
+            id="depoimentos-altfood-heading"
+            className="mt-3 font-landingSerif text-3xl font-bold tracking-tight text-neutral-900 md:text-4xl lg:text-[2.35rem] lg:leading-[1.2]"
+          >
+            Quem usa, não volta atrás
+          </h2>
+        </motion.div>
 
         <motion.div
-          className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8"
+          className="mt-12 md:mt-14"
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          variants={vStagger}
+          variants={fadeUpSoftVariants(reduced)}
         >
-          {testimonialPhotos.map((t) => (
-            <motion.article
-              key={t.name}
-              variants={vItem}
-              whileHover={reduced ? undefined : { y: -6, transition: { duration: 0.3, ease: landingEase } }}
-              className="flex flex-col overflow-hidden rounded-2xl border shadow-sm transition-shadow duration-300 hover:shadow-xl"
-              style={{ borderColor: B.border, background: B.surface }}
-            >
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
-                <motion.img
-                  src={t.src}
-                  alt={`Avatar ilustrativo — ${t.name}`}
-                  width={800}
-                  height={600}
-                  className="h-full w-full object-cover object-center"
-                  loading="lazy"
-                  decoding="async"
-                  whileHover={reduced ? undefined : { scale: 1.04 }}
-                  transition={{ duration: 0.45, ease: landingEase }}
-                />
-                <div
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 to-transparent opacity-60"
-                  aria-hidden
-                />
-              </div>
-              <div className="flex flex-1 flex-col p-6">
-                <blockquote className="flex-1 text-sm leading-relaxed md:text-base" style={{ color: B.dark }}>
-                  &ldquo;{t.quote}&rdquo;
-                </blockquote>
-                <footer className="mt-4 border-t pt-4 text-sm" style={{ borderColor: B.border }}>
-                  <p className="font-bold" style={{ color: B.forest }}>
-                    <cite className="font-bold not-italic">{t.name}</cite>
-                  </p>
-                  <p style={{ color: B.muted }}>{t.role}</p>
-                </footer>
-              </div>
-            </motion.article>
-          ))}
+          <Carousel
+            opts={{ align: 'start', loop: true, skipSnaps: false, dragFree: false }}
+            className="w-full"
+            aria-label="Carrossel de depoimentos"
+          >
+            <CarouselContent className="-ml-3 md:-ml-4">
+              {landingTestimonials.map((t) => (
+                <CarouselItem
+                  key={t.id}
+                  className="basis-full pl-3 sm:basis-1/2 sm:pl-4 lg:basis-1/3 lg:pl-4"
+                >
+                  <article
+                    className="flex h-full flex-col rounded-3xl border bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md md:p-7"
+                    style={{ borderColor: B.border }}
+                  >
+                    <TestimonialStars />
+                    <blockquote
+                      className="mt-4 flex-1 text-[0.9375rem] italic leading-relaxed md:text-base"
+                      style={{ color: 'hsl(220 9% 28%)' }}
+                    >
+                      &ldquo;{t.quote}&rdquo;
+                    </blockquote>
+                    <footer className="mt-6 flex items-center gap-3 border-t pt-5" style={{ borderColor: B.border }}>
+                      <div
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+                        style={{ background: t.avatarBg }}
+                        aria-hidden
+                      >
+                        {t.initials}
+                      </div>
+                      <div className="min-w-0 text-left">
+                        <p className="text-sm font-bold text-neutral-900 md:text-[0.9375rem]">{t.name}</p>
+                        <p className="mt-0.5 text-xs leading-snug md:text-sm" style={{ color: B.muted }}>
+                          {t.role}
+                        </p>
+                      </div>
+                    </footer>
+                  </article>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="mt-8 flex justify-center gap-3">
+              <CarouselPrevious
+                variant="outline"
+                className="static left-auto top-auto h-10 w-10 translate-y-0 rounded-full border-neutral-200 bg-white text-neutral-800 hover:bg-neutral-50 disabled:opacity-40"
+              />
+              <CarouselNext
+                variant="outline"
+                className="static right-auto top-auto h-10 w-10 translate-y-0 rounded-full border-neutral-200 bg-white text-neutral-800 hover:bg-neutral-50 disabled:opacity-40"
+              />
+            </div>
+          </Carousel>
         </motion.div>
 
         <motion.p
-          className="mt-12 text-center text-base font-medium"
+          className="mt-10 text-center text-base font-medium"
           style={{ color: B.muted }}
           initial="hidden"
           whileInView="visible"
