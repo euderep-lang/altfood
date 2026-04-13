@@ -1,6 +1,4 @@
-/**
- * Hero — LP principal: contexto do consultório, dor fora dele, custo da inação, valor do link; mockup = página do paciente.
- */
+/** Hero — consultório → vida real → custo do improviso → link com marca e TACO; mockup = página do paciente. */
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -184,9 +182,9 @@ export function HeroSection() {
             {...fadeUp(0.05)}
             className="max-w-xl text-sm leading-relaxed text-[#111a14]/85 md:text-base"
           >
-            No consultório o plano fecha. No mercado, no delivery ou na viagem, volta a mesma história: &quot;posso trocar
-            o frango?&quot;, &quot;quanto de patinho equivale a 100 g disso?&quot; — sempre no horário em que você não
-            estaria escolhendo atender.
+            No consultório o plano fecha. No mercado, no delivery ou na viagem, volta o mesmo padrão: &quot;posso trocar
+            o frango?&quot;, &quot;quanto disso equivale a 100 g daquilo?&quot; — em geral fora do horário em que você
+            escolheria estar disponível.
           </motion.p>
 
           <motion.div
@@ -195,7 +193,7 @@ export function HeroSection() {
             style={{ background: `${T.lime}33`, color: T.forest }}
           >
             <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: T.forest }} aria-hidden />
-            TACO · link com a sua cara · paciente no celular
+            TACO oficial · sua marca · no celular dele
           </motion.div>
 
           <motion.h1
@@ -208,14 +206,15 @@ export function HeroSection() {
           </motion.h1>
 
           <motion.p {...fadeUp(0.22)} className="max-w-xl text-base leading-relaxed md:text-lg" style={{ color: T.textMute }}>
-            Quando a resposta depende só de você no WhatsApp, o paciente espera ou chuta. Você perde foco em consulta,
-            laudo e descanso; ele perde confiança na troca. Ninguém ganha com achismo no corredor do supermercado.
+            Se tudo vira mensagem sua, ele espera ou chuta no corredor. Você perde fôlego para consulta, laudo e
+            descanso; ele perde segurança na troca. Ninguém ganha com &quot;acho que pode&quot; no supermercado.
           </motion.p>
 
           <motion.p {...fadeUp(0.28)} className="max-w-xl text-base leading-relaxed md:text-lg" style={{ color: T.textMute }}>
-            O Altfood é o seu endereço com a <em>sua</em> marca: o paciente busca o alimento, ajusta as gramas e vê
-            substituições com base na <strong className="font-semibold text-[#111a14]">Tabela TACO</strong>, com similaridade
-            clara — sozinho, no ritmo dele. Você continua sendo a referência; só deixa de ser o buscador da dieta 24 horas.
+            O Altfood é esse endereço com a <em>sua</em> marca: ele busca o alimento, ajusta as gramas e vê substituições
+            na <strong className="font-semibold text-[#111a14]">Tabela TACO</strong> com similaridade clara — no ritmo
+            dele, sem fila no seu WhatsApp. Você segue sendo a referência; só deixa de ser o buscador da dieta a toda
+            hora.
           </motion.p>
 
           <motion.div {...fadeUp(0.35)} className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -238,7 +237,7 @@ export function HeroSection() {
 
           <motion.div {...fadeUp(0.42)} className="flex items-center gap-2 text-sm" style={{ color: T.textMute }}>
             <CheckCircle2 size={15} style={{ color: T.forest }} aria-hidden />
-            <span>Mesma tela que o paciente usa: busca, macros, gramas, similaridade — sem baixar app.</span>
+            <span>A mesma tela do dia a dia: busca, macros, gramas, similaridade — sem baixar app.</span>
           </motion.div>
 
           <motion.div {...fadeUp(0.5)} className="flex flex-wrap gap-2" aria-label="Áreas que mais usam o Altfood">
@@ -268,7 +267,7 @@ export function HeroSection() {
           >
             <PatientPagePhoneMockup />
             <p className="mt-4 text-center text-xs leading-relaxed md:text-left" style={{ color: T.textMute }}>
-              É a experiência real da página do paciente no iPhone — o que ele vê depois que você envia o link.
+              Prévia da página do paciente no iPhone — o que ele abre quando você manda o link.
             </p>
           </motion.div>
         </div>

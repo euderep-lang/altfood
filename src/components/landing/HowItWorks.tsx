@@ -1,11 +1,6 @@
 /**
- * HowItWorks — v2
- * Stitch audit fixes:
- * ✅ Card bg: rgba(255,255,255,0.15) + 3px lime left-border (was invisible 0.08)
- * ✅ Icon containers: solid #c8f044 bg + #1a3c2e icon (was 13% opacity lime)
- * ✅ Step indicators: solid lime numbered pills in card header (not faint 7% text)
- * ✅ Removed fragile absolute-positioned connector arrows
- * ✅ WCAG AA: #b0c4b8 on #1a3c2e = 6.8:1 ✓ · #c8f044 on #1a3c2e = 9.1:1 ✓
+ * HowItWorks — três passos (consultório → fora dele → link); fundo forest, cards com borda lime.
+ * Stitch: card rgba + borda lime; ícones lime sólido; pills 01/02/03; WCAG #b0c4b8 / #c8f044 em #1a3c2e.
  */
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
@@ -25,23 +20,23 @@ const steps = [
   {
     number: '01',
     Icon: Stethoscope,
-    title: 'No consultório, tudo faz sentido',
+    title: 'No consultório, o plano entra',
     description:
-      'Você explica, prescreve, o paciente assente. O plano “entra” na cabeça dele ali. O desafio começa quando a porta fecha e a vida real abre — mercado, restaurante, viagem.',
+      'Você explica, prescreve, ele assente. Ali faz sentido. O atrito aparece quando a porta fecha: mercado, restaurante, viagem — e a dúvida não vem com agenda.',
   },
   {
     number: '02',
     Icon: MessagesSquare,
     title: 'Fora dele, a dúvida não pergunta horário',
     description:
-      'Troca de carboidrato, porção, equivalência: se tudo vira mensagem sua, duas coisas acontecem — você cansa e ele adia a decisão. Quanto mais isso se repete, mais o plano perde tração.',
+      'Troca, porção, equivalência: se cada uma vira mensagem sua, você cansa e ele adia. Repete umas vezes e o plano perde tração — ou vira segunda mensagem pedindo print do rótulo.',
   },
   {
     number: '03',
     Icon: Link2,
-    title: 'Um link seu encerra a novela',
+    title: 'Um link seu vira o endereço certo',
     description:
-      'Sua marca, alimento, gramas e substituições TACO com similaridade — na palma do paciente, sem fila no seu WhatsApp. Você ganha previsibilidade; ele ganha autonomia com critério.',
+      'Sua marca, alimento, gramas e substituições na TACO com similaridade — na palma dele, sem fila no seu privado. Você ganha previsibilidade no dia; ele ganha decisão com critério.',
   },
 ];
 
@@ -129,8 +124,8 @@ export function HowItWorks() {
             className="text-sm leading-relaxed md:text-base"
             style={{ color: T.bodyOnDark }}
           >
-            Se nada mudar depois da consulta, o plano vira PDF bonito e o paciente continua no escuro no corredor. O
-            Altfood antecipa essa hora: ele já sabe onde olhar antes de te acionar.
+            Sem um lugar claro para consultar depois da consulta, o plano vira PDF e o corredor vira improviso. O
+            Altfood é esse lugar: TACO oficial, sua marca, no celular — antes dele te bombardear no WhatsApp.
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
@@ -161,7 +156,7 @@ export function HowItWorks() {
             className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
             style={{ background: T.lime, color: T.textDark }}
           >
-            Criar minha página e testar com pacientes
+            Criar minha página
           </Link>
         </motion.div>
       </div>
