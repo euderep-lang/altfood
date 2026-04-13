@@ -568,17 +568,14 @@ export function LandingPricingGuaranteeSection() {
         viewport={viewportOnce}
         variants={v}
       >
-        <div
-          className="relative overflow-hidden rounded-3xl border-2 p-8 shadow-xl md:p-10"
-          style={{
-            borderColor: `color-mix(in srgb, ${B.forest} 35%, ${B.border})`,
-            background: `linear-gradient(180deg, ${B.surface} 0%, color-mix(in srgb, ${B.offwhite} 40%, white) 100%)`,
-          }}
-        >
+        <div className="landing-pricing-card-frame rounded-3xl shadow-xl">
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[hsl(170_50%_42%)] to-transparent opacity-80"
-            aria-hidden
-          />
+            className="landing-pricing-card-inner m-[2px] overflow-hidden border-2 p-8 md:p-10"
+            style={{
+              borderColor: `color-mix(in srgb, ${B.forest} 35%, ${B.border})`,
+              background: `linear-gradient(180deg, ${B.surface} 0%, color-mix(in srgb, ${B.offwhite} 40%, white) 100%)`,
+            }}
+          >
           <p className="text-center text-xs font-bold uppercase tracking-[0.2em]" style={{ color: B.primary }}>
             Plano profissional ilimitado
           </p>
@@ -620,6 +617,7 @@ export function LandingPricingGuaranteeSection() {
               </Link>
             </motion.div>
             <LandingCtaPriceSubline initialIndex={2} className="px-1" />
+          </div>
           </div>
         </div>
 

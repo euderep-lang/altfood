@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const DEFAULT_PRIMARY = '#0f766e';
 
@@ -106,7 +107,7 @@ export function PatientPagePhoneMockup({
   const showPlaceholder = phase === 'search';
 
   return (
-    <div className={`relative mx-auto w-full max-w-[280px] ${className ?? ''}`}>
+    <div className={cn('relative mx-auto w-full max-w-[300px]', className)}>
       <p className="sr-only">
         Demonstração animada em loop: o paciente digita na busca, seleciona o alimento e vê substituições similares com base na TACO.
       </p>

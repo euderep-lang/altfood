@@ -87,14 +87,14 @@ export function HeroSection() {
       </nav>
 
       <motion.div
-        className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col items-center px-5 pb-20 pt-8 text-center lg:max-w-6xl lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:px-8 lg:pb-16 lg:pt-6 lg:text-left"
+        className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col items-center px-5 pb-20 pt-8 text-center lg:max-w-6xl lg:flex-row lg:items-center lg:justify-start lg:gap-10 lg:px-8 lg:pb-16 lg:pt-6 lg:text-left xl:gap-14"
         initial="hidden"
         animate="visible"
         variants={vStagger}
       >
         <motion.div
           variants={vTextGroup}
-          className="flex min-w-0 flex-1 flex-col items-center lg:max-w-[min(100%,520px)] lg:items-start lg:text-left"
+          className="flex min-w-0 w-full max-w-2xl flex-col items-center lg:w-auto lg:max-w-[min(100%,540px)] lg:flex-none lg:items-start lg:text-left"
         >
         <motion.h1
           variants={vItem}
@@ -149,17 +149,17 @@ export function HeroSection() {
 
         <motion.div
           variants={vFade}
-          className="mt-14 w-full max-w-[300px] shrink-0 md:mt-16 lg:mt-0 lg:flex lg:max-w-[min(340px,34vw)] lg:flex-col lg:items-end lg:justify-center"
+          className="mt-14 w-full shrink-0 md:mt-16 lg:mt-0 lg:flex lg:w-[min(100%,320px)] lg:min-w-[260px] lg:max-w-[320px] lg:flex-col lg:items-center lg:justify-center"
         >
           <motion.div
-            className="mx-auto lg:mx-0"
+            className="mx-auto w-full max-w-[300px] lg:mx-0 lg:max-w-none"
             animate={reduced ? undefined : { y: [0, -6, 0] }}
             transition={reduced ? undefined : { duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <PatientPagePhoneMockup brand={CLINIC_BRAND} />
+            <PatientPagePhoneMockup brand={CLINIC_BRAND} className="max-w-[300px] lg:max-w-none" />
           </motion.div>
           <p
-            className="mt-4 text-center text-xs leading-relaxed lg:max-w-[280px] lg:text-right"
+            className="mt-4 w-full max-w-[300px] text-center text-xs leading-relaxed lg:text-center"
             style={{ color: B.onDarkMuted }}
           >
             Exemplo visual: página do paciente com a identidade da sua clínica — cores, logo e link exclusivos.
