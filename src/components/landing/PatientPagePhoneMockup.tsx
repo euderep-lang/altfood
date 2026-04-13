@@ -107,12 +107,12 @@ export function PatientPagePhoneMockup({
   const showPlaceholder = phase === 'search';
 
   return (
-    <div className={cn('relative mx-auto w-full max-w-[300px]', className)}>
+    <div className={cn('relative mx-auto w-full max-w-[min(100%,336px)]', className)}>
       <p className="sr-only">
         Demonstração animada em loop: o paciente digita na busca, seleciona o alimento e vê substituições similares com base na TACO.
       </p>
-      {/* Proporção fixa ~ iPhone (390×844 pt); altura deriva da largura — não “cresce” com o conteúdo */}
-      <div className="relative w-full aspect-[390/844]">
+      {/* Proporção iPhone 15 (393×852 pt lógicos) — corpo 19,5:9, leitura mais “celular real” */}
+      <div className="relative w-full aspect-[393/852]">
         <div className="absolute inset-0 rounded-[2.85rem] bg-gradient-to-b from-zinc-800 to-zinc-950 p-[10px] shadow-[0_28px_70px_-14px_rgba(0,0,0,0.45)] ring-1 ring-white/10">
           <div
             className="absolute left-1/2 top-[11px] z-20 h-[26px] w-[72px] -translate-x-1/2 rounded-full bg-black shadow-inner"

@@ -149,17 +149,17 @@ export function HeroSection() {
 
         <motion.div
           variants={vFade}
-          className="mt-10 w-full shrink-0 sm:mt-12 lg:mt-0 lg:flex lg:w-[min(100%,248px)] lg:min-w-[200px] lg:max-w-[248px] lg:flex-col lg:items-center lg:justify-center"
+          className="mt-10 flex w-full shrink-0 flex-col items-center sm:mt-12 lg:mt-0 lg:w-[min(100%,344px)] lg:min-w-[280px] lg:max-w-[344px] lg:items-center lg:justify-center"
         >
           <motion.div
-            className="mx-auto w-full max-w-[220px] sm:max-w-[236px] lg:mx-0 lg:max-w-[232px]"
+            className="mx-auto w-full max-w-[min(92vw,320px)] sm:max-w-[300px] lg:mx-0 lg:max-w-[328px]"
             animate={reduced ? undefined : { y: [0, -5, 0] }}
             transition={reduced ? undefined : { duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <PatientPagePhoneMockup brand={CLINIC_BRAND} className="max-w-[220px] sm:max-w-[236px] lg:max-w-[232px]" />
+            <PatientPagePhoneMockup brand={CLINIC_BRAND} className="max-w-full" />
           </motion.div>
           <p
-            className="mt-3 w-full max-w-[236px] text-center text-xs leading-relaxed lg:text-center"
+            className="mx-auto mt-3 w-full max-w-lg px-2 text-center text-xs leading-relaxed sm:max-w-xl sm:px-4 lg:mx-0 lg:max-w-[300px] lg:px-0 lg:text-center"
             style={{ color: B.onDarkMuted }}
           >
             Exemplo visual: página do paciente com a identidade da sua clínica — cores, logo e link exclusivos.

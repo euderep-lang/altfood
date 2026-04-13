@@ -58,7 +58,7 @@ export function LandingBenefitSplitSection() {
     >
       <div className="mx-auto max-w-6xl">
         <motion.div
-          className="mb-10 max-w-3xl md:mb-14"
+          className="mx-auto mb-10 max-w-3xl text-center md:mb-14"
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
