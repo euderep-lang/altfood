@@ -67,11 +67,11 @@ export function HeroSection() {
       </div>
 
       <nav
-        className="relative z-20 flex items-center justify-between border-b border-white/10 px-5 py-4 backdrop-blur-xl md:px-12"
+        className="relative z-20 flex items-center justify-between gap-3 border-b border-white/10 px-5 py-4 backdrop-blur-xl md:px-12"
         style={{ background: 'color-mix(in srgb, #060a08 55%, transparent)' }}
         aria-label="Navegação"
       >
-        <Link to="/" className="flex items-center gap-2.5 rounded-xl pr-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8f044]" aria-label="Altfood — início">
+        <Link to="/" className="flex min-w-0 items-center gap-2.5 rounded-xl pr-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8f044]" aria-label="Altfood — início">
           <img
             src={BRAND_MARK_SRC}
             alt=""
@@ -82,12 +82,26 @@ export function HeroSection() {
           />
           <span className="text-xl font-bold tracking-tight text-white">Altfood</span>
         </Link>
-        <Link
-          to="/login"
-          className="min-h-11 inline-flex items-center rounded-full px-4 text-sm font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8f044]"
-        >
-          Entrar
-        </Link>
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+          <a
+            href="#como-funciona"
+            className="hidden min-h-11 items-center rounded-full px-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8f044] sm:inline-flex"
+          >
+            Como funciona
+          </a>
+          <Link
+            to="/planos"
+            className="hidden min-h-11 items-center rounded-full px-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8f044] sm:inline-flex"
+          >
+            Planos
+          </Link>
+          <Link
+            to="/login"
+            className="min-h-11 inline-flex items-center rounded-full px-4 text-sm font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8f044]"
+          >
+            Entrar
+          </Link>
+        </div>
       </nav>
 
       <motion.div
@@ -120,7 +134,7 @@ export function HeroSection() {
 
         <motion.p
           variants={vItem}
-          className="mt-6 max-w-2xl text-base leading-relaxed sm:text-lg"
+          className="mt-6 max-w-2xl text-base leading-[1.65] sm:text-lg sm:leading-[1.65]"
           style={{ color: B.onDarkMuted }}
         >
           O Altfood é o Web App White Label que dá autonomia total para seus pacientes trocarem alimentos em segundos.
@@ -131,7 +145,7 @@ export function HeroSection() {
           <motion.div whileHover={reduced ? undefined : { scale: 1.02 }} whileTap={reduced ? undefined : { scale: 0.98 }}>
             <Link
               to="/register"
-              className="group relative inline-flex min-h-[52px] min-w-[min(100%,320px)] items-center justify-center overflow-hidden rounded-full px-8 py-3.5 text-center text-sm font-black uppercase tracking-wide sm:text-base"
+              className="group relative inline-flex min-h-[52px] min-w-[min(100%,320px)] touch-manipulation items-center justify-center overflow-hidden rounded-full px-8 py-3.5 text-center text-sm font-black uppercase tracking-wide focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c8f044] sm:text-base"
               style={{ background: B.lime, color: B.forest }}
             >
               <span className="relative z-10">Quero meu web app personalizado</span>

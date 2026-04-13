@@ -78,7 +78,7 @@ export default function LandingRedesign() {
 
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:px-4 focus:py-2 focus:font-semibold"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:px-4 focus:py-2 focus:font-semibold focus:shadow-lg focus:ring-2 focus:ring-[#1a3c2e] focus:ring-offset-2 focus:ring-offset-white"
         style={{ background: B.lime, color: B.dark }}
       >
         Ir para conteúdo principal

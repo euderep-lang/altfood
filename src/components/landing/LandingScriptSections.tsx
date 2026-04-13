@@ -42,14 +42,14 @@ export function LandingPainSection() {
         <h2 className="text-3xl font-extrabold leading-tight tracking-tight md:text-4xl" style={{ color: B.forest }}>
           Chega de ser um &quot;suporte de dieta&quot; 24h por dia.
         </h2>
-        <p className="mt-6 text-base leading-relaxed md:text-lg" style={{ color: B.muted }}>
+        <p className="mx-auto mt-6 max-w-[52rem] text-base leading-[1.65] md:text-lg" style={{ color: B.muted }}>
           Quantas vezes você interrompeu seu descanso ou o atendimento de um novo cliente para responder:{' '}
           <span className="font-semibold" style={{ color: B.forest }}>
             &quot;O que posso comer no lugar do arroz?&quot;
           </span>{' '}
           no WhatsApp?
         </p>
-        <p className="mt-5 text-base leading-relaxed md:text-lg" style={{ color: B.muted }}>
+        <p className="mx-auto mt-5 max-w-[52rem] text-base leading-[1.65] md:text-lg" style={{ color: B.muted }}>
           O Altfood resolve isso para você. Você entrega a ferramenta personalizada, o paciente ganha liberdade para
           fazer trocas inteligentes seguindo seus critérios, e você recupera as horas perdidas com suporte manual.
         </p>
@@ -102,7 +102,7 @@ export function LandingWhiteLabelSection() {
         </motion.h2>
 
         <motion.ul
-          className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-6"
+          className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3 md:items-stretch md:gap-6"
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
@@ -113,7 +113,7 @@ export function LandingWhiteLabelSection() {
               key={title}
               variants={vItem}
               whileHover={reduced ? undefined : { y: -5, transition: { duration: 0.28, ease: landingEase } }}
-              className="group relative overflow-hidden rounded-2xl border p-6 shadow-sm transition-shadow duration-300 hover:shadow-lg"
+              className="group relative flex h-full flex-col overflow-hidden rounded-2xl border p-6 shadow-sm transition-shadow duration-300 hover:shadow-lg"
               style={{
                 borderColor: B.border,
                 background: `linear-gradient(165deg, ${B.surface} 0%, color-mix(in srgb, ${B.offwhite} 65%, ${B.surface}) 100%)`,
@@ -171,7 +171,7 @@ export function LandingHowScriptSection() {
   return (
     <section
       id="como-funciona"
-      className="relative overflow-hidden px-5 py-20 font-sans md:px-16 md:py-28"
+      className="scroll-mt-24 relative overflow-hidden px-5 py-20 font-sans md:scroll-mt-28 md:px-16 md:py-28"
       style={{ background: B.surface }}
     >
       <div
@@ -237,7 +237,7 @@ export function LandingHowScriptSection() {
           <motion.div whileHover={reduced ? undefined : { scale: 1.02 }} whileTap={reduced ? undefined : { scale: 0.98 }}>
             <Link
               to="/register"
-              className="inline-flex rounded-full px-8 py-3.5 text-base font-bold shadow-md"
+              className="inline-flex touch-manipulation rounded-full px-8 py-3.5 text-base font-bold shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(170_60%_30%)]"
               style={{
                 background: `linear-gradient(135deg, ${B.forest}, color-mix(in srgb, ${B.forest} 75%, ${B.primary}))`,
                 color: B.surface,
@@ -258,21 +258,27 @@ const testimonialPhotos = [
       'Recuperei meu tempo livre. Antes eu gastava horas no WhatsApp com dúvidas de trocas. O Altfood é o melhor custo-benefício que já vi.',
     name: 'Dr. Ricardo Silva',
     role: 'Nutricionista Clínico',
-    src: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=faces',
+    src: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&crop=faces&w=800&h=600&q=82',
+    srcSet:
+      'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&crop=faces&w=480&h=360&q=82 480w, https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&crop=faces&w=800&h=600&q=82 800w',
   },
   {
     quote:
       'Meus alunos não furam mais a dieta em viagens porque agora sabem substituir sozinhos com o meu app.',
     name: 'Mariana Costa',
     role: 'Personal Trainer',
-    src: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=200&fit=crop&crop=faces',
+    src: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&crop=faces&w=800&h=600&q=82',
+    srcSet:
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&crop=faces&w=480&h=360&q=82 480w, https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&crop=faces&w=800&h=600&q=82 800w',
   },
   {
     quote:
       'O White Label passa uma imagem de tecnologia e cuidado que eleva o nível da minha consulta.',
     name: 'Dr. Felipe Augusto',
     role: 'Nutrologia Esportiva',
-    src: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=faces',
+    src: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&crop=faces&w=800&h=600&q=82',
+    srcSet:
+      'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&crop=faces&w=480&h=360&q=82 480w, https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&crop=faces&w=800&h=600&q=82 800w',
   },
 ] as const;
 
@@ -319,9 +325,11 @@ export function LandingTestimonialsScriptSection() {
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
                 <motion.img
                   src={t.src}
+                  srcSet={t.srcSet}
+                  sizes="(max-width: 768px) 92vw, (max-width: 1200px) 34vw, 380px"
                   alt={`Retrato ilustrativo — ${t.name}`}
-                  width={400}
-                  height={300}
+                  width={800}
+                  height={600}
                   className="h-full w-full object-cover"
                   loading="lazy"
                   decoding="async"
@@ -339,7 +347,7 @@ export function LandingTestimonialsScriptSection() {
                 </blockquote>
                 <footer className="mt-4 border-t pt-4 text-sm" style={{ borderColor: B.border }}>
                   <p className="font-bold" style={{ color: B.forest }}>
-                    {t.name}
+                    <cite className="font-bold not-italic">{t.name}</cite>
                   </p>
                   <p style={{ color: B.muted }}>{t.role}</p>
                 </footer>
@@ -426,7 +434,7 @@ export function LandingPricingGuaranteeSection() {
           <motion.div className="mt-8" whileHover={reduced ? undefined : { scale: 1.01 }} whileTap={reduced ? undefined : { scale: 0.99 }}>
             <Link
               to="/register"
-              className="flex w-full items-center justify-center rounded-full py-4 text-base font-bold shadow-lg"
+              className="flex w-full touch-manipulation items-center justify-center rounded-full py-4 text-base font-bold shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(170_60%_30%)]"
               style={{
                 background: `linear-gradient(135deg, ${B.lime}, color-mix(in srgb, ${B.lime} 82%, ${B.secondary}))`,
                 color: B.forest,
