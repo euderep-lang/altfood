@@ -7,6 +7,7 @@ import { BRAND_MARK_SRC } from '@/components/AltfoodLogo';
 const NAVY = '#152b36';
 const LIME = '#c8f044';
 const MUTE = '#a8bdb4';
+const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 /** Verde oliva / azul marinho no app do paciente (exemplo white label) */
 const CLINIC_BRAND = {
