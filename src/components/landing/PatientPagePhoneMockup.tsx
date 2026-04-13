@@ -342,25 +342,7 @@ export function PatientPagePhoneMockup({
         </div>
       </div>
 
-      <motion.div
-        initial={false}
-        animate={
-          showResults ? { y: [0, -4, 0], opacity: 1 } : { opacity: 0.85, y: 0 }
-        }
-        transition={
-          showResults
-            ? { y: { repeat: Infinity, duration: 2.8, ease: 'easeInOut' }, opacity: { duration: 0.3 } }
-            : {}
-        }
-        className="pointer-events-none absolute -left-2 top-[38%] max-sm:scale-90 sm:-left-5 sm:top-[36%] rounded-2xl border bg-white px-2.5 py-2 shadow-xl sm:px-3 sm:py-2.5"
-        style={{ borderColor: `${primary}22` }}
-        aria-hidden
-      >
-        <p className="text-[10px] font-bold" style={{ color: primary }}>
-          Paciente no mercado
-        </p>
-        <p className="text-[9px] text-muted-foreground">sem te ligar</p>
-      </motion.div>
+      {/* Tag lateral removida (pedido): "Paciente no mercado" */}
     </div>
   );
 }
