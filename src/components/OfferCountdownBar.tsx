@@ -57,14 +57,11 @@ export function OfferCountdownBar({ className }: Props) {
     return () => window.clearInterval(id);
   }, [enabled]);
 
-  if (!enabled || !startedAt || !visible) return null;
-
-  const endsAt = startedAt + DURATION_MS;
-  const remaining = endsAt - now;
-  const expired = remaining <= 0;
-
   useEffect(() => {
     if (!enabled || !visible || !startedAt) return;
+    const endsAt = startedAt + DURATION_MS;
+    const remaining = endsAt - Date.now();
+    const expired = remaining <= 0;
     if (!expired) return;
     const key = `${POPUP_SHOWN_KEY}:${startedAt}`;
     if (window.localStorage.getItem(key) === '1') return;
@@ -72,7 +69,13 @@ export function OfferCountdownBar({ className }: Props) {
     // Deixa a UI “assentar” antes do popup.
     const id = window.setTimeout(() => setShowExpiredPopup(true), 450);
     return () => window.clearTimeout(id);
-  }, [enabled, expired, startedAt, visible]);
+  }, [enabled, startedAt, visible]);
+
+  if (!enabled || !startedAt || !visible) return null;
+
+  const endsAt = startedAt + DURATION_MS;
+  const remaining = endsAt - now;
+  const expired = remaining <= 0;
 
   return (
     <>
