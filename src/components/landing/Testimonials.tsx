@@ -124,7 +124,7 @@ export function Testimonials() {
             className="text-xs font-semibold uppercase tracking-[0.12em]"
             style={{ color: T.forest }}
           >
-            Depoimentos
+            Prova social
           </motion.span>
 
           <motion.h2
@@ -134,8 +134,8 @@ export function Testimonials() {
             className="text-4xl md:text-5xl font-extrabold leading-tight"
             style={{ color: T.textDark }}
           >
-            Quem já tirou a dieta<br />
-            do próprio WhatsApp
+            Resultados na rotina,<br />
+            <span style={{ color: T.forest }}>com nome e registro profissional</span>
           </motion.h2>
 
           <motion.p
@@ -145,8 +145,8 @@ export function Testimonials() {
             className="text-base leading-relaxed max-w-lg"
             style={{ color: T.textMute }}
           >
-            Mesma dor: limite estourado, paciente perdido no mercado. Mesmo caminho: link com marca e TACO para ele
-            decidir com segurança antes de te cobrar.
+            Depoimentos reais reduzem hesitação: mesma promessa da página — menos caos no WhatsApp, mais paciente
+            autônomo com evidência da TACO.
           </motion.p>
         </div>
 

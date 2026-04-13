@@ -1,4 +1,4 @@
-/** Hero — consultório → vida real → custo do improviso → link com marca e TACO; mockup = página do paciente. */
+/** Hero — USP + subtítulo + demo (mockup); navegação mínima orientada à conversão. */
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,17 +22,17 @@ const fadeUp = (delay = 0) => ({
   animate: { opacity: 1, y: 0, transition: { duration: 0.65, ease, delay } },
 });
 
+/** Poucos links = menos distração antes da conversão */
 const navItems = [
   { label: 'Como funciona', href: '#como-funciona' },
-  { label: 'Para profissionais', href: '#para-profissionais' },
-  { label: 'Preços', href: '/planos' },
-  { label: 'Novidades', href: '/changelog' },
+  { label: 'Benefícios', href: '#para-profissionais' },
+  { label: 'Dúvidas', href: '#objecoes' },
 ] as const;
 
 const chips = [
   { emoji: '🩺', label: 'Nutrição clínica' },
-  { emoji: '🏥', label: 'Endocrino' },
-  { emoji: '🏋️', label: 'Esporte e lifestyle' },
+  { emoji: '🏥', label: 'Medicina' },
+  { emoji: '🏋️', label: 'Educ. física' },
 ];
 
 function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -92,6 +92,14 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
                   {item.label}
                 </a>
               ))}
+              <Link
+                to="/planos"
+                onClick={onClose}
+                className="rounded-xl px-4 py-3 text-base font-medium transition-colors hover:bg-black/5"
+                style={{ color: T.textDark }}
+              >
+                Planos
+              </Link>
             </nav>
             <div className="mt-auto flex flex-col gap-2">
               <Link
@@ -108,7 +116,7 @@ function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => void })
                 className="flex w-full items-center justify-center rounded-xl py-3 text-base font-bold transition-all hover:opacity-90"
                 style={{ background: T.forest, color: '#fff' }}
               >
-                Criar conta
+                Começar teste grátis
               </Link>
             </div>
           </motion.div>
@@ -141,7 +149,7 @@ export function HeroSection() {
       >
         <AltfoodLogoNavLight href="/" />
 
-        <div className="hidden items-center gap-7 md:flex">
+        <div className="hidden items-center gap-6 md:flex">
           {navItems.map((item) => (
             <a
               key={item.href}
@@ -154,10 +162,24 @@ export function HeroSection() {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
+          <Link
+            to="/planos"
+            className="hidden text-sm font-semibold transition-opacity hover:opacity-60 md:inline"
+            style={{ color: T.forest }}
+          >
+            Planos
+          </Link>
+          <Link
+            to="/register"
+            className="hidden rounded-full px-4 py-2 text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] md:inline-flex"
+            style={{ background: T.lime, color: T.textDark }}
+          >
+            Começar grátis
+          </Link>
           <Link
             to="/login"
-            className="hidden rounded-lg border-2 px-5 py-2 text-sm font-semibold transition-all hover:bg-black/5 md:inline-flex"
+            className="hidden rounded-lg border-2 px-4 py-2 text-sm font-semibold transition-all hover:bg-black/5 md:inline-flex"
             style={{ color: T.forest, borderColor: T.forest }}
           >
             Entrar
@@ -176,72 +198,73 @@ export function HeroSection() {
 
       <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-5 pb-16 pt-8 md:px-16 lg:grid-cols-5 lg:gap-8">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-5 pb-16 pt-6 md:px-16 lg:grid-cols-5 lg:gap-8 lg:pt-8">
         <div className="flex flex-col gap-5 lg:col-span-3">
-          <motion.p
-            {...fadeUp(0.05)}
-            className="max-w-xl text-sm font-medium leading-relaxed text-[#111a14]/90 md:text-base"
+          <motion.span
+            {...fadeUp(0.04)}
+            className="text-xs font-bold uppercase tracking-[0.14em] text-[#111a14]/75"
           >
-            Você orienta com critério no consultório — e na vida real seu número vira suporte da dieta: troca de
-            carboidrato, porção, foto de rótulo. Muito disso chega fora de hora, como se urgência fosse só na sua agenda.
-          </motion.p>
-
-          <motion.div
-            {...fadeUp(0.08)}
-            className="inline-flex items-center gap-2 self-start rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-widest"
-            style={{ background: `${T.lime}33`, color: T.forest }}
-          >
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: T.forest }} aria-hidden />
-            Link com sua marca · TACO · celular do paciente
-          </motion.div>
+            Para nutricionistas, médicos e educadores físicos
+          </motion.span>
 
           <motion.h1
-            {...fadeUp(0.15)}
-            className="text-4xl font-extrabold leading-[1.08] tracking-tight text-[#111a14] sm:text-5xl md:text-6xl xl:text-[3.35rem]"
+            {...fadeUp(0.1)}
+            className="text-4xl font-extrabold leading-[1.08] tracking-tight text-[#111a14] sm:text-5xl md:text-6xl xl:text-[3.15rem]"
           >
-            O plano acabou.
-            <br />
-            <span style={{ color: T.forest }}>As dúvidas não.</span>
+            Seu paciente consulta a{' '}
+            <span style={{ color: T.forest }}>TACO no seu link</span>
+            <br className="hidden sm:block" />
+            <span className="sm:whitespace-nowrap"> — sem te bombardear no WhatsApp.</span>
           </motion.h1>
 
-          <motion.p {...fadeUp(0.22)} className="max-w-xl text-base leading-relaxed md:text-lg" style={{ color: T.textMute }}>
-            Quando não existe um lugar claro para consultar, o paciente improvisa no mercado ou te puxa de novo. Cada
-            volta no seu WhatsApp cansa você e enfraquece o plano — e se ele chuta a troca, quem parece errada é a sua
-            orientação, não o corredor.
+          <motion.p
+            {...fadeUp(0.16)}
+            className="max-w-xl text-base leading-relaxed md:text-lg"
+            style={{ color: T.textMute }}
+          >
+            <strong className="font-semibold text-[#111a14]">Proposta única:</strong> uma página pública com{' '}
+            <em>a sua marca</em>, onde ele busca o alimento, ajusta gramas e vê substituições similares com base oficial —
+            no navegador do celular, <strong className="font-semibold text-[#111a14]">sem baixar app</strong>. Você
+            vende clareza e limite; o paciente ganha autonomia com critério.
           </motion.p>
 
-          <motion.p {...fadeUp(0.26)} className="max-w-xl text-base leading-relaxed md:text-lg" style={{ color: T.textMute }}>
-            O <strong className="font-semibold text-[#111a14]">Altfood</strong> é o <em>seu</em> endereço com marca: ele
-            busca o alimento, ajusta as gramas e vê substituições na{' '}
-            <strong className="font-semibold text-[#111a14]">Tabela TACO</strong> com similaridade — no celular, sem
-            instalar app. Você continua sendo a referência; o que muda é que a execução do plano deixa de passar só pela
-            sua caixa de entrada.
-          </motion.p>
-
-          <motion.div {...fadeUp(0.32)} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <motion.div {...fadeUp(0.22)} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap">
             <Link
               to="/register"
               className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{ background: T.lime, color: T.textDark }}
             >
-              Criar minha página
+              Começar teste grátis
               <ArrowRight size={18} aria-hidden />
+            </Link>
+            <Link
+              to="/planos"
+              className="inline-flex items-center justify-center rounded-full border-2 px-6 py-3.5 text-sm font-bold transition-all hover:bg-black/[0.03]"
+              style={{ color: T.forest, borderColor: T.forest }}
+            >
+              Ver planos e preços
             </Link>
             <a
               href="#como-funciona"
-              className="inline-flex items-center justify-center gap-1.5 py-3.5 text-sm font-semibold transition-opacity hover:opacity-60 sm:py-0"
-              style={{ color: T.forest }}
+              className="inline-flex items-center justify-center gap-1 py-2 text-sm font-semibold transition-opacity hover:opacity-60 sm:py-0"
+              style={{ color: T.textMute }}
             >
               Ver como funciona →
             </a>
           </motion.div>
 
-          <motion.div {...fadeUp(0.38)} className="flex items-center gap-2 text-sm" style={{ color: T.textMute }}>
-            <CheckCircle2 size={15} style={{ color: T.forest }} aria-hidden />
-            <span>A mesma página que o paciente usa no dia a dia: busca, macros, gramas e similaridade — sem app.</span>
+          <motion.div {...fadeUp(0.28)} className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs md:text-sm" style={{ color: T.textMute }}>
+            <span className="inline-flex items-center gap-1.5">
+              <CheckCircle2 size={14} className="shrink-0" style={{ color: T.forest }} aria-hidden />
+              HTTPS
+            </span>
+            <span className="text-border hidden sm:inline">|</span>
+            <span>TACO (NEPA/UNICAMP)</span>
+            <span className="text-border hidden sm:inline">|</span>
+            <span>Paciente sem instalar app</span>
           </motion.div>
 
-          <motion.div {...fadeUp(0.44)} className="flex flex-wrap gap-2" aria-label="Áreas que mais usam o Altfood">
+          <motion.div {...fadeUp(0.34)} className="flex flex-wrap gap-2" aria-label="Especialidades que usam o Altfood">
             {chips.map((chip) => (
               <span
                 key={chip.label}
@@ -264,12 +287,12 @@ export function HeroSection() {
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.75, ease, delay: 0.2 }}
+            transition={{ duration: 0.75, ease, delay: 0.15 }}
           >
             <PatientPagePhoneMockup />
             <p className="mt-4 text-center text-xs leading-relaxed md:text-left" style={{ color: T.textMute }}>
-              Demonstração animada no iPhone: busca → alimento com macros → substituições na TACO (igual à página que o
-              paciente abre com o seu link).
+              <strong className="font-semibold text-[#111a14]">Prova visual:</strong> animação do fluxo real — busca,
+              macros, peso e substituições — igual à experiência quando você envia o link.
             </p>
           </motion.div>
         </div>

@@ -90,8 +90,8 @@ export function FooterNewsletter() {
           <div className="flex flex-col gap-5">
             <AltfoodLogoFooterDark className="h-11 max-w-[220px]" />
             <p className="text-sm leading-relaxed" style={{ color: T.bodyOnDark }}>
-              Substituições na Tabela TACO, no link com a sua marca — para o paciente consultar quando a dúvida
-              aparecer, sem fazer da sua vida particular o suporte da dieta.
+              Altfood: página pública com sua marca, substituições na TACO (gramas e similaridade), HTTPS e foco em
+              conversão — paciente executa no celular sem instalar app; você mantém o controle clínico.
             </p>
             <div className="flex gap-2">
               {/* LinkedIn */}

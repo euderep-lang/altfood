@@ -20,23 +20,23 @@ const steps = [
   {
     number: '01',
     Icon: Stethoscope,
-    title: 'No consultório, tudo encaixa',
+    title: 'Benefício: consultório que “segura” depois da porta',
     description:
-      'Meta, porções, combinados: o paciente sai alinhado. A dor aparece quando a porta fecha — mercado, viagem, delivery — e a dúvida não marca horário com você.',
+      'Função: você combina meta e porções. Ganho para você: menos paciente perdido na primeira ida ao mercado porque “não lembrava o combinado”.',
   },
   {
     number: '02',
     Icon: MessagesSquare,
-    title: 'Sem “onde olhar”, sobra o seu WhatsApp',
+    title: 'Benefício: seu WhatsApp deixa de ser o suporte da dieta',
     description:
-      'Sem um canal oficial ele improvisa ou te escreve de novo. Cada ida e volta cansa você, atrasa a compra e deixa o plano sem tração — parecendo que “não deu certo”.',
+      'Função: dar um canal oficial. Ganho: cada troca resolvida fora do seu privado reduz atrito, culpa no paciente e sensação de plano que “não pega”.',
   },
   {
     number: '03',
     Icon: Link2,
-    title: 'O Altfood vira o lugar da execução',
+    title: 'Benefício: conversão em adesão com evidência',
     description:
-      'Um link com a sua marca: TACO, gramas e similaridade na palma do paciente. Ele resolve a troca com dado; você volta a cobrar pelo que só o profissional faz: julgar, ajustar, acompanhar.',
+      'Função: link com sua marca + TACO + gramas + similaridade. Ganho: ele executa com número; você vende continuidade do cuidado sem virar buscador 24h.',
   },
 ];
 
@@ -115,7 +115,7 @@ export function HowItWorks() {
             className="text-xs font-semibold uppercase tracking-[0.12em]"
             style={{ color: T.lime }}
           >
-            Como funciona
+            Argumentos em sequência
           </motion.span>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
@@ -124,10 +124,9 @@ export function HowItWorks() {
             className="text-sm leading-relaxed md:text-base max-w-2xl mx-auto"
             style={{ color: T.bodyOnDark }}
           >
-            O paciente não desobedece de propósito — ele esquece, tem pressa ou não tem referência na hora H. O Altfood
-            é o endereço com a <strong className="font-semibold text-white">sua marca</strong> e a{' '}
-            <strong className="font-semibold text-white">TACO</strong> por baixo, para ele executar o plano antes de
-            estourar o seu limite no WhatsApp.
+            Clareza técnica vende: em três blocos você entende <strong className="text-white">o ganho</strong>, não só
+            a lista de funções. O Altfood existe para o paciente executar com a{' '}
+            <strong className="text-white">TACO</strong> antes de estourar o seu limite no WhatsApp.
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
@@ -135,8 +134,8 @@ export function HowItWorks() {
             transition={{ duration: 0.55, ease, delay: 0.08 }}
             className="text-4xl font-extrabold leading-tight text-white md:text-5xl"
           >
-            Três passos para<br />
-            <span style={{ color: T.lime }}>tirar a dieta do seu inbox.</span>
+            3 passos.<br />
+            <span style={{ color: T.lime }}>1 objetivo: conversão em uso.</span>
           </motion.h2>
         </div>
 
@@ -152,13 +151,20 @@ export function HowItWorks() {
           initial={{ opacity: 0, y: 14 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.55, ease, delay: 0.5 }}
+          className="flex flex-col items-center gap-3 sm:flex-row"
         >
           <Link
             to="/register"
             className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
             style={{ background: T.lime, color: T.textDark }}
           >
-            Criar minha página
+            Começar teste grátis
+          </Link>
+          <Link
+            to="/planos"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-white/40 px-7 py-3.5 text-base font-semibold text-white transition-all hover:bg-white/10"
+          >
+            Ver planos
           </Link>
         </motion.div>
       </div>

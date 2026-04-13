@@ -11,6 +11,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   HeroSection,
+  TrustAndObjections,
   HowItWorks,
   ForProfessionals,
   Testimonials,
@@ -49,7 +50,7 @@ function ScrollProgressBar() {
 // ─── SEO head helper (Vite: we manage via index.html + this sets page-level meta) ──
 function PageMeta() {
   useEffect(() => {
-    document.title = 'Altfood — Substituições TACO no link do seu paciente';
+    document.title = 'Altfood — Página do paciente com TACO e sua marca | Menos WhatsApp';
     const setMeta = (name: string, content: string, property?: boolean) => {
       const selector = property
         ? `meta[property="${name}"]`
@@ -65,12 +66,12 @@ function PageMeta() {
 
     setMeta(
       'description',
-      'Menos WhatsApp fora de hora: página com sua marca para o paciente consultar substituições na TACO — busca, gramas e similaridade no celular, sem app.'
+      'Converta visitas em execução do plano: link público com sua marca, substituições na Tabela TACO (gramas e similaridade), sem app. Planos claros, HTTPS, cancele quando quiser.'
     );
-    setMeta('og:title', 'Altfood — Sua marca. TACO no bolso do paciente.', true);
+    setMeta('og:title', 'Altfood — Uma página. Sua marca. TACO no celular do paciente.', true);
     setMeta(
       'og:description',
-      'Dê um endereço oficial ao plano: o paciente executa com dados; você recupera tempo e limite.',
+      'Objetivo único: o paciente consulta antes de te bombardear. Você vende clareza e limite — não só uma ferramenta.',
       true
     );
     setMeta('og:image', '/images/og-image.jpg', true);
@@ -99,9 +100,13 @@ function AnnouncementBanner() {
       />
       <span className="hidden sm:inline">✨</span>
       <span>
-        O paciente pode resolver a troca no mercado <em>antes</em> de te escrever —{' '}
+        Teste grátis na prática:{' '}
         <Link to="/register" className="font-semibold underline underline-offset-2 transition-opacity hover:opacity-80">
           criar minha página
+        </Link>
+        {' · '}
+        <Link to="/planos" className="font-semibold underline underline-offset-2 transition-opacity hover:opacity-80">
+          ver planos
         </Link>
       </span>
     </div>
@@ -131,7 +136,8 @@ function ProfessionalsImageBreak() {
       <div className="absolute inset-0 flex items-center px-8 md:px-20 font-sans">
         <div className="max-w-xl">
           <p className="mb-4 text-2xl font-bold leading-snug text-white md:text-3xl">
-            Cada “rapidinho” no Zap é minuto que não entra no Pix — <em>e cansa o paciente de te pedir ajuda.</em>
+            O visitante compra o que enxerga: <em>profissional no consultório</em>, não o caos do pós-consulta no
+            celular.
           </p>
           <div className="w-12 h-1 rounded-full" style={{ background: T.lime }} />
         </div>
@@ -147,23 +153,32 @@ function HowItWorksImageAccent() {
       <div className="max-w-4xl mx-auto px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
           <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
-            Evidência na mesa
+            Prova de valor
           </span>
           <h3 className="mb-4 text-2xl font-bold leading-tight md:text-3xl" style={{ color: T.dark }}>
-            Quando a resposta vem da TACO,<br />
-            <span style={{ color: T.forest }}>ninguém discute feeling</span>
+            Interface real.<br />
+            <span style={{ color: T.forest }}>Confiança em segundos.</span>
           </h3>
           <p className="mb-6 text-sm leading-relaxed md:text-base" style={{ color: T.muted }}>
-            O paciente enxerga similaridade e gramas equivalentes — sai do “acho que pode” e para de te puxar no
-            privado a cada corredor. Você oferece critério sem parecer inacessível.
+            Quem compra software quer ver a tela: macros, gramas e etiquetas de similaridade iguais às que o paciente vê
+            no link. Menos promessa vaga, mais “é isso que vou enviar para a minha base”.
           </p>
-          <Link
-            to="/planos"
-            className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity hover:opacity-70"
-            style={{ color: T.forest }}
-          >
-            Ver planos e o que inclui →
-          </Link>
+          <div className="flex flex-wrap items-center gap-4">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-opacity hover:opacity-90"
+              style={{ background: T.lime, color: T.dark }}
+            >
+              Começar agora
+            </Link>
+            <Link
+              to="/planos"
+              className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity hover:opacity-70"
+              style={{ color: T.forest }}
+            >
+              Ver planos →
+            </Link>
+          </div>
         </div>
         <div className="rounded-2xl overflow-hidden shadow-xl aspect-[4/3]">
           <img
@@ -191,15 +206,15 @@ function CTAStrip() {
         className="max-w-2xl mx-auto flex flex-col items-center gap-6"
       >
         <span className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
-          Próximo passo
+          Call to action
         </span>
         <h2 className="text-3xl md:text-4xl font-bold leading-tight" style={{ color: T.dark }}>
-          Recupere o limite entre<br />
-          <span style={{ color: T.forest }}>você e o plano do paciente</span>
+          Um objetivo nesta página:<br />
+          <span style={{ color: T.forest }}>você começar hoje.</span>
         </h2>
         <p className="text-base leading-relaxed max-w-lg" style={{ color: T.muted }}>
-          O Altfood não é mais um app para ele baixar. É a página com <strong className="font-semibold text-[#111a14]">sua marca</strong> onde ele executa com a{' '}
-          <strong className="font-semibold text-[#111a14]">TACO</strong> no bolso — e onde você deixa de ser o buscador da dieta a toda hora.
+          Cadastro leva poucos minutos. Em seguida você personaliza o link e já pode mandar para o primeiro paciente. Sem
+          instalação do lado dele — só o que importa para converter confiança em adesão.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
@@ -207,18 +222,18 @@ function CTAStrip() {
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
             style={{ background: T.lime, color: T.dark }}
           >
-            Criar minha página
+            Começar teste grátis
           </Link>
           <Link
             to="/planos"
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-semibold border-2 transition-all hover:opacity-80"
             style={{ borderColor: T.forest, color: T.forest }}
           >
-            Ver planos
+            Ver planos e preços
           </Link>
         </div>
         <p className="text-sm" style={{ color: T.muted }}>
-          Veja o que entra no link. Cancele quando quiser.
+          Transparência: veja o que cada plano inclui. Assinatura cancelável.
         </p>
       </motion.div>
     </section>
@@ -249,25 +264,28 @@ export default function LandingRedesign() {
       <AnnouncementBanner />
 
       <main id="main-content">
-        {/* 1 ─ Hero */}
+        {/* 1 ─ Hero (gancho + demo) */}
         <HeroSection />
 
-        {/* 2 ─ How it works */}
+        {/* 2 ─ Confiança + objeções */}
+        <TrustAndObjections />
+
+        {/* 3 ─ Como funciona (benefícios em passos) */}
         <HowItWorks />
 
-        {/* 3 ─ Image break: professionals photo */}
+        {/* 4 ─ Image break: professionals photo */}
         <ProfessionalsImageBreak />
 
-        {/* 4 ─ For professionals (split layout + dashboard mockup) */}
+        {/* 5 ─ Benefícios + mock painel */}
         <ForProfessionals />
 
-        {/* 5 ─ How-it-works image accent (food db) */}
+        {/* 6 ─ Prova visual + CTAs secundários */}
         <HowItWorksImageAccent />
 
-        {/* 6 ─ Testimonials + stats */}
+        {/* 7 ─ Prova social */}
         <Testimonials />
 
-        {/* 7 ─ Final CTA strip */}
+        {/* 8 ─ Fechamento conversão */}
         <CTAStrip />
       </main>
 

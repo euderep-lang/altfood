@@ -28,27 +28,27 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const features = [
   {
     Icon: Target,
-    title: 'Chega de recomeçar o contexto a cada áudio',
+    title: 'Benefício: menos retrabalho no seu privado',
     description:
-      'Na página, alimento, gramas e categoria TACO já vêm enquadrados. O paciente segue um fluxo em vez de te mandar “lembra o que combinamos?” em cima da hora.',
+      'Em vez de “me explica de novo”: alimento, gramas e categoria TACO já vêm enquadrados na página. O paciente segue um fluxo — você não reinicia contexto a cada áudio.',
   },
   {
     Icon: ShieldQuestion,
-    title: '“Acho que pode” vira decisão com número',
+    title: 'Benefício: decisão com número, não com achismo',
     description:
-      'Similaridade e equivalente em gramas na tela. Menos segunda mensagem pedindo print torto de rótulo — e menos responsabilidade difusa quando algo dá errado.',
+      'Em vez de “acho que pode”: similaridade e equivalente em gramas na tela. Menos segunda mensagem com foto torta de rótulo; mais segurança para ele e menos risco reputacional para você.',
   },
   {
     Icon: Database,
-    title: 'Seu tempo volta para o que paga a consulta',
+    title: 'Benefício: agenda para o que só você cobra',
     description:
-      'Cada troca resolvida no link é uma microconsulta que não roubou vaga na agenda nem o seu domingo. Sobram minutos para documentar, estudar caso e respirar.',
+      'Em vez de microconsulta de graça no Zap: troca resolvida no link libera minutos para laudo, evolução e descanso — o que sustenta preço e qualidade do seu trabalho.',
   },
   {
     Icon: Smartphone,
-    title: 'Autoridade que não depende de você estar online',
+    title: 'Benefício: presença profissional sem virar inbox',
     description:
-      'Link com a sua cara e a TACO oficial no bolso dele. O plano fica acessível; você deixa de ser o Google da dieta e volta a ser a pessoa que interpreta e ajusta.',
+      'Em vez de sumir quando está offline: link com a sua cara + TACO oficial no bolso dele. O plano fica acessível; você continua sendo a referência que interpreta e ajusta.',
   },
 ];
 
@@ -177,7 +177,7 @@ export function ForProfessionals() {
               className="text-xs font-semibold uppercase tracking-[0.12em]"
               style={{ color: T.forest }}
             >
-              Para quem prescreve
+              O que você ganha (não só o que o app “tem”)
             </motion.span>
 
             <motion.h2
@@ -187,8 +187,8 @@ export function ForProfessionals() {
               className="text-4xl md:text-5xl font-extrabold leading-tight"
               style={{ color: T.textDark }}
             >
-              Pare de pagar a dieta<br />
-              <span style={{ color: T.forest }}>com o seu WhatsApp.</span>
+              Venda execução do plano,<br />
+              <span style={{ color: T.forest }}>não venda mais uma ferramenta.</span>
             </motion.h2>
 
             <motion.p
@@ -198,10 +198,9 @@ export function ForProfessionals() {
               className="text-base md:text-lg leading-relaxed"
               style={{ color: T.textMute }}
             >
-              O Altfood não substitui o seu julgo — mas tira da sua frente a mesma dúvida de troca pela décima vez. Você
-              manda um link com a <strong className="font-semibold text-[#111a14]">sua marca</strong>; o paciente
-              consulta a <strong className="font-semibold text-[#111a14]">TACO</strong> no celular e volta para você
-              quando é hora de decidir de verdade, não de chutar no corredor.
+              O Altfood reforça a sua autoridade: um link com a <strong className="font-semibold text-[#111a14]">sua marca</strong> onde o paciente consulta a{' '}
+              <strong className="font-semibold text-[#111a14]">TACO</strong> com similaridade. Você não substitui
+              conduta — você dá um endereço claro para a dúvida sair do improviso e voltar para a consulta com dados.
             </motion.p>
           </div>
 
@@ -246,14 +245,22 @@ export function ForProfessionals() {
             initial={{ opacity: 0, y: 10 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.45, ease, delay: 0.5 }}
+            className="flex flex-col gap-3 sm:flex-row sm:items-center"
           >
             <Link
+              to="/register"
+              className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
+              style={{ background: T.lime, color: T.textDark }}
+            >
+              Começar teste grátis
+              <ArrowRight size={15} aria-hidden />
+            </Link>
+            <Link
               to="/planos"
-              className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-base font-bold text-white transition-all hover:opacity-90 hover:scale-105 active:scale-95 self-start"
+              className="inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-base font-bold text-white transition-all hover:opacity-90 hover:scale-105 active:scale-95"
               style={{ background: T.forest }}
             >
               Ver planos e valores
-              <ArrowRight size={15} aria-hidden />
             </Link>
           </motion.div>
         </div>
