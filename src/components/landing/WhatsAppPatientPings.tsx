@@ -65,7 +65,7 @@ export function WhatsAppPatientPings({ className }: Props) {
 
   return (
     <div className={cn('mx-auto w-full max-w-[540px]', className)}>
-      <div className="rounded-2xl border border-black/10 bg-white/70 shadow-sm backdrop-blur">
+      <div className="flex h-[340px] w-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-white/70 shadow-sm backdrop-blur">
         <div className="flex items-center justify-between rounded-t-2xl bg-[#075E54] px-4 py-3 text-white">
           <div className="flex min-w-0 flex-col">
             <p className="truncate text-sm font-semibold">WhatsApp</p>
@@ -78,7 +78,8 @@ export function WhatsAppPatientPings({ className }: Props) {
           </div>
         </div>
 
-        <div className="space-y-2 bg-[linear-gradient(135deg,rgba(255,255,255,0.85),rgba(255,255,255,0.65))] px-4 py-4">
+        <div className="flex-1 overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.85),rgba(255,255,255,0.65))] px-4 py-4">
+          <div className="h-full space-y-2 overflow-hidden">
           {messages.slice(0, i).map((m, idx) => (
             <motion.div
               key={`${m.time}-${idx}`}
@@ -108,6 +109,7 @@ export function WhatsAppPatientPings({ className }: Props) {
               Notificações chegando…
             </motion.div>
           )}
+          </div>
         </div>
       </div>
     </div>

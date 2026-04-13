@@ -143,6 +143,9 @@ export function HeroSection() {
               )}
             </Link>
           </motion.div>
+          <p className="text-center text-xs font-semibold tracking-wide lg:text-left" style={{ color: 'color-mix(in srgb, white 85%, transparent)' }}>
+            Condição de lançamento: desconto por tempo limitado.
+          </p>
           <LandingCtaPriceSubline tone="onDark" initialIndex={0} className="max-w-md lg:text-left" />
         </motion.div>
         </motion.div>

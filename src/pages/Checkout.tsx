@@ -62,7 +62,7 @@ export default function Checkout() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const planLabel = 'Altfood PRO — Mensal';
+  const planLabel = 'Altfood PRO — Mensal (condição de lançamento)';
   const priceLabel = formatProMonthlyWithPeriod();
 
   useEffect(() => {

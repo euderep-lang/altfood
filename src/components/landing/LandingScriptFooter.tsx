@@ -45,7 +45,7 @@ export function LandingScriptFooter() {
               className="inline-flex min-h-12 touch-manipulation items-center justify-center gap-2 rounded-full px-10 py-4 text-base font-bold shadow-lg ring-2 ring-black/10 transition-shadow hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               style={{ background: B.lime, color: B.forest }}
             >
-              Assinar Altfood agora
+              Garantir meu Altfood PRO agora
               <ArrowRight className="h-5 w-5" aria-hidden />
             </Link>
           </motion.div>

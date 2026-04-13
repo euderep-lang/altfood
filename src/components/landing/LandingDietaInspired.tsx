@@ -330,9 +330,12 @@ export function LandingDoubtsCtaSection() {
               className="inline-flex min-h-12 w-full touch-manipulation items-center justify-center gap-2 rounded-full px-8 py-3.5 text-sm font-bold shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(170_60%_30%)] sm:w-auto"
               style={{ background: B.lime, color: B.forest }}
             >
-              Assinar agora
+              Garantir Altfood PRO agora
               <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
             </Link>
+            <p className="text-center text-[11px] font-semibold" style={{ color: B.muted }}>
+              Condição de lançamento por tempo limitado.
+            </p>
             <LandingCtaPriceSubline initialIndex={2} className="w-full max-w-xs sm:max-w-none" />
           </div>
         </div>

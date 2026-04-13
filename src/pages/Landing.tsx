@@ -920,6 +920,10 @@ export default function Landing() {
               </span>
             </div>
             <div className="rounded-3xl bg-white/[0.07] border border-white/15 backdrop-blur-xl p-8 pt-12 space-y-7 shimmer">
+              <div className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-center">
+                <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#c8f044]">Condição de lançamento</p>
+                <p className="mt-1 text-xs text-white/70">Garanta o Altfood PRO com desconto antes de voltar ao preço normal.</p>
+              </div>
               <div className="text-center">
                 <div className="flex items-end justify-center gap-1">
                   <span className="text-white/40 text-base font-medium self-start mt-4">R$</span>

@@ -621,9 +621,12 @@ export function LandingPricingGuaranteeSection() {
                   color: B.forest,
                 }}
               >
-                Assinar Altfood agora
+                Garantir Altfood PRO com desconto
               </Link>
             </motion.div>
+            <p className="text-center text-xs font-semibold" style={{ color: B.onDarkMuted }}>
+              Condição de lançamento por tempo limitado — depois volta ao preço normal.
+            </p>
             <LandingCtaPriceSubline initialIndex={2} className="px-1" />
           </div>
           </div>
