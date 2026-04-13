@@ -2,8 +2,9 @@
  * Altfood — Landing (roteiro: hero → dor → white label → como funciona → prova social → preço/garantia → rodapé).
  */
 import { useEffect } from 'react';
-import { useScroll, useTransform, motion } from 'framer-motion';
+import { useScroll, useTransform, useSpring, motion } from 'framer-motion';
 import { HeroSection } from '@/components/landing/HeroSection';
+import { landingBrand as B } from '@/lib/landingBrand';
 import {
   LandingPainSection,
   LandingWhiteLabelSection,
@@ -13,22 +14,21 @@ import {
 } from '@/components/landing/LandingScriptSections';
 import { LandingScriptFooter } from '@/components/landing/LandingScriptFooter';
 
-const T = {
-  forest: '#1a3c2e',
-  lime: '#c8f044',
-  dark: '#111a14',
-} as const;
-
 function ScrollProgressBar() {
   const { scrollYProgress } = useScroll();
-  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const scaleX = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1]), { stiffness: 120, damping: 28, mass: 0.4 });
   return (
     <motion.div
       style={{ scaleX, transformOrigin: '0%' }}
       className="fixed top-0 left-0 right-0 z-50 h-[3px]"
       aria-hidden
     >
-      <div className="h-full w-full" style={{ background: T.lime }} />
+      <div
+        className="h-full w-full"
+        style={{
+          background: `linear-gradient(90deg, ${B.primary}, ${B.secondary}, ${B.lime})`,
+        }}
+      />
     </motion.div>
   );
 }
@@ -79,7 +79,7 @@ export default function LandingRedesign() {
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:px-4 focus:py-2 focus:font-semibold"
-        style={{ background: T.lime, color: T.dark }}
+        style={{ background: B.lime, color: B.dark }}
       >
         Ir para conteúdo principal
       </a>
