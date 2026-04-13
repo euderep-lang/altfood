@@ -49,7 +49,7 @@ function ScrollProgressBar() {
 // ─── SEO head helper (Vite: we manage via index.html + this sets page-level meta) ──
 function PageMeta() {
   useEffect(() => {
-    document.title = 'Altfood — TACO no link do paciente';
+    document.title = 'Altfood — Substituições TACO no link do seu paciente';
     const setMeta = (name: string, content: string, property?: boolean) => {
       const selector = property
         ? `meta[property="${name}"]`
@@ -65,12 +65,12 @@ function PageMeta() {
 
     setMeta(
       'description',
-      'Seu link, sua marca: TACO no celular — busca, gramas, similaridade. Menos WhatsApp.'
+      'Menos WhatsApp fora de hora: página com sua marca para o paciente consultar substituições na TACO — busca, gramas e similaridade no celular, sem app.'
     );
-    setMeta('og:title', 'Altfood — TACO no seu link', true);
+    setMeta('og:title', 'Altfood — Sua marca. TACO no bolso do paciente.', true);
     setMeta(
       'og:description',
-      'Marca sua, TACO oficial, gramas e similaridade — sem app.',
+      'Dê um endereço oficial ao plano: o paciente executa com dados; você recupera tempo e limite.',
       true
     );
     setMeta('og:image', '/images/og-image.jpg', true);
@@ -99,9 +99,9 @@ function AnnouncementBanner() {
       />
       <span className="hidden sm:inline">✨</span>
       <span>
-        Troca no mercado sem te escrever?{' '}
+        O paciente pode resolver a troca no mercado <em>antes</em> de te escrever —{' '}
         <Link to="/register" className="font-semibold underline underline-offset-2 transition-opacity hover:opacity-80">
-          Criar página
+          criar minha página
         </Link>
       </span>
     </div>
@@ -131,7 +131,7 @@ function ProfessionalsImageBreak() {
       <div className="absolute inset-0 flex items-center px-8 md:px-20 font-sans">
         <div className="max-w-xl">
           <p className="mb-4 text-2xl font-bold leading-snug text-white md:text-3xl">
-            Cada troca no seu WhatsApp <em>é minuto que não volta.</em>
+            Cada “rapidinho” no Zap é minuto que não entra no Pix — <em>e cansa o paciente de te pedir ajuda.</em>
           </p>
           <div className="w-12 h-1 rounded-full" style={{ background: T.lime }} />
         </div>
@@ -147,21 +147,22 @@ function HowItWorksImageAccent() {
       <div className="max-w-4xl mx-auto px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
           <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
-            TACO oficial
+            Evidência na mesa
           </span>
           <h3 className="mb-4 text-2xl font-bold leading-tight md:text-3xl" style={{ color: T.dark }}>
-            Número na tela.<br />
-            <span style={{ color: T.forest }}>Dúvida menor.</span>
+            Quando a resposta vem da TACO,<br />
+            <span style={{ color: T.forest }}>ninguém discute feeling</span>
           </h3>
-          <p className="mb-6 text-sm leading-snug md:text-base" style={{ color: T.muted }}>
-            Similaridade + gramas. Menos “acho que pode”, menos ida e volta no privado.
+          <p className="mb-6 text-sm leading-relaxed md:text-base" style={{ color: T.muted }}>
+            O paciente enxerga similaridade e gramas equivalentes — sai do “acho que pode” e para de te puxar no
+            privado a cada corredor. Você oferece critério sem parecer inacessível.
           </p>
           <Link
             to="/planos"
             className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity hover:opacity-70"
             style={{ color: T.forest }}
           >
-            Planos →
+            Ver planos e o que inclui →
           </Link>
         </div>
         <div className="rounded-2xl overflow-hidden shadow-xl aspect-[4/3]">
@@ -190,14 +191,15 @@ function CTAStrip() {
         className="max-w-2xl mx-auto flex flex-col items-center gap-6"
       >
         <span className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
-          Testar
+          Próximo passo
         </span>
         <h2 className="text-3xl md:text-4xl font-bold leading-tight" style={{ color: T.dark }}>
-          Menos inbox.<br />
-          <span style={{ color: T.forest }}>Mais consultório.</span>
+          Recupere o limite entre<br />
+          <span style={{ color: T.forest }}>você e o plano do paciente</span>
         </h2>
-        <p className="text-base leading-snug max-w-md" style={{ color: T.muted }}>
-          Seu link. TACO no bolso dele. Sem app. Você não vira buscador.
+        <p className="text-base leading-relaxed max-w-lg" style={{ color: T.muted }}>
+          O Altfood não é mais um app para ele baixar. É a página com <strong className="font-semibold text-[#111a14]">sua marca</strong> onde ele executa com a{' '}
+          <strong className="font-semibold text-[#111a14]">TACO</strong> no bolso — e onde você deixa de ser o buscador da dieta a toda hora.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
@@ -205,18 +207,18 @@ function CTAStrip() {
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
             style={{ background: T.lime, color: T.dark }}
           >
-            Criar página
+            Criar minha página
           </Link>
           <Link
             to="/planos"
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-semibold border-2 transition-all hover:opacity-80"
             style={{ borderColor: T.forest, color: T.forest }}
           >
-            Planos
+            Ver planos
           </Link>
         </div>
-        <p className="text-xs" style={{ color: T.muted }}>
-          Cancela quando quiser.
+        <p className="text-sm" style={{ color: T.muted }}>
+          Veja o que entra no link. Cancele quando quiser.
         </p>
       </motion.div>
     </section>

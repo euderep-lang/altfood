@@ -16,21 +16,24 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 const testimonials = [
   {
-    quote: 'Contei quantas vezes jantar virou resposta de troca. Vergonha. Hoje o link filtra antes de bater em mim.',
+    quote:
+      'Eu tinha virado o suporte da dieta: jantar interrompido, fim de semana cortado. Quando passei a enviar o link com meu nome, a maior parte das trocas saiu do meu WhatsApp. Hoje eu entro na conversa para julgar caso — não para contar grão.',
     name: 'Dra. Camila Rocha',
     role: 'Nutricionista Clínica · CRN 12345',
     initials: 'CR',
     color: '#2d6a4f',
   },
   {
-    quote: 'Ele quer mercado sem me ligar. Link com meu nome + TACO: entendeu na hora.',
+    quote:
+      'Meu aluno queria saber o que comprar sem me ligar a toda hora. Mostrei o link com a TACO por trás: ele entendeu que era ferramenta de execução, não “mais um app”. A adesão melhorou porque a culpa de perguntar sumiu.',
     name: 'Rafael Mendes',
     role: 'Personal Trainer · CREF 67890',
     initials: 'RM',
     color: '#1a3c2e',
   },
   {
-    quote: 'Plano com endereço: número + similaridade, não só “confia”. Adesão subiu.',
+    quote:
+      'Eu tinha medo do improviso no Zap. Com o link, o paciente vê número e similaridade antes de me acionar. Na volta da consulta a gente fala de adesão e sintoma — não de “será que batata doce entra”.',
     name: 'Dra. Ana Lima',
     role: 'Médica Clínica Geral · CRM 11223',
     initials: 'AL',
@@ -39,9 +42,9 @@ const testimonials = [
 ];
 
 const stats = [
-  { value: '500+', label: 'links ativos' },
-  { value: '463', label: 'itens TACO' },
-  { value: '1', label: 'link com sua marca' },
+  { value: '500+', label: 'profissionais com link ativo' },
+  { value: '463', label: 'alimentos na TACO' },
+  { value: '1', label: 'página pública com sua marca' },
 ];
 
 function Stars() {
@@ -131,17 +134,19 @@ export function Testimonials() {
             className="text-4xl md:text-5xl font-extrabold leading-tight"
             style={{ color: T.textDark }}
           >
-            Quem usa o link
+            Quem já tirou a dieta<br />
+            do próprio WhatsApp
           </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, ease, delay: 0.14 }}
-            className="text-base"
+            className="text-base leading-relaxed max-w-lg"
             style={{ color: T.textMute }}
           >
-            Menos fora de hora. Mais autonomia com dado.
+            Mesma dor: limite estourado, paciente perdido no mercado. Mesmo caminho: link com marca e TACO para ele
+            decidir com segurança antes de te cobrar.
           </motion.p>
         </div>
 

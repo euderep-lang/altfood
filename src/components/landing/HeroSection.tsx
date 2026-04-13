@@ -180,9 +180,10 @@ export function HeroSection() {
         <div className="flex flex-col gap-5 lg:col-span-3">
           <motion.p
             {...fadeUp(0.05)}
-            className="max-w-xl text-sm font-medium leading-snug text-[#111a14]/90 md:text-base"
+            className="max-w-xl text-sm font-medium leading-relaxed text-[#111a14]/90 md:text-base"
           >
-            No consultório, combinado. Fora dele, a pergunta cai no seu pior horário.
+            Você orienta com critério no consultório — e na vida real seu número vira suporte da dieta: troca de
+            carboidrato, porção, foto de rótulo. Muito disso chega fora de hora, como se urgência fosse só na sua agenda.
           </motion.p>
 
           <motion.div
@@ -191,7 +192,7 @@ export function HeroSection() {
             style={{ background: `${T.lime}33`, color: T.forest }}
           >
             <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: T.forest }} aria-hidden />
-            TACO · sua marca · celular
+            Link com sua marca · TACO · celular do paciente
           </motion.div>
 
           <motion.h1
@@ -203,20 +204,27 @@ export function HeroSection() {
             <span style={{ color: T.forest }}>As dúvidas não.</span>
           </motion.h1>
 
-          <motion.p {...fadeUp(0.22)} className="max-w-xl text-base leading-snug md:text-lg" style={{ color: T.textMute }}>
-            Tudo no seu WhatsApp? Ele chuta; você cansa.{' '}
-            <strong className="font-semibold text-[#111a14]">Altfood</strong> é o seu link com marca:{' '}
-            <strong className="font-semibold text-[#111a14]">TACO</strong>, gramas, similaridade — sem app. Referência,
-            não inbox.
+          <motion.p {...fadeUp(0.22)} className="max-w-xl text-base leading-relaxed md:text-lg" style={{ color: T.textMute }}>
+            Quando não existe um lugar claro para consultar, o paciente improvisa no mercado ou te puxa de novo. Cada
+            volta no seu WhatsApp cansa você e enfraquece o plano — e se ele chuta a troca, quem parece errada é a sua
+            orientação, não o corredor.
           </motion.p>
 
-          <motion.div {...fadeUp(0.28)} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <motion.p {...fadeUp(0.26)} className="max-w-xl text-base leading-relaxed md:text-lg" style={{ color: T.textMute }}>
+            O <strong className="font-semibold text-[#111a14]">Altfood</strong> é o <em>seu</em> endereço com marca: ele
+            busca o alimento, ajusta as gramas e vê substituições na{' '}
+            <strong className="font-semibold text-[#111a14]">Tabela TACO</strong> com similaridade — no celular, sem
+            instalar app. Você continua sendo a referência; o que muda é que a execução do plano deixa de passar só pela
+            sua caixa de entrada.
+          </motion.p>
+
+          <motion.div {...fadeUp(0.32)} className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link
               to="/register"
               className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{ background: T.lime, color: T.textDark }}
             >
-              Criar página
+              Criar minha página
               <ArrowRight size={18} aria-hidden />
             </Link>
             <a
@@ -224,16 +232,16 @@ export function HeroSection() {
               className="inline-flex items-center justify-center gap-1.5 py-3.5 text-sm font-semibold transition-opacity hover:opacity-60 sm:py-0"
               style={{ color: T.forest }}
             >
-              Como funciona →
+              Ver como funciona →
             </a>
           </motion.div>
 
-          <motion.div {...fadeUp(0.35)} className="flex items-center gap-2 text-sm" style={{ color: T.textMute }}>
+          <motion.div {...fadeUp(0.38)} className="flex items-center gap-2 text-sm" style={{ color: T.textMute }}>
             <CheckCircle2 size={15} style={{ color: T.forest }} aria-hidden />
-            <span>Busca, macros, gramas, similaridade. Sem baixar app.</span>
+            <span>A mesma página que o paciente usa no dia a dia: busca, macros, gramas e similaridade — sem app.</span>
           </motion.div>
 
-          <motion.div {...fadeUp(0.42)} className="flex flex-wrap gap-2" aria-label="Áreas que mais usam o Altfood">
+          <motion.div {...fadeUp(0.44)} className="flex flex-wrap gap-2" aria-label="Áreas que mais usam o Altfood">
             {chips.map((chip) => (
               <span
                 key={chip.label}
@@ -259,8 +267,8 @@ export function HeroSection() {
             transition={{ duration: 0.75, ease, delay: 0.2 }}
           >
             <PatientPagePhoneMockup />
-            <p className="mt-4 text-center text-xs md:text-left" style={{ color: T.textMute }}>
-              Prévia iPhone — o que abre com o seu link.
+            <p className="mt-4 text-center text-xs leading-relaxed md:text-left" style={{ color: T.textMute }}>
+              Prévia no iPhone: é a experiência real da página quando você envia o link ao paciente.
             </p>
           </motion.div>
         </div>

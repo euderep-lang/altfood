@@ -28,23 +28,27 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const features = [
   {
     Icon: Target,
-    title: 'Contexto na tela',
-    description: 'Alimento, gramas, TACO. Roteiro claro, menos áudio solto.',
+    title: 'Chega de recomeçar o contexto a cada áudio',
+    description:
+      'Na página, alimento, gramas e categoria TACO já vêm enquadrados. O paciente segue um fluxo em vez de te mandar “lembra o que combinamos?” em cima da hora.',
   },
   {
     Icon: ShieldQuestion,
-    title: 'Menos “acho que pode”',
-    description: 'Similaridade + equivalente em gramas. Menos segunda mensagem.',
+    title: '“Acho que pode” vira decisão com número',
+    description:
+      'Similaridade e equivalente em gramas na tela. Menos segunda mensagem pedindo print torto de rótulo — e menos responsabilidade difusa quando algo dá errado.',
   },
   {
     Icon: Database,
-    title: 'Tempo que volta',
-    description: 'Troca no link = menos microconsulta roubando agenda.',
+    title: 'Seu tempo volta para o que paga a consulta',
+    description:
+      'Cada troca resolvida no link é uma microconsulta que não roubou vaga na agenda nem o seu domingo. Sobram minutos para documentar, estudar caso e respirar.',
   },
   {
     Icon: Smartphone,
-    title: 'Autoridade sem 24h no app',
-    description: 'Sua marca, TACO no bolso dele. Você não vira buscador.',
+    title: 'Autoridade que não depende de você estar online',
+    description:
+      'Link com a sua cara e a TACO oficial no bolso dele. O plano fica acessível; você deixa de ser o Google da dieta e volta a ser a pessoa que interpreta e ajusta.',
   },
 ];
 
@@ -173,7 +177,7 @@ export function ForProfessionals() {
               className="text-xs font-semibold uppercase tracking-[0.12em]"
               style={{ color: T.forest }}
             >
-              Prescritores
+              Para quem prescreve
             </motion.span>
 
             <motion.h2
@@ -183,18 +187,21 @@ export function ForProfessionals() {
               className="text-4xl md:text-5xl font-extrabold leading-tight"
               style={{ color: T.textDark }}
             >
-              Menos conversa.<br />
-              <span style={{ color: T.forest }}>Mais critério.</span>
+              Pare de pagar a dieta<br />
+              <span style={{ color: T.forest }}>com o seu WhatsApp.</span>
             </motion.h2>
 
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.55, ease, delay: 0.15 }}
-              className="text-base md:text-lg leading-snug"
+              className="text-base md:text-lg leading-relaxed"
               style={{ color: T.textMute }}
             >
-              Saiu do print do rótulo pro link: paciente entende antes de te cobrar; você respira.
+              O Altfood não substitui o seu julgo — mas tira da sua frente a mesma dúvida de troca pela décima vez. Você
+              manda um link com a <strong className="font-semibold text-[#111a14]">sua marca</strong>; o paciente
+              consulta a <strong className="font-semibold text-[#111a14]">TACO</strong> no celular e volta para você
+              quando é hora de decidir de verdade, não de chutar no corredor.
             </motion.p>
           </div>
 
@@ -245,7 +252,7 @@ export function ForProfessionals() {
               className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-base font-bold text-white transition-all hover:opacity-90 hover:scale-105 active:scale-95 self-start"
               style={{ background: T.forest }}
             >
-              Ver planos
+              Ver planos e valores
               <ArrowRight size={15} aria-hidden />
             </Link>
           </motion.div>
