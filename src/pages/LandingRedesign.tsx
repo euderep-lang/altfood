@@ -12,6 +12,12 @@ import {
   LandingTestimonialsScriptSection,
   LandingPricingGuaranteeSection,
 } from '@/components/landing/LandingScriptSections';
+import {
+  LandingBenefitSplitSection,
+  LandingFeatureMatrixSection,
+  LandingFaqSection,
+  LandingDoubtsCtaSection,
+} from '@/components/landing/LandingDietaInspired';
 import { LandingScriptFooter } from '@/components/landing/LandingScriptFooter';
 
 function ScrollProgressBar() {
@@ -87,10 +93,14 @@ export default function LandingRedesign() {
       <main id="main-content">
         <HeroSection />
         <LandingPainSection />
+        <LandingBenefitSplitSection />
         <LandingWhiteLabelSection />
         <LandingHowScriptSection />
+        <LandingFeatureMatrixSection />
         <LandingTestimonialsScriptSection />
         <LandingPricingGuaranteeSection />
+        <LandingFaqSection />
+        <LandingDoubtsCtaSection />
       </main>
 
       <LandingScriptFooter />

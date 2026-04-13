@@ -95,6 +95,12 @@ export function HeroSection() {
           >
             Planos
           </Link>
+          <a
+            href="#faq"
+            className="hidden min-h-11 items-center rounded-full px-3 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8f044] md:inline-flex"
+          >
+            FAQ
+          </a>
           <Link
             to="/login"
             className="min-h-11 inline-flex items-center rounded-full px-4 text-sm font-semibold text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8f044]"

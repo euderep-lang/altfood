@@ -8,6 +8,12 @@ export {
   LandingTestimonialsScriptSection,
   LandingPricingGuaranteeSection,
 } from './LandingScriptSections';
+export {
+  LandingBenefitSplitSection,
+  LandingFeatureMatrixSection,
+  LandingFaqSection,
+  LandingDoubtsCtaSection,
+} from './LandingDietaInspired';
 export { LandingScriptFooter } from './LandingScriptFooter';
 export { TrustAndObjections } from './TrustAndObjections';
 export { HowItWorks } from './HowItWorks';

@@ -378,7 +378,8 @@ export function LandingPricingGuaranteeSection() {
 
   return (
     <section
-      className="relative overflow-hidden px-5 py-20 font-sans md:px-16 md:py-28"
+      id="preco"
+      className="scroll-mt-24 relative overflow-hidden px-5 py-20 font-sans md:scroll-mt-28 md:px-16 md:py-28"
       style={{ background: B.paper }}
     >
       <div
