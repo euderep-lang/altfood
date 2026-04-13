@@ -127,7 +127,7 @@ export function HeroSection() {
           Elimine as dúvidas no WhatsApp e profissionalize seu atendimento por um valor simbólico.
         </motion.p>
 
-        <motion.div variants={vItem} className="mt-9 flex flex-col items-center gap-3 lg:items-stretch">
+        <motion.div variants={vItem} className="mt-9 flex flex-col items-center gap-3">
           <motion.div whileHover={reduced ? undefined : { scale: 1.02 }} whileTap={reduced ? undefined : { scale: 0.98 }}>
             <Link
               to="/register"
@@ -143,10 +143,13 @@ export function HeroSection() {
               )}
             </Link>
           </motion.div>
-          <p className="text-center text-xs font-semibold tracking-wide lg:text-left" style={{ color: 'color-mix(in srgb, white 85%, transparent)' }}>
+          <p
+            className="w-full max-w-[min(100%,320px)] text-center text-xs font-semibold tracking-wide"
+            style={{ color: 'color-mix(in srgb, white 85%, transparent)' }}
+          >
             Condição de lançamento: desconto por tempo limitado.
           </p>
-          <LandingCtaPriceSubline tone="onDark" initialIndex={0} className="max-w-md lg:text-left" />
+          <LandingCtaPriceSubline tone="onDark" initialIndex={0} className="w-full max-w-[min(100%,320px)] text-center" />
         </motion.div>
         </motion.div>
 

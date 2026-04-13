@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { BatteryFull, Camera, MoreVertical, SignalHigh, Wifi } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Message = {
@@ -65,21 +66,43 @@ export function WhatsAppPatientPings({ className }: Props) {
 
   return (
     <div className={cn('mx-auto w-full max-w-[540px]', className)}>
-      <div className="flex h-[340px] w-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-white/70 shadow-sm backdrop-blur">
-        <div className="flex items-center justify-between rounded-t-2xl bg-[#075E54] px-4 py-3 text-white">
-          <div className="flex min-w-0 flex-col">
-            <p className="truncate text-sm font-semibold">WhatsApp</p>
-            <p className="truncate text-[11px] opacity-90">Mensagens de pacientes agora</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="rounded-full bg-white/15 px-2 py-1 text-[11px] font-semibold tracking-tight">
-              {Math.max(0, i)}
-            </div>
+      <div className="flex h-[340px] w-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_12px_40px_-18px_rgba(0,0,0,0.35)]">
+        {/* Status bar */}
+        <div className="flex items-center justify-between bg-[#075E54] px-4 pb-1 pt-2 text-white">
+          <span className="text-[11px] font-semibold tabular-nums">12:14</span>
+          <div className="flex items-center gap-1.5 opacity-90" aria-hidden>
+            <SignalHigh className="h-3.5 w-3.5" />
+            <Wifi className="h-3.5 w-3.5" />
+            <BatteryFull className="h-3.5 w-3.5" />
           </div>
         </div>
 
-        <div className="flex-1 overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.85),rgba(255,255,255,0.65))] px-4 py-4">
-          <div className="h-full space-y-2 overflow-hidden">
+        {/* App header */}
+        <div className="flex items-center justify-between bg-[#075E54] px-4 py-2 text-white">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="grid h-9 w-9 place-items-center rounded-full bg-white/15 text-xs font-black">P</div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold leading-tight">Paciente</p>
+              <p className="truncate text-[11px] opacity-90">online agora</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 opacity-95" aria-hidden>
+            <Camera className="h-4.5 w-4.5" />
+            <MoreVertical className="h-4.5 w-4.5" />
+          </div>
+        </div>
+
+        {/* Chat */}
+        <div className="relative flex-1 overflow-hidden bg-[#ECE5DD] px-4 py-4">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.28]"
+            style={{
+              backgroundImage:
+                'radial-gradient(circle at 25% 30%, rgba(255,255,255,0.55) 0%, transparent 40%), radial-gradient(circle at 85% 70%, rgba(0,0,0,0.04) 0%, transparent 45%)',
+            }}
+            aria-hidden
+          />
+          <div className="relative h-full space-y-2 overflow-hidden">
           {messages.slice(0, i).map((m, idx) => (
             <motion.div
               key={`${m.time}-${idx}`}
@@ -88,12 +111,17 @@ export function WhatsAppPatientPings({ className }: Props) {
               transition={{ duration: 0.28, ease: 'easeOut' }}
               className="w-full"
             >
-              <div className="max-w-[88%] rounded-2xl rounded-tl-md bg-white px-3 py-2 shadow-[0_6px_18px_-14px_rgba(0,0,0,0.25)] ring-1 ring-black/5">
-                <p className="text-[11px] font-semibold text-[#128C7E]">{m.from}</p>
-                <p className="mt-0.5 text-sm leading-snug text-zinc-900">{m.text}</p>
-                <div className="mt-1 flex items-center justify-end gap-1">
-                  <span className="text-[10px] text-zinc-500">{m.time}</span>
-                  <span className="h-3 w-3 rounded-sm bg-zinc-100" aria-hidden />
+              <div className="max-w-[92%] rounded-[18px] rounded-tl-[8px] bg-white px-3 py-2 shadow-[0_10px_24px_-18px_rgba(0,0,0,0.35)] ring-1 ring-black/5">
+                <div className="relative">
+                  <div className="absolute -left-2 top-2 h-3 w-3 rotate-45 rounded-[2px] bg-white ring-1 ring-black/5" aria-hidden />
+                  <p className="text-[11px] font-bold text-[#128C7E]">{m.from}</p>
+                  <p className="mt-0.5 text-sm leading-snug text-zinc-900">{m.text}</p>
+                  <div className="mt-1.5 flex items-center justify-end gap-1">
+                    <span className="text-[10px] text-zinc-500 tabular-nums">{m.time}</span>
+                    <span className="text-[10px] font-bold text-[#34B7F1]" aria-hidden>
+                      ✓✓
+                    </span>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -104,11 +132,21 @@ export function WhatsAppPatientPings({ className }: Props) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4 }}
-              className="text-center text-xs text-zinc-500"
+              className="text-center text-xs text-zinc-700/70"
             >
               Notificações chegando…
             </motion.div>
           )}
+          </div>
+        </div>
+
+        {/* Input bar (visual only) */}
+        <div className="flex items-center gap-2 bg-[#F0F0F0] px-3 py-2">
+          <div className="flex h-10 flex-1 items-center gap-2 rounded-full bg-white px-4 text-sm text-zinc-500 shadow-[0_8px_18px_-16px_rgba(0,0,0,0.35)] ring-1 ring-black/5">
+            <span className="text-zinc-400">Mensagem</span>
+          </div>
+          <div className="grid h-10 w-10 place-items-center rounded-full bg-[#25D366] text-white shadow-[0_12px_24px_-18px_rgba(0,0,0,0.45)]" aria-hidden>
+            <span className="text-sm font-black">➤</span>
           </div>
         </div>
       </div>
