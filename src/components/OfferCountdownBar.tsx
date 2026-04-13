@@ -28,6 +28,7 @@ export function OfferCountdownBar({ className }: Props) {
 
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (!enabled) return;
@@ -41,12 +42,19 @@ export function OfferCountdownBar({ className }: Props) {
   }, [enabled]);
 
   useEffect(() => {
+    setVisible(false);
+    if (!enabled) return;
+    const id = window.setTimeout(() => setVisible(true), 10_000);
+    return () => window.clearTimeout(id);
+  }, [enabled, location.pathname]);
+
+  useEffect(() => {
     if (!enabled) return;
     const id = window.setInterval(() => setNow(Date.now()), 250);
     return () => window.clearInterval(id);
   }, [enabled]);
 
-  if (!enabled || !startedAt) return null;
+  if (!enabled || !startedAt || !visible) return null;
 
   const endsAt = startedAt + DURATION_MS;
   const remaining = endsAt - now;
