@@ -3,6 +3,14 @@ import type { Config } from "tailwindcss";
 export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  /** Hero: classes aplicadas com `&&` — garantir que o CSS das animações existe em produção */
+  safelist: [
+    "animate-hero-mesh-a",
+    "animate-hero-mesh-b",
+    "animate-hero-mesh-c",
+    "animate-hero-mesh-d",
+    "animate-hero-grid-pan",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -118,21 +126,21 @@ export default {
         },
         /** Hero landing — malha fluida tipo Dieta.ai (só transform / GPU) */
         "hero-mesh-a": {
-          "0%, 100%": { transform: "translate(-6%, -10%) scale(1) rotate(0deg)" },
-          "33%": { transform: "translate(12%, 6%) scale(1.14) rotate(7deg)" },
-          "66%": { transform: "translate(4%, -14%) scale(0.92) rotate(-5deg)" },
+          "0%, 100%": { transform: "translate(-10%, -12%) scale(1) rotate(0deg)" },
+          "33%": { transform: "translate(18%, 10%) scale(1.12) rotate(8deg)" },
+          "66%": { transform: "translate(6%, -18%) scale(0.94) rotate(-6deg)" },
         },
         "hero-mesh-b": {
-          "0%, 100%": { transform: "translate(10%, 8%) scale(1.06) rotate(0deg)" },
-          "50%": { transform: "translate(-14%, -8%) scale(1.1) rotate(-9deg)" },
+          "0%, 100%": { transform: "translate(12%, 10%) scale(1.05) rotate(0deg)" },
+          "50%": { transform: "translate(-20%, -12%) scale(1.14) rotate(-10deg)" },
         },
         "hero-mesh-c": {
-          "0%, 100%": { transform: "translate(-4%, 18%) scale(1) rotate(0deg)" },
-          "50%": { transform: "translate(8%, -10%) scale(1.18) rotate(6deg)" },
+          "0%, 100%": { transform: "translate(-6%, 22%) scale(1) rotate(0deg)" },
+          "50%": { transform: "translate(14%, -14%) scale(1.2) rotate(7deg)" },
         },
         "hero-mesh-d": {
           "0%, 100%": { transform: "translate(0%, 0%) scale(1) rotate(0deg)" },
-          "50%": { transform: "translate(-10%, 12%) scale(1.08) rotate(4deg)" },
+          "50%": { transform: "translate(-16%, 16%) scale(1.12) rotate(5deg)" },
         },
         "hero-grid-pan": {
           "0%": { backgroundPosition: "0px 0px" },

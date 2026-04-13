@@ -27,7 +27,7 @@ export function HeroSection() {
       <div className="absolute inset-0 gradient-dark" aria-hidden />
       <HeroAnimatedBackdrop reducedMotion={reduced} />
       <div
-        className="absolute inset-0 z-[1] hero-pattern opacity-[0.22]"
+        className="absolute inset-0 z-[1] hero-pattern opacity-[0.14]"
         style={{ maskImage: 'linear-gradient(180deg, black 0%, transparent 88%)' }}
         aria-hidden
       />
