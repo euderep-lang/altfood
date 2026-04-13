@@ -1,32 +1,98 @@
 /**
- * Mockup estático da página do paciente (PatientPage) dentro de moldura iPhone —
- * mesma hierarquia visual: header do profissional, busca, alimento + macros, peso, resultados TACO.
+ * Mockup da página do paciente (PatientPage) na moldura iPhone —
+ * demonstração animada em loop: busca → alimento + macros → carregamento → substituições TACO (fluxo real).
  */
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X } from 'lucide-react';
+import { Search, X, Loader2 } from 'lucide-react';
 
 const PRIMARY = '#0f766e';
 
-const SEARCH_ROTATION = ['Frango grelhado', 'Arroz branco', 'Batata doce'];
+const TARGET_QUERY = 'Peito de frango';
+
+const SUBSTITUTIONS = [
+  { name: 'Patinho moído', sub: 'Bovinos', pct: 'Muito similar', icon: '🥩', left: '#16a34a', line: 'Use 95g no lugar de 100g de Peito de frango.' },
+  { name: 'Coxa de frango', sub: 'Aves', pct: 'Similar', icon: '🍗', left: '#ca8a04', line: 'Use 95g no lugar de 100g de Peito de frango.' },
+  { name: 'Filé de tilápia', sub: 'Pescados', pct: 'Similar', icon: '🐟', left: '#ca8a04', line: 'Use 105g no lugar de 100g de Peito de frango.' },
+] as const;
+
+function sleep(ms: number) {
+  return new Promise<void>((r) => setTimeout(r, ms));
+}
+
+function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduced(mq.matches);
+    const fn = () => setReduced(mq.matches);
+    mq.addEventListener('change', fn);
+    return () => mq.removeEventListener('change', fn);
+  }, []);
+  return reduced;
+}
+
+type DemoPhase = 'search' | 'typing' | 'food' | 'loading' | 'results';
 
 export function PatientPagePhoneMockup({ className }: { className?: string }) {
-  const [q, setQ] = useState(0);
+  const reducedMotion = usePrefersReducedMotion();
+  const [phase, setPhase] = useState<DemoPhase>(reducedMotion ? 'results' : 'search');
+  const [typedLen, setTypedLen] = useState(reducedMotion ? TARGET_QUERY.length : 0);
 
   useEffect(() => {
-    const t = setInterval(() => setQ((v) => (v + 1) % SEARCH_ROTATION.length), 2400);
-    return () => clearInterval(t);
-  }, []);
+    if (reducedMotion) {
+      setPhase('results');
+      setTypedLen(TARGET_QUERY.length);
+      return;
+    }
+    let cancelled = false;
+    const loop = async () => {
+      while (!cancelled) {
+        setPhase('search');
+        setTypedLen(0);
+        await sleep(550);
+        if (cancelled) return;
+        setPhase('typing');
+        for (let i = 1; i <= TARGET_QUERY.length; i++) {
+          if (cancelled) return;
+          setTypedLen(i);
+          await sleep(38);
+        }
+        await sleep(450);
+        if (cancelled) return;
+        setPhase('food');
+        await sleep(900);
+        if (cancelled) return;
+        setPhase('loading');
+        await sleep(850);
+        if (cancelled) return;
+        setPhase('results');
+        await sleep(6000);
+      }
+    };
+    void loop();
+    return () => {
+      cancelled = true;
+    };
+  }, [reducedMotion]);
+
+  const showFood = phase === 'food' || phase === 'loading' || phase === 'results';
+  const showResults = phase === 'results';
+  const searchDisplay =
+    phase === 'search' ? '' : TARGET_QUERY.slice(0, typedLen);
+  const showPlaceholder = phase === 'search';
 
   return (
     <div className={`relative mx-auto w-[min(100%,300px)] ${className ?? ''}`}>
+      <p className="sr-only">
+        Demonstração animada em loop: o paciente digita na busca, seleciona o alimento e vê substituições similares com base na TACO.
+      </p>
       <div className="relative rounded-[2.85rem] bg-gradient-to-b from-zinc-800 to-zinc-950 p-[10px] shadow-[0_28px_70px_-14px_rgba(0,0,0,0.45)] ring-1 ring-white/10">
         <div
           className="absolute left-1/2 top-[11px] z-20 h-[26px] w-[72px] -translate-x-1/2 rounded-full bg-black shadow-inner"
           aria-hidden
         />
         <div className="overflow-hidden rounded-[2.25rem] bg-background shadow-inner">
-          {/* Barra de status (estilo iOS) */}
           <div className="flex items-center justify-between px-5 pb-1 pt-3 text-[10px] font-semibold text-muted-foreground">
             <span>9:41</span>
             <div className="flex items-center gap-1 opacity-80" aria-hidden>
@@ -36,7 +102,6 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
             </div>
           </div>
 
-          {/* Header — igual PatientPage: logo/iniciais + nome + doc + ícones */}
           <header className="border-b border-border bg-card">
             <div className="px-3 pb-3 pt-1">
               <div className="flex items-center gap-2.5">
@@ -77,117 +142,158 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
             </div>
           </header>
 
-          {/* Corpo — PatientPage: busca + card do alimento + peso + lista de substituições */}
           <div className="bg-gradient-to-b from-muted/30 to-background px-2.5 pb-2 pt-2.5">
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
               <div className="flex min-h-[38px] items-center rounded-2xl border border-border/60 bg-card py-1.5 pl-9 pr-2 shadow-sm">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={q}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.2 }}
-                    className="truncate text-[12px] font-medium text-foreground"
-                  >
-                    {SEARCH_ROTATION[q]}
-                  </motion.span>
-                </AnimatePresence>
-              </div>
-            </div>
-
-            {/* Alimento selecionado + macros (como PatientPage) */}
-            <div className="mt-2 rounded-2xl border border-border/40 bg-card p-3 shadow-sm">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex min-w-0 flex-1 items-center gap-2">
-                  <div
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base"
-                    style={{ backgroundColor: `${PRIMARY}12` }}
-                  >
-                    🍗
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[12px] font-semibold text-foreground">Peito de frango</p>
-                    <p className="text-[10px] text-muted-foreground">Grelhado, sem pele</p>
-                  </div>
-                </div>
-                <button type="button" className="shrink-0 rounded-lg p-1 text-muted-foreground/60" aria-label="Fechar">
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </div>
-              <div className="mt-2.5 grid grid-cols-4 gap-1">
-                {[
-                  { label: 'Prot', v: '31g', c: '#3B82F6' },
-                  { label: 'Carb', v: '0g', c: '#F59E0B' },
-                  { label: 'Gord', v: '3.6g', c: '#EF4444' },
-                  { label: 'Kcal', v: '165', c: '#8B5CF6' },
-                ].map((m) => (
-                  <div key={m.label} className="rounded-lg py-1.5 text-center" style={{ backgroundColor: `${m.c}08` }}>
-                    <p className="text-[9px] font-medium text-muted-foreground">{m.label}</p>
-                    <p className="text-[10px] font-bold" style={{ color: m.c }}>
-                      {m.v}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Quantidade */}
-            <div className="mt-2 rounded-2xl border border-border/40 bg-card p-2.5 shadow-sm">
-              <p className="mb-1.5 text-center text-[9px] font-medium text-muted-foreground">Quantidade (g)</p>
-              <div className="flex justify-center gap-1">
-                {[100, 150, 200, 250].map((w) => (
-                  <span
-                    key={w}
-                    className="rounded-full px-2 py-0.5 text-[9px] font-semibold"
-                    style={{
-                      backgroundColor: w === 100 ? PRIMARY : `${PRIMARY}10`,
-                      color: w === 100 ? '#fff' : PRIMARY,
-                    }}
-                  >
-                    {w}g
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <p className="mb-1 mt-2 px-0.5 text-[9px] font-medium text-muted-foreground">8 substituições encontradas</p>
-
-            {[
-              { name: 'Patinho moído', sub: 'Bovinos', pct: 'Muito similar', icon: '🥩', left: '#16a34a' },
-              { name: 'Coxa de frango', sub: 'Aves', pct: 'Similar', icon: '🍗', left: '#ca8a04' },
-            ].map((item) => (
-              <div
-                key={item.name}
-                className="mb-1.5 overflow-hidden rounded-2xl border border-border/40 bg-card shadow-sm"
-                style={{ borderLeftWidth: 3, borderLeftColor: item.left }}
-              >
-                <div className="p-2.5">
-                  <div className="flex items-start gap-2">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted/80 text-base">
-                      {item.icon}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[11px] font-semibold text-foreground">{item.name}</p>
-                      <p className="text-[9px] text-muted-foreground">{item.sub}</p>
-                    </div>
-                    <span
-                      className="shrink-0 rounded-full px-1.5 py-0.5 text-[8px] font-semibold"
-                      style={{
-                        backgroundColor: item.left === '#16a34a' ? '#22c55e15' : '#eab30815',
-                        color: item.left,
-                      }}
-                    >
-                      {item.pct}
+                <span className="min-h-[1.125rem] truncate text-[12px] font-medium">
+                  {showPlaceholder ? (
+                    <span className="text-muted-foreground/70">Buscar alimento…</span>
+                  ) : (
+                    <span className="text-foreground">
+                      {searchDisplay}
+                      {phase === 'typing' && typedLen < TARGET_QUERY.length && (
+                        <motion.span
+                          className="ml-px inline-block h-3 w-px translate-y-px bg-primary align-middle"
+                          animate={{ opacity: [1, 0] }}
+                          transition={{ repeat: Infinity, duration: 0.55 }}
+                          aria-hidden
+                        />
+                      )}
                     </span>
-                  </div>
-                  <p className="mt-1.5 text-center text-[9px] italic text-muted-foreground">
-                    Use 95g no lugar de 100g de Peito de frango.
-                  </p>
-                </div>
+                  )}
+                </span>
               </div>
-            ))}
+            </div>
+
+            <AnimatePresence>
+              {showFood && (
+                <motion.div
+                  key="food-block"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div className="mt-2 rounded-2xl border border-border/40 bg-card p-3 shadow-sm">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex min-w-0 flex-1 items-center gap-2">
+                        <div
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base"
+                          style={{ backgroundColor: `${PRIMARY}12` }}
+                        >
+                          🍗
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[12px] font-semibold text-foreground">Peito de frango</p>
+                          <p className="text-[10px] text-muted-foreground">Grelhado, sem pele</p>
+                        </div>
+                      </div>
+                      <button type="button" className="shrink-0 rounded-lg p-1 text-muted-foreground/60" aria-label="Fechar">
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                    <div className="mt-2.5 grid grid-cols-4 gap-1">
+                      {[
+                        { label: 'Prot', v: '31g', c: '#3B82F6' },
+                        { label: 'Carb', v: '0g', c: '#F59E0B' },
+                        { label: 'Gord', v: '3.6g', c: '#EF4444' },
+                        { label: 'Kcal', v: '165', c: '#8B5CF6' },
+                      ].map((m) => (
+                        <div key={m.label} className="rounded-lg py-1.5 text-center" style={{ backgroundColor: `${m.c}08` }}>
+                          <p className="text-[9px] font-medium text-muted-foreground">{m.label}</p>
+                          <p className="text-[10px] font-bold" style={{ color: m.c }}>
+                            {m.v}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-2 rounded-2xl border border-border/40 bg-card p-2.5 shadow-sm">
+                    <p className="mb-1.5 text-center text-[9px] font-medium text-muted-foreground">Quantidade (g)</p>
+                    <div className="flex justify-center gap-1">
+                      {[100, 150, 200, 250].map((w) => (
+                        <span
+                          key={w}
+                          className="rounded-full px-2 py-0.5 text-[9px] font-semibold transition-colors"
+                          style={{
+                            backgroundColor: w === 100 ? PRIMARY : `${PRIMARY}10`,
+                            color: w === 100 ? '#fff' : PRIMARY,
+                          }}
+                        >
+                          {w}g
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <AnimatePresence mode="wait">
+                    {phase === 'loading' && (
+                      <motion.div
+                        key="loading"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="mt-2 flex items-center justify-center gap-2 rounded-2xl border border-dashed border-primary/25 bg-primary/[0.04] py-3"
+                      >
+                        <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden />
+                        <span className="text-[10px] font-medium text-primary">Buscando substituições na TACO…</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {showResults && (
+                <motion.div
+                  key="results-wrap"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mt-2"
+                >
+                  <p className="mb-1 px-0.5 text-[9px] font-medium text-muted-foreground">
+                    8 substituições encontradas
+                  </p>
+                  <div className="flex flex-col gap-1.5">
+                    {SUBSTITUTIONS.map((item, i) => (
+                      <motion.div
+                        key={item.name}
+                        initial={{ opacity: 0, x: 12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.08 + i * 0.14, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden rounded-2xl border border-border/40 bg-card shadow-sm"
+                        style={{ borderLeftWidth: 3, borderLeftColor: item.left }}
+                      >
+                        <div className="p-2.5">
+                          <div className="flex items-start gap-2">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted/80 text-base">
+                              {item.icon}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-[11px] font-semibold text-foreground">{item.name}</p>
+                              <p className="text-[9px] text-muted-foreground">{item.sub}</p>
+                            </div>
+                            <span
+                              className="shrink-0 rounded-full px-1.5 py-0.5 text-[8px] font-semibold"
+                              style={{
+                                backgroundColor: item.left === '#16a34a' ? '#22c55e15' : '#eab30815',
+                                color: item.left,
+                              }}
+                            >
+                              {item.pct}
+                            </span>
+                          </div>
+                          <p className="mt-1.5 text-center text-[9px] italic text-muted-foreground">{item.line}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <p className="mt-1 px-1 text-center text-[8px] leading-snug text-muted-foreground/70">
               Valores TACO (NEPA/UNICAMP). Consulte seu nutricionista.
@@ -201,9 +307,17 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
       </div>
 
       <motion.div
-        animate={{ y: [0, -5, 0] }}
-        transition={{ repeat: Infinity, duration: 3.2, ease: 'easeInOut' }}
-        className="absolute -left-2 top-[42%] max-sm:scale-90 sm:-left-5 sm:top-[40%] rounded-2xl border border-[#0f766e]/15 bg-white px-2.5 py-2 shadow-xl sm:px-3 sm:py-2.5"
+        initial={false}
+        animate={
+          showResults ? { y: [0, -4, 0], opacity: 1 } : { opacity: 0.85, y: 0 }
+        }
+        transition={
+          showResults
+            ? { y: { repeat: Infinity, duration: 2.8, ease: 'easeInOut' }, opacity: { duration: 0.3 } }
+            : {}
+        }
+        className="pointer-events-none absolute -left-2 top-[38%] max-sm:scale-90 sm:-left-5 sm:top-[36%] rounded-2xl border border-[#0f766e]/15 bg-white px-2.5 py-2 shadow-xl sm:px-3 sm:py-2.5"
+        aria-hidden
       >
         <p className="text-[10px] font-bold text-[#0f766e]">Paciente no mercado</p>
         <p className="text-[9px] text-muted-foreground">sem te ligar</p>

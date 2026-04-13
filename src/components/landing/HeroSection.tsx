@@ -268,7 +268,8 @@ export function HeroSection() {
           >
             <PatientPagePhoneMockup />
             <p className="mt-4 text-center text-xs leading-relaxed md:text-left" style={{ color: T.textMute }}>
-              Prévia no iPhone: é a experiência real da página quando você envia o link ao paciente.
+              Demonstração animada no iPhone: busca → alimento com macros → substituições na TACO (igual à página que o
+              paciente abre com o seu link).
             </p>
           </motion.div>
         </div>
