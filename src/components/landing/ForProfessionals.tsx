@@ -28,27 +28,23 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const features = [
   {
     Icon: Target,
-    title: 'O contexto já vem montado na tela',
-    description:
-      'Alimento, gramas, categoria TACO: o paciente navega num roteiro claro em vez de te mandar áudio solto. Menos “depende”, mais decisão com critério.',
+    title: 'Contexto na tela',
+    description: 'Alimento, gramas, TACO. Roteiro claro, menos áudio solto.',
   },
   {
     Icon: ShieldQuestion,
-    title: 'Menos “acho que pode” no ar',
-    description:
-      'Ele vê opções com similaridade e quantidade equivalente. Você corta a segunda mensagem pedindo print do rótulo.',
+    title: 'Menos “acho que pode”',
+    description: 'Similaridade + equivalente em gramas. Menos segunda mensagem.',
   },
   {
     Icon: Database,
-    title: 'Seu tempo volta para o que paga a conta',
-    description:
-      'Cada troca resolvida no link é uma microconsulta que não roubou vaga na agenda. Sobram minutos para documentar, estudar caso ou simplesmente respirar.',
+    title: 'Tempo que volta',
+    description: 'Troca no link = menos microconsulta roubando agenda.',
   },
   {
     Icon: Smartphone,
-    title: 'Referência sem ficar plugado 24h',
-    description:
-      'Link com sua cara, paciente no celular, TACO por baixo: você continua sendo a autoridade — só não precisa ser o buscador da dieta a toda hora.',
+    title: 'Autoridade sem 24h no app',
+    description: 'Sua marca, TACO no bolso dele. Você não vira buscador.',
   },
 ];
 
@@ -177,7 +173,7 @@ export function ForProfessionals() {
               className="text-xs font-semibold uppercase tracking-[0.12em]"
               style={{ color: T.forest }}
             >
-              Para quem prescreve
+              Prescritores
             </motion.span>
 
             <motion.h2
@@ -187,19 +183,18 @@ export function ForProfessionals() {
               className="text-4xl md:text-5xl font-extrabold leading-tight"
               style={{ color: T.textDark }}
             >
-              Menos conversa solta.<br />
-              <span style={{ color: T.forest }}>Mais decisão com critério.</span>
+              Menos conversa.<br />
+              <span style={{ color: T.forest }}>Mais critério.</span>
             </motion.h2>
 
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.55, ease, delay: 0.15 }}
-              className="text-lg leading-relaxed"
+              className="text-base md:text-lg leading-snug"
               style={{ color: T.textMute }}
             >
-              Quem saiu do “me manda uma foto do rótulo” para o link costuma dizer a mesma coisa: o paciente entende o
-              valor antes de cobrar o próximo passo — e você recupera fôlego para o que só o profissional faz.
+              Saiu do print do rótulo pro link: paciente entende antes de te cobrar; você respira.
             </motion.p>
           </div>
 
@@ -250,7 +245,7 @@ export function ForProfessionals() {
               className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-base font-bold text-white transition-all hover:opacity-90 hover:scale-105 active:scale-95 self-start"
               style={{ background: T.forest }}
             >
-              Ver planos e simular o retorno
+              Ver planos
               <ArrowRight size={15} aria-hidden />
             </Link>
           </motion.div>

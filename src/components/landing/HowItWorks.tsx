@@ -20,23 +20,20 @@ const steps = [
   {
     number: '01',
     Icon: Stethoscope,
-    title: 'No consultório, o plano entra',
-    description:
-      'Você explica, prescreve, ele assente. Ali faz sentido. O atrito aparece quando a porta fecha: mercado, restaurante, viagem — e a dúvida não vem com agenda.',
+    title: 'Consultório: plano claro',
+    description: 'Fecha ali. O atrito é depois: mercado, viagem, restaurante.',
   },
   {
     number: '02',
     Icon: MessagesSquare,
-    title: 'Fora dele, a dúvida não pergunta horário',
-    description:
-      'Troca, porção, equivalência: se cada uma vira mensagem sua, você cansa e ele adia. Repete umas vezes e o plano perde tração — ou vira segunda mensagem pedindo print do rótulo.',
+    title: 'Fora: dúvida sem horário',
+    description: 'Cada troca no seu WhatsApp? Você cansa, ele adia, o plano murcha.',
   },
   {
     number: '03',
     Icon: Link2,
-    title: 'Um link seu vira o endereço certo',
-    description:
-      'Sua marca, alimento, gramas e substituições na TACO com similaridade — na palma dele, sem fila no seu privado. Você ganha previsibilidade no dia; ele ganha decisão com critério.',
+    title: 'Seu link = endereço',
+    description: 'Marca + TACO + gramas + similaridade. Na mão dele, fora do seu privado.',
   },
 ];
 
@@ -121,11 +118,10 @@ export function HowItWorks() {
             initial={{ opacity: 0, y: 12 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, ease, delay: 0.05 }}
-            className="text-sm leading-relaxed md:text-base"
+            className="text-sm leading-snug md:text-base max-w-lg mx-auto"
             style={{ color: T.bodyOnDark }}
           >
-            Sem um lugar claro para consultar depois da consulta, o plano vira PDF e o corredor vira improviso. O
-            Altfood é esse lugar: TACO oficial, sua marca, no celular — antes dele te bombardear no WhatsApp.
+            Sem lugar pra olhar = PDF + improviso. Altfood: TACO, sua marca, celular — antes do WhatsApp explodir.
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
@@ -133,8 +129,8 @@ export function HowItWorks() {
             transition={{ duration: 0.55, ease, delay: 0.08 }}
             className="text-4xl font-extrabold leading-tight text-white md:text-5xl"
           >
-            Três passos.<br />
-            <span style={{ color: T.lime }}>Menos ruído no seu dia.</span>
+            3 passos.<br />
+            <span style={{ color: T.lime }}>Menos ruído.</span>
           </motion.h2>
         </div>
 
@@ -156,7 +152,7 @@ export function HowItWorks() {
             className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
             style={{ background: T.lime, color: T.textDark }}
           >
-            Criar minha página
+            Criar página
           </Link>
         </motion.div>
       </div>

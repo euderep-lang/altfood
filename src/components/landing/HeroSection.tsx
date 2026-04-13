@@ -180,11 +180,9 @@ export function HeroSection() {
         <div className="flex flex-col gap-5 lg:col-span-3">
           <motion.p
             {...fadeUp(0.05)}
-            className="max-w-xl text-sm leading-relaxed text-[#111a14]/85 md:text-base"
+            className="max-w-xl text-sm font-medium leading-snug text-[#111a14]/90 md:text-base"
           >
-            No consultório o plano fecha. No mercado, no delivery ou na viagem, volta o mesmo padrão: &quot;posso trocar
-            o frango?&quot;, &quot;quanto disso equivale a 100 g daquilo?&quot; — em geral fora do horário em que você
-            escolheria estar disponível.
+            No consultório, combinado. Fora dele, a pergunta cai no seu pior horário.
           </motion.p>
 
           <motion.div
@@ -193,7 +191,7 @@ export function HeroSection() {
             style={{ background: `${T.lime}33`, color: T.forest }}
           >
             <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: T.forest }} aria-hidden />
-            TACO oficial · sua marca · no celular dele
+            TACO · sua marca · celular
           </motion.div>
 
           <motion.h1
@@ -205,25 +203,20 @@ export function HeroSection() {
             <span style={{ color: T.forest }}>As dúvidas não.</span>
           </motion.h1>
 
-          <motion.p {...fadeUp(0.22)} className="max-w-xl text-base leading-relaxed md:text-lg" style={{ color: T.textMute }}>
-            Se tudo vira mensagem sua, ele espera ou chuta no corredor. Você perde fôlego para consulta, laudo e
-            descanso; ele perde segurança na troca. Ninguém ganha com &quot;acho que pode&quot; no supermercado.
+          <motion.p {...fadeUp(0.22)} className="max-w-xl text-base leading-snug md:text-lg" style={{ color: T.textMute }}>
+            Tudo no seu WhatsApp? Ele chuta; você cansa.{' '}
+            <strong className="font-semibold text-[#111a14]">Altfood</strong> é o seu link com marca:{' '}
+            <strong className="font-semibold text-[#111a14]">TACO</strong>, gramas, similaridade — sem app. Referência,
+            não inbox.
           </motion.p>
 
-          <motion.p {...fadeUp(0.28)} className="max-w-xl text-base leading-relaxed md:text-lg" style={{ color: T.textMute }}>
-            O Altfood é esse endereço com a <em>sua</em> marca: ele busca o alimento, ajusta as gramas e vê substituições
-            na <strong className="font-semibold text-[#111a14]">Tabela TACO</strong> com similaridade clara — no ritmo
-            dele, sem fila no seu WhatsApp. Você segue sendo a referência; só deixa de ser o buscador da dieta a toda
-            hora.
-          </motion.p>
-
-          <motion.div {...fadeUp(0.35)} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <motion.div {...fadeUp(0.28)} className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link
               to="/register"
               className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-base font-bold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{ background: T.lime, color: T.textDark }}
             >
-              Criar minha página
+              Criar página
               <ArrowRight size={18} aria-hidden />
             </Link>
             <a
@@ -231,16 +224,16 @@ export function HeroSection() {
               className="inline-flex items-center justify-center gap-1.5 py-3.5 text-sm font-semibold transition-opacity hover:opacity-60 sm:py-0"
               style={{ color: T.forest }}
             >
-              Ver como funciona →
+              Como funciona →
             </a>
           </motion.div>
 
-          <motion.div {...fadeUp(0.42)} className="flex items-center gap-2 text-sm" style={{ color: T.textMute }}>
+          <motion.div {...fadeUp(0.35)} className="flex items-center gap-2 text-sm" style={{ color: T.textMute }}>
             <CheckCircle2 size={15} style={{ color: T.forest }} aria-hidden />
-            <span>A mesma tela do dia a dia: busca, macros, gramas, similaridade — sem baixar app.</span>
+            <span>Busca, macros, gramas, similaridade. Sem baixar app.</span>
           </motion.div>
 
-          <motion.div {...fadeUp(0.5)} className="flex flex-wrap gap-2" aria-label="Áreas que mais usam o Altfood">
+          <motion.div {...fadeUp(0.42)} className="flex flex-wrap gap-2" aria-label="Áreas que mais usam o Altfood">
             {chips.map((chip) => (
               <span
                 key={chip.label}
@@ -266,8 +259,8 @@ export function HeroSection() {
             transition={{ duration: 0.75, ease, delay: 0.2 }}
           >
             <PatientPagePhoneMockup />
-            <p className="mt-4 text-center text-xs leading-relaxed md:text-left" style={{ color: T.textMute }}>
-              Prévia da página do paciente no iPhone — o que ele abre quando você manda o link.
+            <p className="mt-4 text-center text-xs md:text-left" style={{ color: T.textMute }}>
+              Prévia iPhone — o que abre com o seu link.
             </p>
           </motion.div>
         </div>

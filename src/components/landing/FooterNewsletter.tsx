@@ -89,9 +89,8 @@ export function FooterNewsletter() {
           {/* Col 1 — Brand */}
           <div className="flex flex-col gap-5">
             <AltfoodLogoFooterDark className="h-11 max-w-[220px]" />
-            <p className="text-sm leading-relaxed" style={{ color: T.bodyOnDark }}>
-              Substituições com base na Tabela TACO, no link com a sua marca — para o paciente consultar quando a dúvida
-              aparecer, sem depender do seu WhatsApp a toda hora.
+            <p className="text-sm leading-snug" style={{ color: T.bodyOnDark }}>
+              TACO no link com sua marca. Dúvida no celular dele, não no seu WhatsApp.
             </p>
             <div className="flex gap-2">
               {/* LinkedIn */}
@@ -130,8 +129,8 @@ export function FooterNewsletter() {
             >
               Fique por Dentro
             </h4>
-            <p className="text-sm leading-relaxed" style={{ color: T.bodyOnDark }}>
-              Receba novidades sobre nutrição baseada em evidências e atualizações da plataforma.
+            <p className="text-sm leading-snug" style={{ color: T.bodyOnDark }}>
+              Novidades da plataforma no e-mail.
             </p>
 
             {submitted ? (

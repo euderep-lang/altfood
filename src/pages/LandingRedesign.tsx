@@ -49,7 +49,7 @@ function ScrollProgressBar() {
 // ─── SEO head helper (Vite: we manage via index.html + this sets page-level meta) ──
 function PageMeta() {
   useEffect(() => {
-    document.title = 'Altfood — Substituições TACO no link do seu paciente';
+    document.title = 'Altfood — TACO no link do paciente';
     const setMeta = (name: string, content: string, property?: boolean) => {
       const selector = property
         ? `meta[property="${name}"]`
@@ -65,12 +65,12 @@ function PageMeta() {
 
     setMeta(
       'description',
-      'Link com a sua marca: o paciente consulta substituições na Tabela TACO no celular — busca, gramas, similaridade — sem te bombardear no WhatsApp.'
+      'Seu link, sua marca: TACO no celular — busca, gramas, similaridade. Menos WhatsApp.'
     );
-    setMeta('og:title', 'Altfood — Menos improviso, mais decisão com TACO', true);
+    setMeta('og:title', 'Altfood — TACO no seu link', true);
     setMeta(
       'og:description',
-      'A mesma tela que o paciente usa no dia a dia: sua marca, TACO oficial, quantidade em gramas.',
+      'Marca sua, TACO oficial, gramas e similaridade — sem app.',
       true
     );
     setMeta('og:image', '/images/og-image.jpg', true);
@@ -99,9 +99,9 @@ function AnnouncementBanner() {
       />
       <span className="hidden sm:inline">✨</span>
       <span>
-        E se o paciente resolvesse a troca no mercado antes de te escrever?{' '}
+        Troca no mercado sem te escrever?{' '}
         <Link to="/register" className="font-semibold underline underline-offset-2 transition-opacity hover:opacity-80">
-          Criar minha página
+          Criar página
         </Link>
       </span>
     </div>
@@ -130,10 +130,8 @@ function ProfessionalsImageBreak() {
       {/* Pull-quote */}
       <div className="absolute inset-0 flex items-center px-8 md:px-20 font-sans">
         <div className="max-w-xl">
-          <p className="mb-4 text-3xl font-bold leading-snug text-white md:text-4xl">
-            “Se cada troca no mercado virasse um minuto faturado,
-            <br />
-            <em>quanto você já deixou na mesa?”</em>
+          <p className="mb-4 text-2xl font-bold leading-snug text-white md:text-3xl">
+            Cada troca no seu WhatsApp <em>é minuto que não volta.</em>
           </p>
           <div className="w-12 h-1 rounded-full" style={{ background: T.lime }} />
         </div>
@@ -149,22 +147,21 @@ function HowItWorksImageAccent() {
       <div className="max-w-4xl mx-auto px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
           <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
-            Base oficial
+            TACO oficial
           </span>
-          <h3 className="mb-4 text-3xl font-bold leading-tight md:text-4xl" style={{ color: T.dark }}>
-            Quando a resposta vem com número,<br />
-            <span style={{ color: T.forest }}>a dúvida encurta</span>
+          <h3 className="mb-4 text-2xl font-bold leading-tight md:text-3xl" style={{ color: T.dark }}>
+            Número na tela.<br />
+            <span style={{ color: T.forest }}>Dúvida menor.</span>
           </h3>
-          <p className="mb-6 text-base leading-relaxed" style={{ color: T.muted }}>
-            O paciente enxerga similaridade e gramas equivalentes — não fica no “acho que pode”. Menos ida e volta no
-            seu privado; mais segurança na decisão dele no corredor.
+          <p className="mb-6 text-sm leading-snug md:text-base" style={{ color: T.muted }}>
+            Similaridade + gramas. Menos “acho que pode”, menos ida e volta no privado.
           </p>
           <Link
             to="/planos"
             className="inline-flex items-center gap-2 text-sm font-semibold transition-opacity hover:opacity-70"
             style={{ color: T.forest }}
           >
-            Ver planos e preços →
+            Planos →
           </Link>
         </div>
         <div className="rounded-2xl overflow-hidden shadow-xl aspect-[4/3]">
@@ -193,15 +190,14 @@ function CTAStrip() {
         className="max-w-2xl mx-auto flex flex-col items-center gap-6"
       >
         <span className="text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: T.forest }}>
-          Pronto para testar?
+          Testar
         </span>
-        <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: T.dark }}>
-          Uma hora sua por semana<br />
-          <span style={{ color: T.forest }}>de volta ao que importa</span>
+        <h2 className="text-3xl md:text-4xl font-bold leading-tight" style={{ color: T.dark }}>
+          Menos inbox.<br />
+          <span style={{ color: T.forest }}>Mais consultório.</span>
         </h2>
-        <p className="text-lg leading-relaxed" style={{ color: T.muted }}>
-          O Altfood não é mais um app para o paciente baixar. É o endereço onde ele executa o plano com a TACO no bolso —
-          e onde você deixa de ser o buscador da dieta a toda hora.
+        <p className="text-base leading-snug max-w-md" style={{ color: T.muted }}>
+          Seu link. TACO no bolso dele. Sem app. Você não vira buscador.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
@@ -209,18 +205,18 @@ function CTAStrip() {
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
             style={{ background: T.lime, color: T.dark }}
           >
-            Quero testar na minha base
+            Criar página
           </Link>
           <Link
             to="/planos"
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-semibold border-2 transition-all hover:opacity-80"
             style={{ borderColor: T.forest, color: T.forest }}
           >
-            Ver o que está incluso
+            Planos
           </Link>
         </div>
-        <p className="text-sm" style={{ color: T.muted }}>
-          Veja planos e o que entra no seu link — cancele quando quiser.
+        <p className="text-xs" style={{ color: T.muted }}>
+          Cancela quando quiser.
         </p>
       </motion.div>
     </section>

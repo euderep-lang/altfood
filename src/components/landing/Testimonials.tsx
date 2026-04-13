@@ -16,24 +16,21 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 const testimonials = [
   {
-    quote:
-      'Parei pra contar quantas vezes por semana eu interrompia jantar ou série pra responder troca de carboidrato. O número me constrangeu. Hoje o link resolve a maior parte antes de chegar em mim.',
+    quote: 'Contei quantas vezes jantar virou resposta de troca. Vergonha. Hoje o link filtra antes de bater em mim.',
     name: 'Dra. Camila Rocha',
     role: 'Nutricionista Clínica · CRN 12345',
     initials: 'CR',
     color: '#2d6a4f',
   },
   {
-    quote:
-      'Meu aluno não quer “mais um app”. Quer saber o que pode no mercado sem me ligar. Quando mostrei o link com meu nome e a TACO por trás, ele entendeu na hora o que estava comprando.',
+    quote: 'Ele quer mercado sem me ligar. Link com meu nome + TACO: entendeu na hora.',
     name: 'Rafael Mendes',
     role: 'Personal Trainer · CREF 67890',
     initials: 'RM',
     color: '#1a3c2e',
   },
   {
-    quote:
-      'Eu tinha medo de orientar no improviso. Agora o plano tem um endereço: o paciente vê números e similaridade, não só “confia em mim”. A adesão melhorou porque a dúvida virou dado.',
+    quote: 'Plano com endereço: número + similaridade, não só “confia”. Adesão subiu.',
     name: 'Dra. Ana Lima',
     role: 'Médica Clínica Geral · CRM 11223',
     initials: 'AL',
@@ -42,9 +39,9 @@ const testimonials = [
 ];
 
 const stats = [
-  { value: '500+', label: 'profissionais com link ativo' },
-  { value: '463', label: 'itens TACO para comparar' },
-  { value: '1', label: 'link público com a sua marca' },
+  { value: '500+', label: 'links ativos' },
+  { value: '463', label: 'itens TACO' },
+  { value: '1', label: 'link com sua marca' },
 ];
 
 function Stars() {
@@ -134,18 +131,17 @@ export function Testimonials() {
             className="text-4xl md:text-5xl font-extrabold leading-tight"
             style={{ color: T.textDark }}
           >
-            O que mudou na rotina<br />
-            de quem já usa o link
+            Quem usa o link
           </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, ease, delay: 0.14 }}
-            className="text-lg"
+            className="text-base"
             style={{ color: T.textMute }}
           >
-            Histórias reais de tempo recuperado, paciente mais autônomo e menos mensagem fora de hora.
+            Menos fora de hora. Mais autonomia com dado.
           </motion.p>
         </div>
 
