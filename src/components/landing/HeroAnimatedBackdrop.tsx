@@ -1,85 +1,117 @@
 /**
- * Fundo animado do hero — aurora / malha visível em fundo escuro (referência Dieta.ai).
- * Usa mix-blend-screen + cores mais claras para o movimento aparecer; desliga com reducedMotion.
+ * Fundo do hero — motivos de dieta/alimentação: ícones discretos em movimento suave.
+ * Desliga animação com reducedMotion (mantém composição estática).
  */
-import { cn } from '@/lib/utils';
+import type { CSSProperties } from 'react';
+import { motion } from 'framer-motion';
+import { Apple, Carrot, Cherry, Citrus, Grape, Leaf, LeafyGreen, Salad, Sprout } from 'lucide-react';
 
 type Props = { reducedMotion: boolean };
+
+type FloatSpec = {
+  Icon: typeof Apple;
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+  size: number;
+  duration: number;
+  delay: number;
+  /** tom no fundo escuro */
+  tone: 'lime' | 'mint' | 'gold' | 'coral';
+};
+
+const tones: Record<FloatSpec['tone'], string> = {
+  lime: 'hsl(78 85% 62% / 0.32)',
+  mint: 'hsl(165 55% 52% / 0.28)',
+  gold: 'hsl(48 90% 58% / 0.26)',
+  coral: 'hsl(18 75% 58% / 0.22)',
+};
+
+const floats: FloatSpec[] = [
+  { Icon: Apple, top: '7%', left: '5%', size: 46, duration: 10, delay: 0, tone: 'lime' },
+  { Icon: Leaf, top: '12%', right: '6%', size: 40, duration: 12, delay: 0.5, tone: 'mint' },
+  { Icon: Carrot, top: '38%', left: '2%', size: 44, duration: 9, delay: 0.2, tone: 'coral' },
+  { Icon: Grape, bottom: '28%', left: '8%', size: 42, duration: 11, delay: 0.8, tone: 'mint' },
+  { Icon: Cherry, top: '22%', left: '42%', size: 36, duration: 8.5, delay: 0.3, tone: 'coral' },
+  { Icon: Citrus, bottom: '18%', right: '10%', size: 48, duration: 10.5, delay: 0.6, tone: 'gold' },
+  { Icon: LeafyGreen, top: '48%', right: '4%', size: 44, duration: 9.5, delay: 0.1, tone: 'lime' },
+  { Icon: Sprout, bottom: '42%', right: '18%', size: 38, duration: 11.5, delay: 0.4, tone: 'mint' },
+  { Icon: Salad, top: '58%', left: '14%', size: 40, duration: 12.5, delay: 0.7, tone: 'lime' },
+  { Icon: Apple, bottom: '12%', left: '22%', size: 34, duration: 8, delay: 0.9, tone: 'gold' },
+];
 
 export function HeroAnimatedBackdrop({ reducedMotion }: Props) {
   const on = !reducedMotion;
 
   return (
     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
-      {/*
-        Camada de luz: mix-blend-screen “acende” o escuro do gradient-dark por baixo.
-        Cores em hsl claros para o drift ser perceptível.
-      */}
-      <div
-        className={cn(
-          'absolute inset-0 mix-blend-screen',
-          reducedMotion && 'opacity-50'
-        )}
-      >
-        <div
-          className={cn(
-            'absolute -left-[30%] -top-[40%] h-[min(150vw,980px)] w-[min(150vw,980px)] rounded-[40%] blur-[72px] will-change-transform sm:blur-[100px]',
-            on && 'motion-reduce:animate-none animate-hero-mesh-a'
-          )}
-          style={{
-            background:
-              'radial-gradient(ellipse 58% 52% at 50% 45%, hsl(165 72% 52% / 0.72) 0%, hsl(170 55% 38% / 0.35) 42%, transparent 68%)',
-          }}
-        />
-        <div
-          className={cn(
-            'absolute -right-[25%] top-[5%] h-[min(120vw,780px)] w-[min(120vw,780px)] rounded-[44%] blur-[68px] will-change-transform sm:blur-[95px]',
-            on && 'motion-reduce:animate-none animate-hero-mesh-b'
-          )}
-          style={{
-            background:
-              'radial-gradient(ellipse 52% 50% at 48% 50%, hsl(155 60% 48% / 0.65) 0%, hsl(160 45% 32% / 0.28) 45%, transparent 70%)',
-          }}
-        />
-        <div
-          className={cn(
-            'absolute bottom-[-35%] left-[5%] h-[min(110vw,700px)] w-[min(110vw,700px)] rounded-[46%] blur-[80px] will-change-transform sm:blur-[105px]',
-            on && 'motion-reduce:animate-none animate-hero-mesh-c'
-          )}
-          style={{
-            background:
-              'radial-gradient(ellipse 55% 48% at 50% 40%, hsl(78 85% 62% / 0.55) 0%, hsl(78 70% 40% / 0.2) 40%, transparent 68%)',
-          }}
-        />
-        <div
-          className={cn(
-            'absolute left-[10%] top-[35%] h-[min(90vw,560px)] w-[min(90vw,560px)] rounded-full blur-[64px] will-change-transform sm:blur-[88px]',
-            on && 'motion-reduce:animate-none animate-hero-mesh-d'
-          )}
-          style={{
-            background:
-              'radial-gradient(circle at 42% 42%, hsl(175 45% 42% / 0.5) 0%, transparent 62%)',
-          }}
-        />
-      </div>
+      {floats.map((f, i) => {
+        const pos: CSSProperties = {
+          top: f.top,
+          bottom: f.bottom,
+          left: f.left,
+          right: f.right,
+          color: tones[f.tone],
+        };
+        const Icon = f.Icon;
+        return (
+          <motion.div
+            key={`float-${i}`}
+            className="absolute will-change-transform"
+            style={pos}
+            initial={false}
+            animate={
+              on
+                ? {
+                    y: [0, -16, 4, 0],
+                    rotate: [0, f.size % 2 === 0 ? 10 : -10, 0],
+                    opacity: [0.18, 0.4, 0.22, 0.18],
+                    scale: [1, 1.06, 0.98, 1],
+                  }
+                : { y: 0, rotate: 0, opacity: 0.2, scale: 1 }
+            }
+            transition={
+              on
+                ? {
+                    duration: f.duration,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: f.delay,
+                  }
+                : { duration: 0.3 }
+            }
+          >
+            <Icon
+              className="drop-shadow-[0_0_12px_rgba(200,240,68,0.15)]"
+              size={f.size}
+              strokeWidth={1.35}
+              aria-hidden
+            />
+          </motion.div>
+        );
+      })}
 
-      {/* Grelha em pan — um pouco mais visível */}
-      <div
-        className={cn(
-          'absolute inset-0 opacity-[0.22] mix-blend-overlay',
-          on && 'motion-reduce:animate-none animate-hero-grid-pan'
-        )}
-        style={{
-          backgroundImage: `linear-gradient(hsl(165 50% 55% / 0.14) 1px, transparent 1px), linear-gradient(90deg, hsl(165 50% 55% / 0.14) 1px, transparent 1px)`,
-          backgroundSize: '48px 48px',
-          maskImage: 'linear-gradient(180deg, black 0%, black 50%, transparent 100%)',
-        }}
-      />
+      {/* Micro-partículas (pontos) — pulso suave */}
+      {[
+        { l: '18%', t: '25%' },
+        { l: '55%', t: '18%' },
+        { l: '88%', t: '35%' },
+        { l: '30%', t: '72%' },
+        { l: '70%', t: '62%' },
+      ].map((d, i) => (
+        <motion.span
+          key={`dot-${i}`}
+          className="absolute block h-1.5 w-1.5 rounded-full bg-[hsl(165_55%_50%)]"
+          style={{ left: d.l, top: d.t }}
+          animate={on ? { opacity: [0.12, 0.4, 0.12], scale: [1, 1.4, 1] } : { opacity: 0.18 }}
+          transition={
+            on ? { duration: 4 + i * 0.35, repeat: Infinity, ease: 'easeInOut', delay: i * 0.25 } : { duration: 0.2 }
+          }
+        />
+      ))}
 
-      <div
-        className="absolute bottom-0 left-0 right-0 h-36 bg-gradient-to-t from-[#030504] via-[#030504]/90 to-transparent sm:h-48"
-        aria-hidden
-      />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#030504]/85" />
     </div>
   );
 }

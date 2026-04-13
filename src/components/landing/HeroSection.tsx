@@ -1,6 +1,6 @@
 /** Hero — roteiro Altfood (textos fixos). Visual e motion: marca real + estilo “21st” (blur-in, mesh, orbs). */
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { HeroAnimatedBackdrop } from '@/components/landing/HeroAnimatedBackdrop';
 import { LandingCtaPriceSubline } from '@/components/landing/LandingCtaPriceSubline';
 import { PatientPagePhoneMockup } from '@/components/landing/PatientPagePhoneMockup';
@@ -21,6 +21,15 @@ export function HeroSection() {
   const vFade = fadeUpVariants(reduced);
   const vStagger = staggerContainer(reduced, 0.09);
   const vItem = staggerItem(reduced);
+  const vTextGroup: Variants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: reduced ? 0 : 0.09,
+        delayChildren: reduced ? 0 : 0.04,
+      },
+    },
+  };
 
   return (
     <section className="relative flex min-h-[100svh] flex-col overflow-hidden font-sans text-white">
@@ -78,14 +87,18 @@ export function HeroSection() {
       </nav>
 
       <motion.div
-        className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col items-center px-5 pb-20 pt-8 text-center md:pb-24 md:pt-10"
+        className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col items-center px-5 pb-20 pt-8 text-center lg:max-w-6xl lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:px-8 lg:pb-16 lg:pt-6 lg:text-left"
         initial="hidden"
         animate="visible"
         variants={vStagger}
       >
+        <motion.div
+          variants={vTextGroup}
+          className="flex min-w-0 flex-1 flex-col items-center lg:max-w-[min(100%,520px)] lg:items-start lg:text-left"
+        >
         <motion.h1
           variants={vItem}
-          className="text-3xl font-extrabold leading-[1.12] tracking-tight sm:text-4xl md:text-5xl"
+          className="text-3xl font-extrabold leading-[1.12] tracking-tight sm:text-4xl md:text-5xl lg:text-[2.35rem] lg:leading-[1.1] xl:text-5xl"
         >
           Sua consultoria no bolso do seu paciente.
           <br />
@@ -114,11 +127,11 @@ export function HeroSection() {
           Elimine as dúvidas no WhatsApp e profissionalize seu atendimento por um valor simbólico.
         </motion.p>
 
-        <motion.div variants={vItem} className="mt-9 flex flex-col items-center gap-3">
+        <motion.div variants={vItem} className="mt-9 flex flex-col items-center gap-3 lg:items-stretch">
           <motion.div whileHover={reduced ? undefined : { scale: 1.02 }} whileTap={reduced ? undefined : { scale: 0.98 }}>
             <Link
               to="/register"
-              className="group relative inline-flex min-h-[52px] min-w-[min(100%,320px)] touch-manipulation items-center justify-center overflow-hidden rounded-full px-8 py-3.5 text-center text-sm font-black uppercase tracking-wide focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c8f044] sm:text-base"
+              className="group relative inline-flex min-h-[52px] min-w-[min(100%,320px)] touch-manipulation items-center justify-center overflow-hidden rounded-full px-8 py-3.5 text-center text-sm font-black uppercase tracking-wide focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c8f044] sm:text-base lg:min-w-0 lg:self-start"
               style={{ background: B.lime, color: B.forest }}
             >
               <span className="relative z-10">Quero meu web app personalizado</span>
@@ -130,17 +143,25 @@ export function HeroSection() {
               )}
             </Link>
           </motion.div>
-          <LandingCtaPriceSubline tone="onDark" initialIndex={0} className="max-w-md" />
+          <LandingCtaPriceSubline tone="onDark" initialIndex={0} className="max-w-md lg:text-left" />
+        </motion.div>
         </motion.div>
 
-        <motion.div variants={vFade} className="mt-14 w-full max-w-[300px] md:mt-16">
+        <motion.div
+          variants={vFade}
+          className="mt-14 w-full max-w-[300px] shrink-0 md:mt-16 lg:mt-0 lg:flex lg:max-w-[min(340px,34vw)] lg:flex-col lg:items-end lg:justify-center"
+        >
           <motion.div
+            className="mx-auto lg:mx-0"
             animate={reduced ? undefined : { y: [0, -6, 0] }}
             transition={reduced ? undefined : { duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           >
             <PatientPagePhoneMockup brand={CLINIC_BRAND} />
           </motion.div>
-          <p className="mt-4 text-center text-xs leading-relaxed" style={{ color: B.onDarkMuted }}>
+          <p
+            className="mt-4 text-center text-xs leading-relaxed lg:max-w-[280px] lg:text-right"
+            style={{ color: B.onDarkMuted }}
+          >
             Exemplo visual: página do paciente com a identidade da sua clínica — cores, logo e link exclusivos.
           </p>
         </motion.div>
