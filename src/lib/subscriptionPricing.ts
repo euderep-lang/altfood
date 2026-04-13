@@ -1,5 +1,5 @@
 /** Assinatura Pro: somente mensal recorrente (valor exibido e referência para cópia). */
-export const PRO_MONTHLY_PRICE_BRL = 19.9;
+export const PRO_MONTHLY_PRICE_BRL = 29.9;
 
 /** Dias após o primeiro pagamento em que o cliente pode pedir reembolso integral (política comercial). */
 export const REFUND_GUARANTEE_DAYS = 14;

@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import GlobalLoadingBar from "@/components/GlobalLoadingBar";
 import CookieConsent from "@/components/CookieConsent";
+import OfferCountdownBar from "@/components/OfferCountdownBar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AdminRoute from "@/components/AdminRoute";
 import { lazy, Suspense } from "react";
@@ -66,6 +67,9 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <div className="sticky top-0 z-50">
+              <OfferCountdownBar />
+            </div>
             <GlobalLoadingBar />
             <Suspense fallback={<PageLoader />}>
               <Routes>

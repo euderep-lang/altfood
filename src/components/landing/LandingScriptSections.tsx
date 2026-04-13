@@ -588,7 +588,7 @@ export function LandingPricingGuaranteeSection() {
             Plano profissional ilimitado
           </p>
           <p className="mt-4 text-center text-4xl font-black tabular-nums md:text-5xl" style={{ color: B.forest }}>
-            R$ 19,90
+            R$ 29,90
             <span className="text-lg font-semibold md:text-xl" style={{ color: B.muted }}>
               {' '}
               / mês

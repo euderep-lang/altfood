@@ -63,7 +63,7 @@ export default function SubscriptionManager({ doctor }: SubscriptionManagerProps
   // Determine current plan type from last payment
   const lastPayment = payments[0];
   const currentPlan = lastPayment?.plan === 'annual' ? 'Anual (legado)' : 'Mensal';
-  const currentPrice = lastPayment?.plan === 'annual' ? 'Plano anual (legado)' : 'R$ 19,90/mês';
+  const currentPrice = lastPayment?.plan === 'annual' ? 'Plano anual (legado)' : 'R$ 29,90/mês';
 
   useEffect(() => {
     loadPayments();

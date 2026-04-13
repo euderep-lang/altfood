@@ -51,7 +51,7 @@ function ProLockOverlay() {
         <Lock className="w-6 h-6 text-primary" />
       </div>
       <p className="text-sm font-semibold text-foreground text-center">Recurso exclusivo Pro</p>
-      <p className="text-xs text-muted-foreground text-center">Pare de responder substituições — R$ 19,90/mês</p>
+      <p className="text-xs text-muted-foreground text-center">Pare de responder substituições — R$ 29,90/mês</p>
       <Link to={CHECKOUT_MONTHLY_PATH}>
         <Button size="sm" className="rounded-xl gap-2 bg-primary hover:bg-primary/90">
           <Crown className="w-4 h-4" /> Fazer upgrade

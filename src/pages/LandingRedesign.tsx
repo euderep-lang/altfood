@@ -56,7 +56,7 @@ function PageMeta() {
 
     setMeta(
       'description',
-      'Sua consultoria no bolso do paciente: web app white label com sua marca, substituições oficiais em segundos, pacientes ilimitados. A partir de R$ 19,90/mês. Garantia de 7 dias.'
+      'Sua consultoria no bolso do paciente: web app white label com sua marca, substituições oficiais em segundos, pacientes ilimitados. A partir de R$ 29,90/mês. Garantia de 7 dias.'
     );
     setMeta('og:title', 'Altfood — Sua marca. Autonomia para o paciente. Menos WhatsApp.', true);
     setMeta(
