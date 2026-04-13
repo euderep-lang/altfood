@@ -3,7 +3,7 @@
  */
 import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Check, Palette, Link2, Sparkles } from 'lucide-react';
+import { Check, Heart, Palette, Link2, Sparkles } from 'lucide-react';
 import { landingBrand as B } from '@/lib/landingBrand';
 import {
   fadeUpSoftVariants,
@@ -252,33 +252,28 @@ export function LandingHowScriptSection() {
   );
 }
 
+/** Avatares servidos de `/public` (evita Unsplash bloqueado por rede, adblock ou políticas). */
 const testimonialPhotos = [
   {
     quote:
       'Recuperei meu tempo livre. Antes eu gastava horas no WhatsApp com dúvidas de trocas. O Altfood é o melhor custo-benefício que já vi.',
     name: 'Dr. Ricardo Silva',
     role: 'Nutricionista Clínico',
-    src: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&crop=faces&w=800&h=600&q=82',
-    srcSet:
-      'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&crop=faces&w=480&h=360&q=82 480w, https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&crop=faces&w=800&h=600&q=82 800w',
+    src: '/images/testimonials/avatar-ricardo.svg',
   },
   {
     quote:
       'Meus alunos não furam mais a dieta em viagens porque agora sabem substituir sozinhos com o meu app.',
     name: 'Mariana Costa',
     role: 'Personal Trainer',
-    src: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&crop=faces&w=800&h=600&q=82',
-    srcSet:
-      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&crop=faces&w=480&h=360&q=82 480w, https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&crop=faces&w=800&h=600&q=82 800w',
+    src: '/images/testimonials/avatar-mariana.svg',
   },
   {
     quote:
       'O White Label passa uma imagem de tecnologia e cuidado que eleva o nível da minha consulta.',
     name: 'Dr. Felipe Augusto',
     role: 'Nutrologia Esportiva',
-    src: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&crop=faces&w=800&h=600&q=82',
-    srcSet:
-      'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&crop=faces&w=480&h=360&q=82 480w, https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&crop=faces&w=800&h=600&q=82 800w',
+    src: '/images/testimonials/avatar-felipe.svg',
   },
 ] as const;
 
@@ -325,12 +320,10 @@ export function LandingTestimonialsScriptSection() {
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
                 <motion.img
                   src={t.src}
-                  srcSet={t.srcSet}
-                  sizes="(max-width: 768px) 92vw, (max-width: 1200px) 34vw, 380px"
-                  alt={`Retrato ilustrativo — ${t.name}`}
+                  alt={`Avatar ilustrativo — ${t.name}`}
                   width={800}
                   height={600}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover object-center"
                   loading="lazy"
                   decoding="async"
                   whileHover={reduced ? undefined : { scale: 1.04 }}
@@ -374,7 +367,13 @@ export function LandingTestimonialsScriptSection() {
 export function LandingPricingGuaranteeSection() {
   const reduced = useReducedMotion();
   const v = fadeUpVariants(reduced);
-  const perks = ['Pacientes Ilimitados', 'Personalização Visual Completa', 'Sem Taxas de Adesão ou Fidelidade'] as const;
+  const vSoft = fadeUpSoftVariants(reduced);
+  const perks = [
+    'Pacientes Ilimitados',
+    'Personalização Visual Completa',
+    'Sem Taxas de Adesão ou Fidelidade',
+    'Seus pacientes não pagam para usar o seu app',
+  ] as const;
 
   return (
     <section
@@ -387,6 +386,36 @@ export function LandingPricingGuaranteeSection() {
         style={{ background: `color-mix(in srgb, ${B.lime} 22%, transparent)` }}
         aria-hidden
       />
+
+      <motion.div
+        className="relative mx-auto mb-14 max-w-xl px-2 text-center md:mb-16"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={vSoft}
+      >
+        <div
+          className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm"
+          style={{ background: `color-mix(in srgb, ${B.lime} 35%, white)`, color: B.forest }}
+          aria-hidden
+        >
+          <Heart className="h-7 w-7 fill-current opacity-90" strokeWidth={1.5} />
+        </div>
+        <p className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: B.primary }}>
+          Transparência
+        </p>
+        <h2 className="mt-2 text-2xl font-black leading-tight tracking-tight md:text-3xl" style={{ color: B.forest }}>
+          Um preço para você.{' '}
+          <span className="bg-gradient-to-r from-[hsl(170_55%_32%)] to-[hsl(160_45%_38%)] bg-clip-text text-transparent">
+            Seus pacientes não pagam nada a mais.
+          </span>
+        </h2>
+        <p className="mt-4 text-base leading-[1.65]" style={{ color: B.muted }}>
+          Quem assina o Altfood é o profissional. O acesso dos seus pacientes ao web app com a sua marca está incluído
+          no plano — sem cobrança por paciente e sem surpresa no bolso deles.
+        </p>
+      </motion.div>
+
       <motion.div
         className="relative mx-auto max-w-lg"
         initial="hidden"
