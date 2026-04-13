@@ -240,37 +240,39 @@
   .landing-pricing-card-frame::before {
     content: '';
     position: absolute;
-    inset: -4px;
+    inset: -7px;
     z-index: 0;
     border-radius: inherit;
     background: conic-gradient(
       from 0deg at 50% 50%,
-      transparent 0deg,
-      transparent 258deg,
-      hsl(78 92% 62% / 0.2) 278deg,
-      hsl(78 100% 74%) 296deg,
-      hsl(170 55% 36% / 0.9) 308deg,
-      hsl(78 100% 74%) 320deg,
-      hsl(78 92% 62% / 0.2) 338deg,
-      transparent 352deg,
-      transparent 360deg
+      hsl(78 95% 45% / 0.15) 0deg,
+      hsl(78 95% 45% / 0.15) 220deg,
+      hsl(78 100% 72%) 238deg,
+      hsl(88 100% 82%) 252deg,
+      hsl(170 60% 42%) 268deg,
+      hsl(88 100% 82%) 282deg,
+      hsl(78 100% 68%) 296deg,
+      hsl(78 95% 52% / 0.35) 318deg,
+      hsl(78 95% 45% / 0.15) 340deg,
+      hsl(78 95% 45% / 0.15) 360deg
     );
-    animation: landing-pricing-orbit 12s linear infinite;
-    filter: blur(1px);
+    animation: landing-pricing-orbit 4.5s linear infinite;
+    filter: blur(0.65px);
+    box-shadow: 0 0 28px hsl(78 100% 60% / 0.35), 0 0 48px hsl(170 55% 40% / 0.12);
     pointer-events: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .landing-pricing-card-frame::before {
       animation: none;
-      opacity: 0.55;
-      filter: blur(0.5px);
+      opacity: 0.85;
+      filter: blur(0.45px);
     }
   }
 
   .landing-pricing-card-inner {
     position: relative;
     z-index: 1;
-    border-radius: 1.45rem;
+    border-radius: calc(1.5rem - 5px);
   }
 }

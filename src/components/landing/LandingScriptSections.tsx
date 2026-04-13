@@ -570,7 +570,7 @@ export function LandingPricingGuaranteeSection() {
       >
         <div className="landing-pricing-card-frame rounded-3xl shadow-xl">
           <div
-            className="landing-pricing-card-inner m-[2px] overflow-hidden border-2 p-8 md:p-10"
+            className="landing-pricing-card-inner m-[5px] overflow-hidden border-2 p-8 md:p-10"
             style={{
               borderColor: `color-mix(in srgb, ${B.forest} 35%, ${B.border})`,
               background: `linear-gradient(180deg, ${B.surface} 0%, color-mix(in srgb, ${B.offwhite} 40%, white) 100%)`,

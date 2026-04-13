@@ -87,7 +87,7 @@ export function HeroSection() {
       </nav>
 
       <motion.div
-        className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col items-center px-5 pb-20 pt-8 text-center lg:max-w-6xl lg:flex-row lg:items-center lg:justify-start lg:gap-10 lg:px-8 lg:pb-16 lg:pt-6 lg:text-left xl:gap-14"
+        className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-5 py-12 text-center sm:py-14 lg:max-w-6xl lg:flex-row lg:items-center lg:justify-center lg:gap-8 lg:px-8 lg:py-10 lg:text-left xl:gap-12"
         initial="hidden"
         animate="visible"
         variants={vStagger}
@@ -149,17 +149,17 @@ export function HeroSection() {
 
         <motion.div
           variants={vFade}
-          className="mt-14 w-full shrink-0 md:mt-16 lg:mt-0 lg:flex lg:w-[min(100%,320px)] lg:min-w-[260px] lg:max-w-[320px] lg:flex-col lg:items-center lg:justify-center"
+          className="mt-10 w-full shrink-0 sm:mt-12 lg:mt-0 lg:flex lg:w-[min(100%,248px)] lg:min-w-[200px] lg:max-w-[248px] lg:flex-col lg:items-center lg:justify-center"
         >
           <motion.div
-            className="mx-auto w-full max-w-[300px] lg:mx-0 lg:max-w-none"
-            animate={reduced ? undefined : { y: [0, -6, 0] }}
+            className="mx-auto w-full max-w-[220px] sm:max-w-[236px] lg:mx-0 lg:max-w-[232px]"
+            animate={reduced ? undefined : { y: [0, -5, 0] }}
             transition={reduced ? undefined : { duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <PatientPagePhoneMockup brand={CLINIC_BRAND} className="max-w-[300px] lg:max-w-none" />
+            <PatientPagePhoneMockup brand={CLINIC_BRAND} className="max-w-[220px] sm:max-w-[236px] lg:max-w-[232px]" />
           </motion.div>
           <p
-            className="mt-4 w-full max-w-[300px] text-center text-xs leading-relaxed lg:text-center"
+            className="mt-3 w-full max-w-[236px] text-center text-xs leading-relaxed lg:text-center"
             style={{ color: B.onDarkMuted }}
           >
             Exemplo visual: página do paciente com a identidade da sua clínica — cores, logo e link exclusivos.
