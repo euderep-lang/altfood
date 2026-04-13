@@ -1,6 +1,7 @@
 /** Hero — roteiro Altfood (textos fixos). Visual e motion: marca real + estilo “21st” (blur-in, mesh, orbs). */
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
+import { HeroAnimatedBackdrop } from '@/components/landing/HeroAnimatedBackdrop';
 import { PatientPagePhoneMockup } from '@/components/landing/PatientPagePhoneMockup';
 import { BRAND_MARK_SRC } from '@/components/AltfoodLogo';
 import { landingBrand as B } from '@/lib/landingBrand';
@@ -22,49 +23,14 @@ export function HeroSection() {
 
   return (
     <section className="relative flex min-h-[100svh] flex-col overflow-hidden font-sans text-white">
-      {/* Base + textura (tokens globais) */}
+      {/* Base + malha animada (estilo Dieta.ai) + textura */}
       <div className="absolute inset-0 gradient-dark" aria-hidden />
+      <HeroAnimatedBackdrop reducedMotion={reduced} />
       <div
-        className="absolute inset-0 hero-pattern opacity-[0.28]"
-        style={{ maskImage: 'linear-gradient(180deg, black 0%, transparent 85%)' }}
+        className="absolute inset-0 z-[1] hero-pattern opacity-[0.22]"
+        style={{ maskImage: 'linear-gradient(180deg, black 0%, transparent 88%)' }}
         aria-hidden
       />
-
-      {/* Orbs — movimento lento só se motion ok */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-        <motion.div
-          className="absolute -left-[15%] top-[10%] h-[min(90vw,420px)] w-[min(90vw,420px)] rounded-full blur-[100px]"
-          style={{ background: `color-mix(in srgb, ${B.primary} 45%, transparent)` }}
-          animate={
-            reduced
-              ? undefined
-              : {
-                  opacity: [0.35, 0.55, 0.35],
-                  scale: [1, 1.08, 1],
-                  x: [0, 24, 0],
-                }
-          }
-          transition={reduced ? undefined : { duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute -right-[10%] top-[35%] h-[min(70vw,340px)] w-[min(70vw,340px)] rounded-full blur-[90px]"
-          style={{ background: `color-mix(in srgb, ${B.secondary} 38%, transparent)` }}
-          animate={
-            reduced
-              ? undefined
-              : {
-                  opacity: [0.25, 0.45, 0.25],
-                  scale: [1.05, 1, 1.05],
-                  y: [0, -20, 0],
-                }
-          }
-          transition={reduced ? undefined : { duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        />
-        <div
-          className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#060a08] to-transparent"
-          aria-hidden
-        />
-      </div>
 
       <nav
         className="relative z-20 flex items-center justify-between gap-3 border-b border-white/10 px-5 py-4 backdrop-blur-xl md:px-12"

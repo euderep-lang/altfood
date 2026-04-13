@@ -116,6 +116,28 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-6px)" },
         },
+        /** Hero landing — malha fluida tipo Dieta.ai (só transform / GPU) */
+        "hero-mesh-a": {
+          "0%, 100%": { transform: "translate(-6%, -10%) scale(1) rotate(0deg)" },
+          "33%": { transform: "translate(12%, 6%) scale(1.14) rotate(7deg)" },
+          "66%": { transform: "translate(4%, -14%) scale(0.92) rotate(-5deg)" },
+        },
+        "hero-mesh-b": {
+          "0%, 100%": { transform: "translate(10%, 8%) scale(1.06) rotate(0deg)" },
+          "50%": { transform: "translate(-14%, -8%) scale(1.1) rotate(-9deg)" },
+        },
+        "hero-mesh-c": {
+          "0%, 100%": { transform: "translate(-4%, 18%) scale(1) rotate(0deg)" },
+          "50%": { transform: "translate(8%, -10%) scale(1.18) rotate(6deg)" },
+        },
+        "hero-mesh-d": {
+          "0%, 100%": { transform: "translate(0%, 0%) scale(1) rotate(0deg)" },
+          "50%": { transform: "translate(-10%, 12%) scale(1.08) rotate(4deg)" },
+        },
+        "hero-grid-pan": {
+          "0%": { backgroundPosition: "0px 0px" },
+          "100%": { backgroundPosition: "48px 48px" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -124,6 +146,11 @@ export default {
         "fade-in-slow": "fade-in-slow 0.7s ease-out",
         "scale-in": "scale-in 0.4s ease-out",
         float: "float 4s ease-in-out infinite",
+        "hero-mesh-a": "hero-mesh-a 22s ease-in-out infinite",
+        "hero-mesh-b": "hero-mesh-b 28s ease-in-out infinite",
+        "hero-mesh-c": "hero-mesh-c 32s ease-in-out infinite",
+        "hero-mesh-d": "hero-mesh-d 26s ease-in-out infinite",
+        "hero-grid-pan": "hero-grid-pan 18s linear infinite",
       },
     },
   },
