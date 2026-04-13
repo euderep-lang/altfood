@@ -587,6 +587,9 @@ export function LandingPricingGuaranteeSection() {
           <p className="text-center text-xs font-bold uppercase tracking-[0.2em]" style={{ color: B.primary }}>
             Plano profissional ilimitado
           </p>
+          <p className="mt-3 text-center text-sm font-semibold tabular-nums" style={{ color: B.muted }}>
+            <span className="line-through">De R$ 49,90</span>
+          </p>
           <p className="mt-4 text-center text-4xl font-black tabular-nums md:text-5xl" style={{ color: B.forest }}>
             R$ 29,90
             <span className="text-lg font-semibold md:text-xl" style={{ color: B.muted }}>
