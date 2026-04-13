@@ -83,17 +83,19 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
   const showPlaceholder = phase === 'search';
 
   return (
-    <div className={`relative mx-auto w-[min(100%,300px)] ${className ?? ''}`}>
+    <div className={`relative mx-auto w-full max-w-[280px] ${className ?? ''}`}>
       <p className="sr-only">
         Demonstração animada em loop: o paciente digita na busca, seleciona o alimento e vê substituições similares com base na TACO.
       </p>
-      <div className="relative rounded-[2.85rem] bg-gradient-to-b from-zinc-800 to-zinc-950 p-[10px] shadow-[0_28px_70px_-14px_rgba(0,0,0,0.45)] ring-1 ring-white/10">
-        <div
-          className="absolute left-1/2 top-[11px] z-20 h-[26px] w-[72px] -translate-x-1/2 rounded-full bg-black shadow-inner"
-          aria-hidden
-        />
-        <div className="overflow-hidden rounded-[2.25rem] bg-background shadow-inner">
-          <div className="flex items-center justify-between px-5 pb-1 pt-3 text-[10px] font-semibold text-muted-foreground">
+      {/* Proporção fixa ~ iPhone (390×844 pt); altura deriva da largura — não “cresce” com o conteúdo */}
+      <div className="relative w-full aspect-[390/844]">
+        <div className="absolute inset-0 rounded-[2.85rem] bg-gradient-to-b from-zinc-800 to-zinc-950 p-[10px] shadow-[0_28px_70px_-14px_rgba(0,0,0,0.45)] ring-1 ring-white/10">
+          <div
+            className="absolute left-1/2 top-[11px] z-20 h-[26px] w-[72px] -translate-x-1/2 rounded-full bg-black shadow-inner"
+            aria-hidden
+          />
+          <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-[2.25rem] bg-background shadow-inner">
+            <div className="flex shrink-0 items-center justify-between px-5 pb-1 pt-3 text-[10px] font-semibold text-muted-foreground">
             <span>9:41</span>
             <div className="flex items-center gap-1 opacity-80" aria-hidden>
               <span className="h-2.5 w-3 rounded-sm border border-muted-foreground/50" />
@@ -142,7 +144,8 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
             </div>
           </header>
 
-          <div className="bg-gradient-to-b from-muted/30 to-background px-2.5 pb-2 pt-2.5">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
+            <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain bg-gradient-to-b from-muted/30 to-background px-2.5 pb-2 pt-2.5">
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
               <div className="flex min-h-[38px] items-center rounded-2xl border border-border/60 bg-card py-1.5 pl-9 pr-2 shadow-sm">
@@ -298,11 +301,13 @@ export function PatientPagePhoneMockup({ className }: { className?: string }) {
             <p className="mt-1 px-1 text-center text-[8px] leading-snug text-muted-foreground/70">
               Valores TACO (NEPA/UNICAMP). Consulte seu nutricionista.
             </p>
+            </div>
 
-            <div className="flex justify-center pb-0.5 pt-1" aria-hidden>
-              <div className="h-1 w-24 rounded-full bg-black/10" />
+            <div className="shrink-0 bg-background pb-1.5 pt-0.5" aria-hidden>
+              <div className="mx-auto h-1 w-24 rounded-full bg-black/10" />
             </div>
           </div>
+        </div>
         </div>
       </div>
 
